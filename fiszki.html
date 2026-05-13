@@ -253,17 +253,7 @@
   .rate-btn.active-no  { background: rgba(239,68,68,.35); box-shadow: 0 0 0 2px var(--red); }
   .rate-btn.active-yes { background: rgba(34,197,94,.35); box-shadow: 0 0 0 2px var(--green); }
 
-  .rate-row { opacity: 0; pointer-events: none; transition: opacity .25s .15s; }
-  .rate-row.visible { opacity: 1; pointer-events: auto; }
-
-  /* ── Nav buttons ── */
-  .nav-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-  }
-  .nav-row .btn { flex: 1; max-width: 160px; padding: 11px; font-size: .9rem; }
+  .rate-row { display: flex; }
 
   /* ── Shuffle toggle ── */
   .options-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
@@ -398,11 +388,6 @@
     <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
   </div>
 
-  <!-- nav -->
-  <div class="nav-row">
-    <button class="btn secondary" id="btn-prev" onclick="prevCard()">← Poprzednia</button>
-    <button class="btn"           id="btn-next" onclick="nextCard()">Następna →</button>
-  </div>
 
 </div>
 
@@ -537,9 +522,6 @@ function showCard() {
   document.getElementById('card-back').textContent  = card.back;
   updateRatingUI();
   updateProgress();
-  document.getElementById('btn-prev').disabled = current === 0;
-  document.getElementById('btn-next').textContent =
-    current < order.length - 1 ? 'Następna →' : 'Zakończ ✓';
 }
 
 function setFlipped(val, animate) {
@@ -555,7 +537,6 @@ function setFlipped(val, animate) {
     inner.offsetHeight;
     inner.classList.remove('no-transition');
   }
-  document.getElementById('rate-row').classList.toggle('visible', val);
 }
 
 function flipCard() { setFlipped(!flipped, true); }
