@@ -19,6 +19,8 @@
     --back-bg: #1a2e1a;
     --front-border: #7c6af7;
     --back-border: #4ade80;
+    --green: #22c55e;
+    --red: #ef4444;
     --radius: 18px;
     --shadow: 0 8px 32px rgba(0,0,0,0.5);
   }
@@ -32,7 +34,7 @@
     flex-direction: column;
     align-items: center;
     padding: 16px;
-    gap: 16px;
+    gap: 14px;
     overflow-x: hidden;
   }
 
@@ -88,12 +90,12 @@
     touch-action: manipulation;
   }
   .btn:active { opacity: .8; transform: scale(.97); }
+  .btn:disabled { opacity: .35; pointer-events: none; }
   .btn.secondary {
     background: var(--surface2);
     color: var(--accent2);
     border: 1px solid var(--accent);
   }
-  .btn.danger { background: #c0392b; }
 
   .hint {
     font-size: .8rem;
@@ -104,7 +106,7 @@
   }
 
   /* ── Study screen ── */
-  #study-screen { display: none; flex-direction: column; align-items: center; gap: 14px; width: 100%; max-width: 540px; }
+  #study-screen { display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 540px; }
 
   .top-bar {
     display: flex;
@@ -116,10 +118,27 @@
 
   .progress-wrap { flex: 1; }
   .progress-label { font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
-  .progress-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width .3s; }
+  .progress-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; display: flex; }
+  .progress-fill-known   { height: 100%; background: var(--green);  border-radius: 99px 0 0 99px; transition: width .3s; }
+  .progress-fill-unknown { height: 100%; background: var(--red);    transition: width .3s; }
+  .progress-fill-seen    { height: 100%; background: var(--accent); border-radius: 0 99px 99px 0; transition: width .3s; }
 
   .counter { font-size: .85rem; color: var(--muted); white-space: nowrap; }
+
+  /* score chips */
+  .score-row {
+    display: flex;
+    gap: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 4px;
+    padding: 3px 10px;
+    border-radius: 99px;
+  }
+  .chip.known   { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+  .chip.unknown { background: rgba(239,68,68,.15);  color: var(--red);   border: 1px solid rgba(239,68,68,.3); }
 
   /* ── Card ── */
   .card-scene {
@@ -133,7 +152,7 @@
   .card-inner {
     position: relative;
     width: 100%;
-    min-height: 260px;
+    min-height: 240px;
     transition: transform .45s cubic-bezier(.4,0,.2,1);
     transform-style: preserve-3d;
   }
@@ -143,7 +162,7 @@
     position: absolute;
     inset: 0;
     border-radius: var(--radius);
-    padding: 28px 24px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -153,25 +172,38 @@
     -webkit-backface-visibility: hidden;
     box-shadow: var(--shadow);
     word-break: break-word;
+    min-height: 240px;
   }
   .card-face.front {
     background: var(--front-bg);
     border: 1.5px solid var(--front-border);
-    min-height: 260px;
   }
   .card-face.back {
     background: var(--back-bg);
     border: 1.5px solid var(--back-border);
     transform: rotateY(180deg);
-    min-height: 260px;
   }
+
+  /* rating badge in top-right corner of card */
+  .rating-badge {
+    position: absolute;
+    top: 12px; right: 14px;
+    font-size: .85rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity .2s;
+    pointer-events: none;
+  }
+  .rating-badge.visible { opacity: 1; }
+  .rating-badge.known-badge   { color: var(--green); }
+  .rating-badge.unknown-badge { color: var(--red); }
 
   .card-label {
     font-size: .7rem;
     font-weight: 700;
     letter-spacing: .1em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     opacity: .55;
   }
   .front .card-label { color: var(--accent2); }
@@ -179,7 +211,49 @@
 
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.55; }
 
-  .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 14px; }
+  .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 12px; }
+
+  /* ── Rate buttons (shown after flip) ── */
+  .rate-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+  .rate-btn {
+    flex: 1;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .1s, opacity .2s, box-shadow .2s;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .rate-btn:active { transform: scale(.95); }
+  .rate-btn.no {
+    background: rgba(239,68,68,.15);
+    color: var(--red);
+    border: 1.5px solid rgba(239,68,68,.4);
+  }
+  .rate-btn.yes {
+    background: rgba(34,197,94,.15);
+    color: var(--green);
+    border: 1.5px solid rgba(34,197,94,.4);
+  }
+  .rate-btn.no:hover  { background: rgba(239,68,68,.28); }
+  .rate-btn.yes:hover { background: rgba(34,197,94,.28); }
+
+  /* highlight active rating */
+  .rate-btn.active-no  { background: rgba(239,68,68,.35); box-shadow: 0 0 0 2px var(--red); }
+  .rate-btn.active-yes { background: rgba(34,197,94,.35); box-shadow: 0 0 0 2px var(--green); }
+
+  .rate-row { opacity: 0; pointer-events: none; transition: opacity .25s .15s; }
+  .rate-row.visible { opacity: 1; pointer-events: auto; }
 
   /* ── Nav buttons ── */
   .nav-row {
@@ -188,32 +262,19 @@
     width: 100%;
     justify-content: center;
   }
-  .nav-row .btn { flex: 1; max-width: 160px; padding: 12px; font-size: .95rem; }
-
-  /* ── Result ── */
-  #result-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 20px;
-    text-align: center;
-  }
-  .result-icon { font-size: 3.5rem; }
-  .result-title { font-size: 1.4rem; font-weight: 700; color: var(--accent2); }
-  .result-sub { color: var(--muted); font-size: .9rem; }
+  .nav-row .btn { flex: 1; max-width: 160px; padding: 11px; font-size: .9rem; }
 
   /* ── Shuffle toggle ── */
-  .shuffle-row { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: var(--muted); }
-  .toggle { position: relative; width: 38px; height: 22px; cursor: pointer; }
+  .options-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); cursor: pointer; }
+  .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
   .slider {
     position: absolute; inset: 0;
     background: var(--surface2);
     border-radius: 99px;
     transition: background .2s;
+    cursor: pointer;
   }
   .slider::before {
     content: '';
@@ -227,14 +288,44 @@
   .toggle input:checked + .slider { background: var(--accent); }
   .toggle input:checked + .slider::before { transform: translateX(16px); background: #fff; }
 
-  /* ── Swipe animation hint ── */
-  @keyframes swipe-hint {
-    0%   { transform: translateX(0); opacity: 1; }
-    40%  { transform: translateX(18px); opacity: .6; }
-    60%  { transform: translateX(-14px); opacity: .6; }
-    100% { transform: translateX(0); opacity: 1; }
+  /* ── Result screen ── */
+  #result-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 12px;
+    text-align: center;
   }
-  .card-scene.hint-anim .card-inner { animation: swipe-hint .5s ease; }
+  .result-icon { font-size: 3rem; }
+  .result-title { font-size: 1.35rem; font-weight: 700; color: var(--accent2); }
+
+  .result-stats {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    flex: 1;
+    min-width: 110px;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .stat-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .stat-box.known-box   .stat-num { color: var(--green); }
+  .stat-box.unknown-box .stat-num { color: var(--red); }
+  .stat-box.total-box   .stat-num { color: var(--accent2); }
+
+  .result-msg { font-size: .9rem; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -250,7 +341,6 @@
     <p><strong>Wgraj plik CSV</strong><br>z fiszek NotebookLM<br><br>lub kliknij, żeby wybrać plik</p>
   </div>
   <input type="file" id="file-input" accept=".csv,text/csv">
-
   <p class="hint">
     W NotebookLM: <strong>Studio &rarr; Fiszki &rarr; Pobierz</strong><br>
     Aplikacja działa w całości w przeglądarce &mdash; plik nigdzie nie jest wysyłany.
@@ -259,62 +349,100 @@
 
 <!-- ══ STUDY ══ -->
 <div id="study-screen">
+
   <div class="top-bar">
     <div class="progress-wrap">
       <div class="progress-label" id="prog-label">Karta 1 z 1</div>
-      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="progress-bar">
+        <div class="progress-fill-known"   id="prog-known"   style="width:0%"></div>
+        <div class="progress-fill-unknown" id="prog-unknown" style="width:0%"></div>
+        <div class="progress-fill-seen"    id="prog-seen"    style="width:0%"></div>
+      </div>
     </div>
-    <span class="counter" id="counter-badge"></span>
-    <button class="btn secondary" style="padding:8px 14px;font-size:.8rem" onclick="resetToUpload()">Nowy CSV</button>
+    <button class="btn secondary" style="padding:7px 12px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy CSV</button>
   </div>
 
-  <div class="shuffle-row">
-    <label class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></label>
-    Losowa kolejność
+  <div class="score-row">
+    <span class="chip known"   id="chip-known">  ✓ <span id="cnt-known">0</span></span>
+    <span class="chip unknown" id="chip-unknown">✗ <span id="cnt-unknown">0</span></span>
   </div>
 
+  <div class="options-row">
+    <label class="toggle-label">
+      <span class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></span>
+      Losowa kolejność
+    </label>
+  </div>
+
+  <!-- card -->
   <div class="card-scene" id="card-scene" onclick="flipCard()">
     <div class="card-inner" id="card-inner">
       <div class="card-face front">
+        <div class="rating-badge" id="badge-front"></div>
         <div class="card-label">Pytanie</div>
         <div class="card-text" id="card-front"></div>
-        <div class="flip-hint">Dotknij, żeby odwrócic</div>
+        <div class="flip-hint">Dotknij, żeby zobaczyć odpowiedź</div>
       </div>
       <div class="card-face back">
-        <div class="card-label">Odpowiedz</div>
+        <div class="rating-badge" id="badge-back"></div>
+        <div class="card-label">Odpowiedź</div>
         <div class="card-text" id="card-back"></div>
       </div>
     </div>
   </div>
 
-  <div class="nav-row">
-    <button class="btn secondary" id="btn-prev" onclick="prevCard()">&#8592; Poprzednia</button>
-    <button class="btn" id="btn-next" onclick="nextCard()">Nastepna &#8594;</button>
+  <!-- rate buttons -->
+  <div class="rate-row" id="rate-row">
+    <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem</button>
+    <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
   </div>
+
+  <!-- nav -->
+  <div class="nav-row">
+    <button class="btn secondary" id="btn-prev" onclick="prevCard()">← Poprzednia</button>
+    <button class="btn"           id="btn-next" onclick="nextCard()">Następna →</button>
+  </div>
+
 </div>
 
 <!-- ══ RESULT ══ -->
 <div id="result-screen">
-  <div class="result-icon">🎉</div>
-  <div class="result-title">Gotowe!</div>
-  <div class="result-sub" id="result-sub"></div>
-  <button class="btn" onclick="restartDeck()">Powtorz od poczatku</button>
+  <div class="result-icon" id="result-icon">🎉</div>
+  <div class="result-title">Koniec talii!</div>
+  <div class="result-stats">
+    <div class="stat-box known-box">
+      <div class="stat-num" id="res-known">0</div>
+      <div class="stat-label">Umiem ✓</div>
+    </div>
+    <div class="stat-box unknown-box">
+      <div class="stat-num" id="res-unknown">0</div>
+      <div class="stat-label">Nie umiem ✗</div>
+    </div>
+    <div class="stat-box total-box">
+      <div class="stat-num" id="res-total">0</div>
+      <div class="stat-label">Wszystkich</div>
+    </div>
+  </div>
+  <div class="result-msg" id="result-msg"></div>
+  <button class="btn" id="btn-retry-unknown" onclick="retryUnknown()" style="background:#c0392b">Powtórz nieumiane ✗</button>
+  <button class="btn" onclick="restartDeck()">Powtórz wszystkie</button>
   <button class="btn secondary" onclick="resetToUpload()">Wgraj nowy CSV</button>
 </div>
 
 <script>
 // ── State ──────────────────────────────────────────────
-let cards = [];        // [{front, back}]
-let order = [];        // indices into cards[]
-let current = 0;
-let flipped = false;
+let cards    = [];       // [{front, back}]
+let order    = [];       // indices into cards[]
+let ratings  = {};       // order-position → true/false/undefined
+let current  = 0;
+let flipped  = false;
 let shuffleOn = false;
 
 // ── File handling ──────────────────────────────────────
-const dropZone = document.getElementById('drop-zone');
+const dropZone  = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => {
   e.preventDefault();
@@ -330,13 +458,11 @@ function loadFile(file) {
   reader.readAsText(file, 'UTF-8');
 }
 
-// ── CSV parser (handles quotes, semicolons, commas) ────
+// ── CSV parser ─────────────────────────────────────────
 function parseCSV(text) {
-  // Detect delimiter: semicolon wins if more semicolons than commas in first line
   const firstLine = text.split('\n')[0] || '';
   const delim = (firstLine.split(';').length > firstLine.split(',').length) ? ';' : ',';
-
-  const rows = splitCSVRows(text, delim);
+  const rows   = splitCSVRows(text, delim);
   const parsed = [];
 
   for (const row of rows) {
@@ -344,7 +470,6 @@ function parseCSV(text) {
     const front = row[0].trim();
     const back  = row[1].trim();
     if (!front && !back) continue;
-    // Skip header rows like "Front,Back" or "Pytanie,Odpowiedz"
     if (parsed.length === 0) {
       const fl = front.toLowerCase(), bl = back.toLowerCase();
       if ((fl === 'front' || fl === 'pytanie' || fl === 'question' || fl === 'term') &&
@@ -357,16 +482,13 @@ function parseCSV(text) {
     alert('Nie znaleziono fiszek w pliku. Upewnij się, że to plik CSV z NotebookLM z dwiema kolumnami.');
     return;
   }
-
   cards = parsed;
   startDeck();
 }
 
 function splitCSVRows(text, delim) {
   const rows = [];
-  let row = [];
-  let cell = '';
-  let inQuote = false;
+  let row = [], cell = '', inQuote = false;
 
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
@@ -374,22 +496,12 @@ function splitCSVRows(text, delim) {
       if (ch === '"') {
         if (text[i+1] === '"') { cell += '"'; i++; }
         else inQuote = false;
-      } else {
-        cell += ch;
-      }
+      } else { cell += ch; }
     } else {
-      if (ch === '"') {
-        inQuote = true;
-      } else if (ch === delim) {
-        row.push(cell); cell = '';
-      } else if (ch === '\n') {
-        row.push(cell); cell = '';
-        rows.push(row); row = [];
-      } else if (ch === '\r') {
-        // skip
-      } else {
-        cell += ch;
-      }
+      if      (ch === '"')   { inQuote = true; }
+      else if (ch === delim) { row.push(cell); cell = ''; }
+      else if (ch === '\n')  { row.push(cell); cell = ''; rows.push(row); row = []; }
+      else if (ch !== '\r')  { cell += ch; }
     }
   }
   if (cell || row.length) { row.push(cell); rows.push(row); }
@@ -398,7 +510,8 @@ function splitCSVRows(text, delim) {
 
 // ── Deck logic ─────────────────────────────────────────
 function startDeck() {
-  current = 0;
+  current  = 0;
+  ratings  = {};
   buildOrder();
   show('study-screen');
   showCard();
@@ -421,16 +534,70 @@ function showCard() {
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent  = card.back;
   setFlipped(false);
+  updateRatingUI();
   updateProgress();
   document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').textContent =
+    current < order.length - 1 ? 'Następna →' : 'Zakończ ✓';
 }
 
 function setFlipped(val) {
   flipped = val;
   document.getElementById('card-inner').classList.toggle('flipped', val);
+  document.getElementById('rate-row').classList.toggle('visible', val);
 }
 
 function flipCard() { setFlipped(!flipped); }
+
+// ── Rating ─────────────────────────────────────────────
+function rateCard(known) {
+  ratings[current] = known;
+  updateRatingUI();
+  // short delay so user sees the highlight, then advance
+  setTimeout(() => nextCard(), 280);
+}
+
+function updateRatingUI() {
+  const r = ratings[current]; // true / false / undefined
+
+  // highlight rate buttons
+  document.getElementById('btn-yes').classList.toggle('active-yes', r === true);
+  document.getElementById('btn-no') .classList.toggle('active-no',  r === false);
+
+  // badge on both faces of the card
+  const badgeClass = r === true ? 'known-badge' : r === false ? 'unknown-badge' : '';
+  const badgeText  = r === true ? '✓' : r === false ? '✗' : '';
+  ['badge-front','badge-back'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = badgeText;
+    el.className = 'rating-badge' + (badgeText ? ' visible ' + badgeClass : '');
+  });
+}
+
+function countRatings() {
+  let known = 0, unknown = 0;
+  for (let i = 0; i < order.length; i++) {
+    if (ratings[i] === true)  known++;
+    if (ratings[i] === false) unknown++;
+  }
+  return { known, unknown };
+}
+
+function updateProgress() {
+  const total = order.length;
+  const { known, unknown } = countRatings();
+  const pctK = (known   / total) * 100;
+  const pctU = (unknown / total) * 100;
+  const pctS = Math.max(0, ((current + 1) / total) * 100 - pctK - pctU);
+
+  document.getElementById('prog-known')  .style.width = pctK + '%';
+  document.getElementById('prog-unknown').style.width = pctU + '%';
+  document.getElementById('prog-seen')   .style.width = pctS + '%';
+
+  document.getElementById('prog-label').textContent = `Karta ${current + 1} z ${total}`;
+  document.getElementById('cnt-known')  .textContent = known;
+  document.getElementById('cnt-unknown').textContent = unknown;
+}
 
 function nextCard() {
   if (current < order.length - 1) {
@@ -445,46 +612,77 @@ function prevCard() {
   if (current > 0) { current--; showCard(); }
 }
 
-function updateProgress() {
-  const total = order.length;
-  const pct = Math.round(((current + 1) / total) * 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-label').textContent = `Karta ${current + 1} z ${total}`;
-  document.getElementById('counter-badge').textContent = `${pct}%`;
-  document.getElementById('btn-next').textContent = current < total - 1 ? 'Nastepna →' : 'Zakoncz ✓';
-}
-
 function toggleShuffle() {
   shuffleOn = document.getElementById('shuffle-toggle').checked;
   buildOrder();
-  current = 0;
+  ratings  = {};
+  current  = 0;
   showCard();
 }
 
+// ── Result ─────────────────────────────────────────────
 function showResult() {
-  document.getElementById('result-sub').textContent = `Przejrzano ${cards.length} fiszek.`;
+  const { known, unknown } = countRatings();
+  const total = order.length;
+  const unrated = total - known - unknown;
+
+  document.getElementById('res-known')  .textContent = known;
+  document.getElementById('res-unknown').textContent = unknown;
+  document.getElementById('res-total')  .textContent = total;
+
+  let msg = '';
+  if (unrated > 0)         msg = `${unrated} kart bez oceny.`;
+  else if (unknown === 0)  msg = 'Brawo! Znasz wszystkie fiszki! 🏆';
+  else if (known === 0)    msg = 'Nie przejmuj się — powtórz jeszcze raz!';
+  else                     msg = `Powtórz nieumiane, żeby je opanować.`;
+  document.getElementById('result-msg').textContent = msg;
+
+  const icon = unknown === 0 && unrated === 0 ? '🏆' : known > unknown ? '👍' : '📚';
+  document.getElementById('result-icon').textContent = icon;
+
+  document.getElementById('btn-retry-unknown').style.display =
+    unknown > 0 ? '' : 'none';
+
   show('result-screen');
 }
 
-function restartDeck() {
+function retryUnknown() {
+  // build new order from cards marked as unknown
+  const unknownIndices = [];
+  for (let i = 0; i < order.length; i++) {
+    if (ratings[i] === false) unknownIndices.push(order[i]);
+  }
+  if (unknownIndices.length === 0) return;
+  cards  = unknownIndices.map(i => cards[i]); // replace deck with unknowns only
+  // Note: we reindex so cards[] now = only the unknown subset
+  current = 0;
+  ratings = {};
+  buildOrder();
   show('study-screen');
-  startDeck();
+  showCard();
+}
+
+function restartDeck() {
+  current = 0;
+  ratings = {};
+  buildOrder();
+  show('study-screen');
+  showCard();
 }
 
 function resetToUpload() {
-  cards = []; order = []; current = 0;
+  cards = []; order = []; ratings = {}; current = 0;
   fileInput.value = '';
   show('upload-screen');
 }
 
 function show(id) {
   ['upload-screen','study-screen','result-screen'].forEach(s => {
-    const el = document.getElementById(s);
-    el.style.display = s === id ? 'flex' : 'none';
+    document.getElementById(s).style.display = s === id ? 'flex' : 'none';
   });
 }
 
-// ── Touch / swipe ──────────────────────────────────────
+// ── Touch swipe ────────────────────────────────────────
 let touchStartX = 0, touchStartY = 0;
 const scene = document.getElementById('card-scene');
 
@@ -496,18 +694,20 @@ scene.addEventListener('touchstart', e => {
 scene.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return; // vertical scroll or tiny move
+  if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
   e.preventDefault();
   if (dx < 0) nextCard();
-  else prevCard();
+  else        prevCard();
 }, { passive: false });
 
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (document.getElementById('study-screen').style.display === 'none') return;
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextCard();
-  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevCard();
-  else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown')  nextCard();
+  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    prevCard();
+  else if (e.key === ' ' || e.key === 'Enter')  { e.preventDefault(); flipCard(); }
+  else if (e.key === '1') rateCard(false);
+  else if (e.key === '2') rateCard(true);
 });
 </script>
 </body>
