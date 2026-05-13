@@ -153,9 +153,10 @@
     position: relative;
     width: 100%;
     min-height: 240px;
-    transition: transform .45s cubic-bezier(.4,0,.2,1);
+    transition: transform .32s cubic-bezier(.4,0,.2,1);
     transform-style: preserve-3d;
   }
+  .card-inner.no-transition { transition: none !important; }
   .card-inner.flipped { transform: rotateY(180deg); }
 
   .card-face {
@@ -531,9 +532,9 @@ function shuffle(arr) {
 
 function showCard() {
   const card = cards[order[current]];
+  setFlipped(false, false);
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent  = card.back;
-  setFlipped(false);
   updateRatingUI();
   updateProgress();
   document.getElementById('btn-prev').disabled = current === 0;
@@ -541,13 +542,23 @@ function showCard() {
     current < order.length - 1 ? 'Następna →' : 'Zakończ ✓';
 }
 
-function setFlipped(val) {
+function setFlipped(val, animate) {
   flipped = val;
-  document.getElementById('card-inner').classList.toggle('flipped', val);
+  const inner = document.getElementById('card-inner');
+  if (!animate) {
+    inner.classList.add('no-transition');
+    // force reflow so the class takes effect before removing it
+    inner.offsetHeight; // eslint-disable-line no-unused-expressions
+  }
+  inner.classList.toggle('flipped', val);
+  if (!animate) {
+    inner.offsetHeight;
+    inner.classList.remove('no-transition');
+  }
   document.getElementById('rate-row').classList.toggle('visible', val);
 }
 
-function flipCard() { setFlipped(!flipped); }
+function flipCard() { setFlipped(!flipped, true); }
 
 // ── Rating ─────────────────────────────────────────────
 function rateCard(known) {
