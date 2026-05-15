@@ -1,1 +1,1 @@
-Plik fiszki.html to całość
+Plik index.html to całość
