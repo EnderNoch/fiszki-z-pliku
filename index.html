@@ -806,8 +806,8 @@ scene.addEventListener('click', e => {
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (document.getElementById('study-screen').style.display === 'none') return;
-  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextCard();
-  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevCard();
+  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { e.preventDefault(); nextCard(); }
+  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { e.preventDefault(); prevCard(); }
   else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
   else if (e.key === '1') rateCard(false);
   else if (e.key === '2') rateCard(true);
