@@ -519,15 +519,16 @@ function shuffle(arr) {
 }
 
 // ── Card display ───────────────────────────────────────
-function showCard(animate) {
+function showCard(enterFrom) {
+  // enterFrom: false = bez animacji, 'left'/'right' = wjedź z tej strony
   const card = cards[order[current]];
   setFlipped(false, false);
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent  = card.back;
   updateRatingUI();
   updateProgress();
-  if (animate) {
-    animateCardIn();
+  if (enterFrom) {
+    animateCardIn(enterFrom);
   } else {
     transitioning = false;
   }
@@ -572,11 +573,12 @@ function animateCardOut(direction, type, onDone) {
       { offset: 1,    transform: `translateX(${toX}px) translateY(${toY}px) scale(0.22)`, opacity: 0 }
     ];
   } else {
-    const toX = direction === 'right' ? wrapper.offsetWidth * 1.15 : -wrapper.offsetWidth * 1.15;
-    dur = 240;
+    // nawigacja: slide z lekkim scale i easingiem
+    const toX = direction === 'right' ? wrapper.offsetWidth * 1.1 : -wrapper.offsetWidth * 1.1;
+    dur = 320;
     keyframes = [
-      { offset: 0, transform: 'translateX(0px)', opacity: 1 },
-      { offset: 1, transform: `translateX(${toX}px)`, opacity: 0 }
+      { offset: 0, easing: 'cubic-bezier(0.4,0,1,0.8)', transform: 'translateX(0px) scale(1)',     opacity: 1 },
+      { offset: 1,                                        transform: `translateX(${toX}px) scale(0.88)`, opacity: 0 }
     ];
   }
 
@@ -585,17 +587,25 @@ function animateCardOut(direction, type, onDone) {
   anim.onfinish = () => onDone();
 }
 
-function animateCardIn() {
+function animateCardIn(enterFrom) {
   const wrapper = document.getElementById('card-wrapper');
-  const anim = wrapper.animate([
-    { transform: 'scale(0.88)', opacity: 0 },
-    { transform: 'scale(1)',    opacity: 1 }
-  ], { duration: 280, easing: 'cubic-bezier(0,.4,.2,1)', fill: 'none' });
-
-  anim.onfinish = () => {
-    transitioning = false;
-    resetBtnLabels();
-  };
+  let keyframes;
+  if (enterFrom === 'left' || enterFrom === 'right') {
+    // wjazd z boku (nawigacja)
+    const fromX = enterFrom === 'right' ? wrapper.offsetWidth * 0.28 : -wrapper.offsetWidth * 0.28;
+    keyframes = [
+      { transform: `translateX(${fromX}px) scale(0.92)`, opacity: 0 },
+      { transform: 'translateX(0px) scale(1)',            opacity: 1 }
+    ];
+  } else {
+    // wjazd po ocenie (z centrum, scale)
+    keyframes = [
+      { transform: 'scale(0.88)', opacity: 0 },
+      { transform: 'scale(1)',    opacity: 1 }
+    ];
+  }
+  const anim = wrapper.animate(keyframes, { duration: 300, easing: 'cubic-bezier(0,.4,.2,1)', fill: 'none' });
+  anim.onfinish = () => { transitioning = false; resetBtnLabels(); };
 }
 
 // ── Button label feedback ───────────────────────────────
@@ -624,7 +634,7 @@ function rateCard(known) {
   animateCardOut(dir, 'rate', () => {
     if (current < order.length - 1) {
       current++;
-      showCard(true);
+      showCard('center');   // po ocenie: wjazd z centrum
     } else {
       transitioning = false;
       showResult();
@@ -672,7 +682,7 @@ function updateProgress() {
 function nextCard() {
   if (transitioning) return;
   if (current < order.length - 1) {
-    animateCardOut('left', 'nav', () => { current++; showCard(true); });
+    animateCardOut('left', 'nav', () => { current++; showCard('right'); });
   } else {
     showResult();
   }
@@ -680,7 +690,7 @@ function nextCard() {
 
 function prevCard() {
   if (transitioning || current === 0) return;
-  animateCardOut('right', 'nav', () => { current--; showCard(true); });
+  animateCardOut('right', 'nav', () => { current--; showCard('left'); });
 }
 
 function toggleShuffle() {
@@ -796,11 +806,11 @@ scene.addEventListener('click', e => {
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (document.getElementById('study-screen').style.display === 'none') return;
-  if      (e.key === 'ArrowRight') rateCard(true);
-  else if (e.key === 'ArrowLeft')  rateCard(false);
-  else if (e.key === 'ArrowDown')  nextCard();
-  else if (e.key === 'ArrowUp')    prevCard();
+  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextCard();
+  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevCard();
   else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  else if (e.key === '1') rateCard(false);
+  else if (e.key === '2') rateCard(true);
 });
 </script>
 </body>
