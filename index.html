@@ -123,15 +123,8 @@
   .progress-fill-unknown { height: 100%; background: var(--red);    transition: width .3s; }
   .progress-fill-seen    { height: 100%; background: var(--accent); border-radius: 0 99px 99px 0; transition: width .3s; }
 
-  .counter { font-size: .85rem; color: var(--muted); white-space: nowrap; }
-
   /* score chips */
-  .score-row {
-    display: flex;
-    gap: 10px;
-    font-size: .8rem;
-    font-weight: 600;
-  }
+  .score-row { display: flex; gap: 10px; font-size: .8rem; font-weight: 600; }
   .chip {
     display: flex; align-items: center; gap: 4px;
     padding: 3px 10px;
@@ -140,15 +133,59 @@
   .chip.known   { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
   .chip.unknown { background: rgba(239,68,68,.15);  color: var(--red);   border: 1px solid rgba(239,68,68,.3); }
 
-  /* ── Card ── */
+  /* ── Shuffle toggle ── */
+  .options-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); cursor: pointer; }
+  .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .slider { position: absolute; inset: 0; background: var(--surface2); border-radius: 99px; transition: background .2s; cursor: pointer; }
+  .slider::before {
+    content: ''; position: absolute;
+    width: 16px; height: 16px; left: 3px; top: 3px;
+    background: var(--muted); border-radius: 50%;
+    transition: transform .2s, background .2s;
+  }
+  .toggle input:checked + .slider { background: var(--accent); }
+  .toggle input:checked + .slider::before { transform: translateX(16px); background: #fff; }
+
+  /* ── Card scene ── */
   .card-scene {
     width: 100%;
     perspective: 1200px;
     cursor: pointer;
     user-select: none;
     touch-action: pan-y;
+    overflow: hidden;   /* clip exiting card */
+    border-radius: var(--radius);
   }
 
+  /* wrapper: target for slide-out/slide-in animations */
+  #card-wrapper {
+    width: 100%;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+  }
+
+  /* exit animations */
+  @keyframes exit-left {
+    from { transform: translateX(0)     rotate(0)    scale(1);    opacity: 1; }
+    to   { transform: translateX(-115%) rotate(-8deg) scale(0.78); opacity: 0; }
+  }
+  @keyframes exit-right {
+    from { transform: translateX(0)    rotate(0)   scale(1);    opacity: 1; }
+    to   { transform: translateX(115%) rotate(8deg) scale(0.78); opacity: 0; }
+  }
+  /* enter animation */
+  @keyframes card-enter {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  #card-wrapper.exit-left  { animation: exit-left  .32s cubic-bezier(.4,0,1,1)   forwards; }
+  #card-wrapper.exit-right { animation: exit-right .32s cubic-bezier(.4,0,1,1)   forwards; }
+  #card-wrapper.card-enter { animation: card-enter .28s cubic-bezier(0,.4,.2,1)  forwards; }
+
+  /* ── Card inner (flip) ── */
   .card-inner {
     position: relative;
     width: 100%;
@@ -175,165 +212,92 @@
     word-break: break-word;
     min-height: 240px;
   }
-  .card-face.front {
-    background: var(--front-bg);
-    border: 1.5px solid var(--front-border);
-  }
-  .card-face.back {
-    background: var(--back-bg);
-    border: 1.5px solid var(--back-border);
-    transform: rotateY(180deg);
-  }
+  .card-face.front { background: var(--front-bg); border: 1.5px solid var(--front-border); }
+  .card-face.back  { background: var(--back-bg);  border: 1.5px solid var(--back-border); transform: rotateY(180deg); }
 
-  /* rating badge in top-right corner of card */
   .rating-badge {
-    position: absolute;
-    top: 12px; right: 14px;
-    font-size: .85rem;
-    font-weight: 700;
-    opacity: 0;
-    transition: opacity .2s;
-    pointer-events: none;
+    position: absolute; top: 12px; right: 14px;
+    font-size: .85rem; font-weight: 700;
+    opacity: 0; transition: opacity .2s; pointer-events: none;
   }
   .rating-badge.visible { opacity: 1; }
   .rating-badge.known-badge   { color: var(--green); }
   .rating-badge.unknown-badge { color: var(--red); }
 
   .card-label {
-    font-size: .7rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    opacity: .55;
+    font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    margin-bottom: 12px; opacity: .55;
   }
   .front .card-label { color: var(--accent2); }
   .back  .card-label { color: #4ade80; }
 
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.55; }
-
   .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 12px; }
 
-  /* ── Rate buttons (shown after flip) ── */
-  .rate-row {
-    display: flex;
-    gap: 12px;
-    width: 100%;
+  /* ── Nav hint ── */
+  .nav-hint {
+    font-size: .78rem; color: var(--muted); text-align: center; line-height: 1.6;
   }
+  .nav-hint kbd {
+    display: inline-block; background: var(--surface2); border: 1px solid #444;
+    border-radius: 5px; padding: 1px 6px; font-size: .75rem;
+    font-family: inherit; color: var(--text);
+  }
+
+  /* ── Rate buttons ── */
+  .rate-row { display: flex; gap: 12px; width: 100%; }
   .rate-btn {
-    flex: 1;
-    border: none;
-    border-radius: 14px;
-    padding: 16px 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform .1s, opacity .2s, box-shadow .2s;
-    touch-action: manipulation;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    flex: 1; border: none; border-radius: 14px;
+    padding: 16px 12px; font-size: 1rem; font-weight: 700;
+    cursor: pointer; touch-action: manipulation;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: transform .1s, box-shadow .15s, background .15s;
   }
   .rate-btn:active { transform: scale(.95); }
-  .rate-btn.no {
-    background: rgba(239,68,68,.15);
-    color: var(--red);
-    border: 1.5px solid rgba(239,68,68,.4);
-  }
-  .rate-btn.yes {
-    background: rgba(34,197,94,.15);
-    color: var(--green);
-    border: 1.5px solid rgba(34,197,94,.4);
-  }
-  .rate-btn.no:hover  { background: rgba(239,68,68,.28); }
-  .rate-btn.yes:hover { background: rgba(34,197,94,.28); }
-
-  /* highlight active rating */
+  .rate-btn.no  { background: rgba(239,68,68,.15); color: var(--red);   border: 1.5px solid rgba(239,68,68,.4); }
+  .rate-btn.yes { background: rgba(34,197,94,.15); color: var(--green); border: 1.5px solid rgba(34,197,94,.4); }
+  .rate-btn.no:hover  { background: rgba(239,68,68,.25); }
+  .rate-btn.yes:hover { background: rgba(34,197,94,.25); }
   .rate-btn.active-no  { background: rgba(239,68,68,.35); box-shadow: 0 0 0 2px var(--red); }
   .rate-btn.active-yes { background: rgba(34,197,94,.35); box-shadow: 0 0 0 2px var(--green); }
 
-  .rate-row { display: flex; }
-
-  .nav-hint {
-    font-size: .78rem;
-    color: var(--muted);
+  /* ── Feedback message ── */
+  @keyframes feedback-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  #feedback-msg {
+    min-height: 1.4em;
+    font-size: .95rem;
+    font-weight: 600;
     text-align: center;
-    line-height: 1.6;
-    min-height: 1.2em;
+    opacity: 0;
+    transition: opacity .2s;
   }
-  .nav-hint kbd {
-    display: inline-block;
-    background: var(--surface2);
-    border: 1px solid #444;
-    border-radius: 5px;
-    padding: 1px 6px;
-    font-size: .75rem;
-    font-family: inherit;
-    color: var(--text);
+  #feedback-msg.show {
+    animation: feedback-in .22s ease forwards;
   }
-
-  /* ── Shuffle toggle ── */
-  .options-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
-  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); cursor: pointer; }
-  .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
-  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
-  .slider {
-    position: absolute; inset: 0;
-    background: var(--surface2);
-    border-radius: 99px;
-    transition: background .2s;
-    cursor: pointer;
-  }
-  .slider::before {
-    content: '';
-    position: absolute;
-    width: 16px; height: 16px;
-    left: 3px; top: 3px;
-    background: var(--muted);
-    border-radius: 50%;
-    transition: transform .2s, background .2s;
-  }
-  .toggle input:checked + .slider { background: var(--accent); }
-  .toggle input:checked + .slider::before { transform: translateX(16px); background: #fff; }
+  #feedback-msg.known   { color: var(--green); }
+  #feedback-msg.unknown { color: #b0a0b0; }
 
   /* ── Result screen ── */
   #result-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 12px;
-    text-align: center;
+    display: none; flex-direction: column; align-items: center; gap: 16px;
+    width: 100%; max-width: 400px; margin-top: 12px; text-align: center;
   }
   .result-icon { font-size: 3rem; }
   .result-title { font-size: 1.35rem; font-weight: 700; color: var(--accent2); }
-
-  .result-stats {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  .result-stats { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .stat-box {
-    flex: 1;
-    min-width: 110px;
-    background: var(--surface);
-    border-radius: 14px;
-    padding: 16px 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
+    flex: 1; min-width: 110px; background: var(--surface);
+    border-radius: 14px; padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
   }
   .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
   .stat-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
   .stat-box.known-box   .stat-num { color: var(--green); }
   .stat-box.unknown-box .stat-num { color: var(--red); }
   .stat-box.total-box   .stat-num { color: var(--accent2); }
-
   .result-msg { font-size: .9rem; color: var(--muted); }
 </style>
 </head>
@@ -372,8 +336,8 @@
   </div>
 
   <div class="score-row">
-    <span class="chip known"   id="chip-known">  ✓ <span id="cnt-known">0</span></span>
-    <span class="chip unknown" id="chip-unknown">✗ <span id="cnt-unknown">0</span></span>
+    <span class="chip known">  ✓ <span id="cnt-known">0</span></span>
+    <span class="chip unknown">✗ <span id="cnt-unknown">0</span></span>
   </div>
 
   <div class="options-row">
@@ -385,30 +349,33 @@
 
   <!-- card -->
   <div class="card-scene" id="card-scene" onclick="flipCard()">
-    <div class="card-inner" id="card-inner">
-      <div class="card-face front">
-        <div class="rating-badge" id="badge-front"></div>
-        <div class="card-label">Pytanie</div>
-        <div class="card-text" id="card-front"></div>
-        <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
-      </div>
-      <div class="card-face back">
-        <div class="rating-badge" id="badge-back"></div>
-        <div class="card-label">Odpowiedź</div>
-        <div class="card-text" id="card-back"></div>
+    <div id="card-wrapper">
+      <div class="card-inner" id="card-inner">
+        <div class="card-face front">
+          <div class="rating-badge" id="badge-front"></div>
+          <div class="card-label">Pytanie</div>
+          <div class="card-text" id="card-front"></div>
+          <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
+        </div>
+        <div class="card-face back">
+          <div class="rating-badge" id="badge-back"></div>
+          <div class="card-label">Odpowiedź</div>
+          <div class="card-text" id="card-back"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- nav hint -->
   <div class="nav-hint" id="nav-hint"></div>
 
   <!-- rate buttons -->
-  <div class="rate-row" id="rate-row">
+  <div class="rate-row">
     <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem</button>
     <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
   </div>
 
+  <!-- feedback message below buttons -->
+  <div id="feedback-msg"></div>
 
 </div>
 
@@ -438,12 +405,13 @@
 
 <script>
 // ── State ──────────────────────────────────────────────
-let cards    = [];       // [{front, back}]
-let order    = [];       // indices into cards[]
-let ratings  = {};       // order-position → true/false/undefined
-let current  = 0;
-let flipped  = false;
+let cards     = [];
+let order     = [];
+let ratings   = {};
+let current   = 0;
+let flipped   = false;
 let shuffleOn = false;
+let transitioning = false;
 
 // ── File handling ──────────────────────────────────────
 const dropZone  = document.getElementById('drop-zone');
@@ -474,8 +442,7 @@ function parseCSV(text) {
 
   for (const row of rows) {
     if (row.length < 2) continue;
-    const front = row[0].trim();
-    const back  = row[1].trim();
+    const front = row[0].trim(), back = row[1].trim();
     if (!front && !back) continue;
     if (parsed.length === 0) {
       const fl = front.toLowerCase(), bl = back.toLowerCase();
@@ -496,19 +463,16 @@ function parseCSV(text) {
 function splitCSVRows(text, delim) {
   const rows = [];
   let row = [], cell = '', inQuote = false;
-
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (inQuote) {
-      if (ch === '"') {
-        if (text[i+1] === '"') { cell += '"'; i++; }
-        else inQuote = false;
-      } else { cell += ch; }
+      if (ch === '"') { if (text[i+1] === '"') { cell += '"'; i++; } else inQuote = false; }
+      else cell += ch;
     } else {
-      if      (ch === '"')   { inQuote = true; }
+      if      (ch === '"')   inQuote = true;
       else if (ch === delim) { row.push(cell); cell = ''; }
       else if (ch === '\n')  { row.push(cell); cell = ''; rows.push(row); row = []; }
-      else if (ch !== '\r')  { cell += ch; }
+      else if (ch !== '\r')  cell += ch;
     }
   }
   if (cell || row.length) { row.push(cell); rows.push(row); }
@@ -517,11 +481,10 @@ function splitCSVRows(text, delim) {
 
 // ── Deck logic ─────────────────────────────────────────
 function startDeck() {
-  current  = 0;
-  ratings  = {};
+  current = 0; ratings = {};
   buildOrder();
   show('study-screen');
-  showCard();
+  showCard(false);
 }
 
 function buildOrder() {
@@ -536,13 +499,19 @@ function shuffle(arr) {
   }
 }
 
-function showCard() {
+// ── Card display ───────────────────────────────────────
+function showCard(animate) {
   const card = cards[order[current]];
   setFlipped(false, false);
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent  = card.back;
   updateRatingUI();
   updateProgress();
+  if (animate) {
+    animateCardIn();
+  } else {
+    transitioning = false;
+  }
 }
 
 function setFlipped(val, animate) {
@@ -550,8 +519,7 @@ function setFlipped(val, animate) {
   const inner = document.getElementById('card-inner');
   if (!animate) {
     inner.classList.add('no-transition');
-    // force reflow so the class takes effect before removing it
-    inner.offsetHeight; // eslint-disable-line no-unused-expressions
+    inner.offsetHeight;
   }
   inner.classList.toggle('flipped', val);
   if (!animate) {
@@ -560,24 +528,70 @@ function setFlipped(val, animate) {
   }
 }
 
-function flipCard() { setFlipped(!flipped, true); }
+function flipCard() {
+  if (transitioning) return;
+  setFlipped(!flipped, true);
+}
+
+// ── Card animations ────────────────────────────────────
+function animateCardOut(direction, onDone) {
+  transitioning = true;
+  const wrapper = document.getElementById('card-wrapper');
+  const cls = direction === 'right' ? 'exit-right' : 'exit-left';
+  wrapper.classList.add(cls);
+  wrapper.addEventListener('animationend', function handler() {
+    wrapper.removeEventListener('animationend', handler);
+    wrapper.classList.remove(cls);
+    onDone();
+  }, { once: true });
+}
+
+function animateCardIn() {
+  const wrapper = document.getElementById('card-wrapper');
+  wrapper.classList.add('card-enter');
+  wrapper.addEventListener('animationend', function handler() {
+    wrapper.removeEventListener('animationend', handler);
+    wrapper.classList.remove('card-enter');
+    transitioning = false;
+    hideFeedback();
+  }, { once: true });
+}
+
+// ── Feedback message ────────────────────────────────────
+function showFeedback(known) {
+  const el = document.getElementById('feedback-msg');
+  el.textContent = known ? 'OK' : 'Następnym razem będzie lepiej';
+  el.className = 'show ' + (known ? 'known' : 'unknown');
+}
+
+function hideFeedback() {
+  const el = document.getElementById('feedback-msg');
+  el.className = '';
+  el.textContent = '';
+}
 
 // ── Rating ─────────────────────────────────────────────
 function rateCard(known) {
+  if (transitioning) return;
   ratings[current] = known;
   updateRatingUI();
-  // short delay so user sees the highlight, then advance
-  setTimeout(() => nextCard(), 280);
+  const dir = known ? 'right' : 'left';
+  animateCardOut(dir, () => {
+    showFeedback(known);
+    if (current < order.length - 1) {
+      current++;
+      showCard(true);
+    } else {
+      transitioning = false;
+      showResult();
+    }
+  });
 }
 
 function updateRatingUI() {
-  const r = ratings[current]; // true / false / undefined
-
-  // highlight rate buttons
+  const r = ratings[current];
   document.getElementById('btn-yes').classList.toggle('active-yes', r === true);
   document.getElementById('btn-no') .classList.toggle('active-no',  r === false);
-
-  // badge on both faces of the card
   const badgeClass = r === true ? 'known-badge' : r === false ? 'unknown-badge' : '';
   const badgeText  = r === true ? '✓' : r === false ? '✗' : '';
   ['badge-front','badge-back'].forEach(id => {
@@ -602,85 +616,73 @@ function updateProgress() {
   const pctK = (known   / total) * 100;
   const pctU = (unknown / total) * 100;
   const pctS = Math.max(0, ((current + 1) / total) * 100 - pctK - pctU);
-
   document.getElementById('prog-known')  .style.width = pctK + '%';
   document.getElementById('prog-unknown').style.width = pctU + '%';
   document.getElementById('prog-seen')   .style.width = pctS + '%';
-
   document.getElementById('prog-label').textContent = `Karta ${current + 1} z ${total}`;
   document.getElementById('cnt-known')  .textContent = known;
   document.getElementById('cnt-unknown').textContent = unknown;
 }
 
+// ── Navigation (swipe/keyboard, no rating) ─────────────
 function nextCard() {
+  if (transitioning) return;
   if (current < order.length - 1) {
-    current++;
-    showCard();
+    animateCardOut('left', () => { current++; showCard(true); });
   } else {
     showResult();
   }
 }
 
 function prevCard() {
-  if (current > 0) { current--; showCard(); }
+  if (transitioning || current === 0) return;
+  animateCardOut('right', () => { current--; showCard(true); });
 }
 
 function toggleShuffle() {
   shuffleOn = document.getElementById('shuffle-toggle').checked;
+  ratings = {}; current = 0;
   buildOrder();
-  ratings  = {};
-  current  = 0;
-  showCard();
+  showCard(false);
 }
 
 // ── Result ─────────────────────────────────────────────
 function showResult() {
   const { known, unknown } = countRatings();
-  const total = order.length;
+  const total  = order.length;
   const unrated = total - known - unknown;
-
   document.getElementById('res-known')  .textContent = known;
   document.getElementById('res-unknown').textContent = unknown;
   document.getElementById('res-total')  .textContent = total;
-
   let msg = '';
-  if (unrated > 0)         msg = `${unrated} kart bez oceny.`;
-  else if (unknown === 0)  msg = 'Brawo! Znasz wszystkie fiszki! 🏆';
-  else if (known === 0)    msg = 'Nie przejmuj się — powtórz jeszcze raz!';
-  else                     msg = `Powtórz nieumiane, żeby je opanować.`;
-  document.getElementById('result-msg').textContent = msg;
-
-  const icon = unknown === 0 && unrated === 0 ? '🏆' : known > unknown ? '👍' : '📚';
-  document.getElementById('result-icon').textContent = icon;
-
-  document.getElementById('btn-retry-unknown').style.display =
-    unknown > 0 ? '' : 'none';
-
+  if (unrated > 0)        msg = `${unrated} kart bez oceny.`;
+  else if (unknown === 0) msg = 'Brawo! Znasz wszystkie fiszki! 🏆';
+  else if (known === 0)   msg = 'Nie przejmuj się — powtórz jeszcze raz!';
+  else                    msg = 'Powtórz nieumiane, żeby je opanować.';
+  document.getElementById('result-msg').textContent  = msg;
+  document.getElementById('result-icon').textContent = (unknown === 0 && unrated === 0) ? '🏆' : known > unknown ? '👍' : '📚';
+  document.getElementById('btn-retry-unknown').style.display = unknown > 0 ? '' : 'none';
   show('result-screen');
 }
 
 function retryUnknown() {
-  // build new order from cards marked as unknown
   const unknownIndices = [];
   for (let i = 0; i < order.length; i++) {
     if (ratings[i] === false) unknownIndices.push(order[i]);
   }
   if (unknownIndices.length === 0) return;
-  cards  = unknownIndices.map(i => cards[i]); // replace deck with unknowns only
-  // Note: we reindex so cards[] now = only the unknown subset
-  current = 0;
-  ratings = {};
+  cards = unknownIndices.map(i => cards[i]);
+  current = 0; ratings = {};
   buildOrder();
   show('study-screen');
-  showCard();
+  showCard(false);
 }
 
 function restartDeck() {
-  current = 0;
-  ratings = {};
+  current = 0; ratings = {};
   buildOrder();
   show('study-screen');
-  showCard();
+  showCard(false);
 }
 
 function resetToUpload() {
@@ -695,26 +697,24 @@ function show(id) {
   });
 }
 
-// ── Device detection & hints ───────────────────────────
+// ── Device hints ───────────────────────────────────────
 const isTouch = window.matchMedia('(pointer: coarse)').matches;
-
-(function setHints() {
+(function() {
   const navHint  = document.getElementById('nav-hint');
   const flipHint = document.getElementById('flip-hint');
   if (isTouch) {
-    navHint.innerHTML  = 'Przesuń kartę w lewo lub prawo, żeby przejść dalej';
-    flipHint.textContent = 'Dotknij, żeby zobaczyć odpowiedź';
+    navHint.textContent     = 'Przesuń kartę w lewo lub prawo, żeby przejść dalej';
+    flipHint.textContent    = 'Dotknij, żeby zobaczyć odpowiedź';
   } else {
-    navHint.innerHTML  = 'Przeciągnij kartę lub użyj <kbd>←</kbd> <kbd>→</kbd> na klawiaturze';
-    flipHint.textContent = 'Kliknij, żeby zobaczyć odpowiedź';
+    navHint.innerHTML       = 'Przeciągnij kartę lub użyj <kbd>←</kbd> <kbd>→</kbd> na klawiaturze';
+    flipHint.textContent    = 'Kliknij, żeby zobaczyć odpowiedź';
   }
 })();
 
 // ── Swipe / drag (touch + mouse) ───────────────────────
-let dragStartX = 0, dragStartY = 0, isDragging = false;
+let dragStartX = 0, dragStartY = 0, isDragging = false, suppressClick = false;
 const scene = document.getElementById('card-scene');
 
-// touch
 scene.addEventListener('touchstart', e => {
   dragStartX = e.touches[0].clientX;
   dragStartY = e.touches[0].clientY;
@@ -725,37 +725,25 @@ scene.addEventListener('touchend', e => {
   const dy = e.changedTouches[0].clientY - dragStartY;
   if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
   e.preventDefault();
-  if (dx < 0) nextCard();
-  else        prevCard();
+  if (dx < 0) nextCard(); else prevCard();
 }, { passive: false });
 
-// mouse drag
 scene.addEventListener('mousedown', e => {
-  dragStartX = e.clientX;
-  dragStartY = e.clientY;
-  isDragging = true;
+  dragStartX = e.clientX; dragStartY = e.clientY; isDragging = true;
 });
-
 window.addEventListener('mousemove', e => {
   if (!isDragging) return;
-  // add a tiny visual cursor hint
-  scene.style.cursor = e.clientX - dragStartX > 0 ? 'w-resize' : 'e-resize';
+  scene.style.cursor = (e.clientX - dragStartX) > 0 ? 'w-resize' : 'e-resize';
 });
-
-let suppressClick = false;
-
 window.addEventListener('mouseup', e => {
   if (!isDragging) return;
-  isDragging = false;
-  scene.style.cursor = '';
+  isDragging = false; scene.style.cursor = '';
   const dx = e.clientX - dragStartX;
   const dy = e.clientY - dragStartY;
   if (Math.abs(dx) < Math.abs(dy) * 1.5 || Math.abs(dx) < 60) return;
   suppressClick = true;
-  if (dx < 0) nextCard();
-  else        prevCard();
+  if (dx < 0) nextCard(); else prevCard();
 });
-
 scene.addEventListener('click', e => {
   if (suppressClick) { suppressClick = false; e.stopImmediatePropagation(); }
 }, true);
@@ -763,9 +751,9 @@ scene.addEventListener('click', e => {
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (document.getElementById('study-screen').style.display === 'none') return;
-  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown')  nextCard();
-  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    prevCard();
-  else if (e.key === ' ' || e.key === 'Enter')  { e.preventDefault(); flipCard(); }
+  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextCard();
+  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevCard();
+  else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
   else if (e.key === '1') rateCard(false);
   else if (e.key === '2') rateCard(true);
 });
