@@ -155,8 +155,6 @@
     cursor: pointer;
     user-select: none;
     touch-action: pan-y;
-    overflow: hidden;   /* clip exiting card */
-    border-radius: var(--radius);
   }
 
   /* wrapper: target for slide-out/slide-in animations */
@@ -166,14 +164,23 @@
     will-change: transform, opacity;
   }
 
-  /* exit animations */
+  /* exit animations — card flies into the clicked button (down + side) */
   @keyframes exit-left {
-    from { transform: translateX(0)     rotate(0)    scale(1);    opacity: 1; }
-    to   { transform: translateX(-115%) rotate(-8deg) scale(0.78); opacity: 0; }
+    from { transform: translateX(0)    translateY(0)   rotate(0)     scale(1);   opacity: 1; }
+    to   { transform: translateX(-60%) translateY(90%) rotate(-12deg) scale(0.2); opacity: 0; }
   }
   @keyframes exit-right {
-    from { transform: translateX(0)    rotate(0)   scale(1);    opacity: 1; }
-    to   { transform: translateX(115%) rotate(8deg) scale(0.78); opacity: 0; }
+    from { transform: translateX(0)   translateY(0)   rotate(0)    scale(1);   opacity: 1; }
+    to   { transform: translateX(60%) translateY(90%) rotate(12deg) scale(0.2); opacity: 0; }
+  }
+  /* plain horizontal exit for swipe/keyboard nav */
+  @keyframes exit-nav-left {
+    from { transform: translateX(0);     opacity: 1; }
+    to   { transform: translateX(-110%); opacity: 0; }
+  }
+  @keyframes exit-nav-right {
+    from { transform: translateX(0);    opacity: 1; }
+    to   { transform: translateX(110%); opacity: 0; }
   }
   /* enter animation */
   @keyframes card-enter {
@@ -181,9 +188,11 @@
     to   { transform: scale(1);   opacity: 1; }
   }
 
-  #card-wrapper.exit-left  { animation: exit-left  .32s cubic-bezier(.4,0,1,1)   forwards; }
-  #card-wrapper.exit-right { animation: exit-right .32s cubic-bezier(.4,0,1,1)   forwards; }
-  #card-wrapper.card-enter { animation: card-enter .28s cubic-bezier(0,.4,.2,1)  forwards; }
+  #card-wrapper.exit-left      { animation: exit-left      .36s cubic-bezier(.4,0,1,1)  forwards; }
+  #card-wrapper.exit-right     { animation: exit-right     .36s cubic-bezier(.4,0,1,1)  forwards; }
+  #card-wrapper.exit-nav-left  { animation: exit-nav-left  .26s cubic-bezier(.4,0,1,1)  forwards; }
+  #card-wrapper.exit-nav-right { animation: exit-nav-right .26s cubic-bezier(.4,0,1,1)  forwards; }
+  #card-wrapper.card-enter     { animation: card-enter     .28s cubic-bezier(0,.4,.2,1) forwards; }
 
   /* ── Card inner (flip) ── */
   .card-inner {
@@ -261,24 +270,9 @@
   .rate-btn.active-no  { background: rgba(239,68,68,.35); box-shadow: 0 0 0 2px var(--red); }
   .rate-btn.active-yes { background: rgba(34,197,94,.35); box-shadow: 0 0 0 2px var(--green); }
 
-  /* ── Feedback message ── */
-  @keyframes feedback-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: none; }
-  }
-  #feedback-msg {
-    min-height: 1.4em;
-    font-size: .95rem;
-    font-weight: 600;
-    text-align: center;
-    opacity: 0;
-    transition: opacity .2s;
-  }
-  #feedback-msg.show {
-    animation: feedback-in .22s ease forwards;
-  }
-  #feedback-msg.known   { color: var(--green); }
-  #feedback-msg.unknown { color: #b0a0b0; }
+  /* button text transition */
+  .rate-btn { transition: transform .1s, box-shadow .15s, background .15s, font-size .15s; }
+  .rate-btn.feedback { font-size: .82rem; }
 
   /* ── Result screen ── */
   #result-screen {
@@ -374,8 +368,6 @@
     <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
   </div>
 
-  <!-- feedback message below buttons -->
-  <div id="feedback-msg"></div>
 
 </div>
 
@@ -534,10 +526,13 @@ function flipCard() {
 }
 
 // ── Card animations ────────────────────────────────────
-function animateCardOut(direction, onDone) {
+// type: 'rate' (flies into button) | 'nav' (slides sideways)
+function animateCardOut(direction, type, onDone) {
   transitioning = true;
   const wrapper = document.getElementById('card-wrapper');
-  const cls = direction === 'right' ? 'exit-right' : 'exit-left';
+  const cls = type === 'nav'
+    ? (direction === 'right' ? 'exit-nav-right' : 'exit-nav-left')
+    : (direction === 'right' ? 'exit-right'     : 'exit-left');
   wrapper.classList.add(cls);
   wrapper.addEventListener('animationend', function handler() {
     wrapper.removeEventListener('animationend', handler);
@@ -553,21 +548,24 @@ function animateCardIn() {
     wrapper.removeEventListener('animationend', handler);
     wrapper.classList.remove('card-enter');
     transitioning = false;
-    hideFeedback();
+    resetBtnLabels();
   }, { once: true });
 }
 
-// ── Feedback message ────────────────────────────────────
-function showFeedback(known) {
-  const el = document.getElementById('feedback-msg');
-  el.textContent = known ? 'OK' : 'Następnym razem będzie lepiej';
-  el.className = 'show ' + (known ? 'known' : 'unknown');
+// ── Button label feedback ───────────────────────────────
+function setBtnLabel(known) {
+  const btn = document.getElementById(known ? 'btn-yes' : 'btn-no');
+  btn.textContent = known ? 'OK' : 'Następnym razem będzie lepiej';
+  btn.classList.add('feedback');
 }
 
-function hideFeedback() {
-  const el = document.getElementById('feedback-msg');
-  el.className = '';
-  el.textContent = '';
+function resetBtnLabels() {
+  const no  = document.getElementById('btn-no');
+  const yes = document.getElementById('btn-yes');
+  no.innerHTML  = '✗&nbsp; Nie umiem';
+  yes.innerHTML = '✓&nbsp; Umiem';
+  no.classList.remove('feedback');
+  yes.classList.remove('feedback');
 }
 
 // ── Rating ─────────────────────────────────────────────
@@ -576,8 +574,8 @@ function rateCard(known) {
   ratings[current] = known;
   updateRatingUI();
   const dir = known ? 'right' : 'left';
-  animateCardOut(dir, () => {
-    showFeedback(known);
+  animateCardOut(dir, 'rate', () => {
+    setBtnLabel(known);
     if (current < order.length - 1) {
       current++;
       showCard(true);
@@ -628,7 +626,7 @@ function updateProgress() {
 function nextCard() {
   if (transitioning) return;
   if (current < order.length - 1) {
-    animateCardOut('left', () => { current++; showCard(true); });
+    animateCardOut('left', 'nav', () => { current++; showCard(true); });
   } else {
     showResult();
   }
@@ -636,7 +634,7 @@ function nextCard() {
 
 function prevCard() {
   if (transitioning || current === 0) return;
-  animateCardOut('right', () => { current--; showCard(true); });
+  animateCardOut('right', 'nav', () => { current--; showCard(true); });
 }
 
 function toggleShuffle() {
