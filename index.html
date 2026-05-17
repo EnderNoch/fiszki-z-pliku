@@ -370,8 +370,8 @@
 
   <!-- rate buttons -->
   <div class="rate-row">
-    <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem<span class="btn-key">← klawisz</span></button>
-    <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem<span class="btn-key">→ klawisz</span></button>
+    <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem</button>
+    <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
   </div>
 
   <!-- nav arrows -->
@@ -593,8 +593,8 @@ function setBtnLabel(known) {
 function resetBtnLabels() {
   const no  = document.getElementById('btn-no');
   const yes = document.getElementById('btn-yes');
-  no.innerHTML  = '✗&nbsp; Nie umiem<span class="btn-key">← klawisz</span>';
-  yes.innerHTML = '✓&nbsp; Umiem<span class="btn-key">→ klawisz</span>';
+  no.innerHTML  = '✗&nbsp; Nie umiem';
+  yes.innerHTML = '✓&nbsp; Umiem';
   no.classList.remove('feedback');
   yes.classList.remove('feedback');
 }
