@@ -38,6 +38,12 @@
     overflow-x: hidden;
   }
 
+  @media (min-width: 640px) {
+    body { padding: 20px 32px; }
+    #upload-screen, #study-screen, #result-screen { max-width: 100% !important; }
+    .card-text { font-size: 1.15rem; }
+  }
+
   h1 {
     font-size: 1.25rem;
     font-weight: 700;
@@ -736,7 +742,8 @@ function show(id) {
 }
 
 // ── Device hints ───────────────────────────────────────
-const isTouch = window.matchMedia('(pointer: coarse)').matches;
+// hover:none + pointer:coarse = ekran dotykowy, niezależnie od podpiętej klawiatury
+const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 (function() {
   const navHint  = document.getElementById('nav-hint');
   const flipHint = document.getElementById('flip-hint');
