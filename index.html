@@ -495,31 +495,31 @@ function flipCard() {
   setFlipped(!flipped, true);
 }
 
-// ── Card animations (Web Animations API — dokładna pozycja) ───
+// ── Card animations (Web Animations API) ───────────────
 function animateCardOut(direction, type, onDone) {
   transitioning = true;
   const wrapper = document.getElementById('card-wrapper');
-  let toX, toY, rot, dur;
+  let toX, toY, rot, dur, easing;
 
   if (type === 'rate') {
-    // oblicz dokładną pozycję środka przycisku względem środka karty
-    const btnId  = direction === 'right' ? 'btn-yes' : 'btn-no';
-    const btn    = document.getElementById(btnId);
-    const bRect  = btn.getBoundingClientRect();
-    const wRect  = wrapper.getBoundingClientRect();
-    toX = (bRect.left + bRect.width  / 2) - (wRect.left + wRect.width  / 2);
-    toY = (bRect.top  + bRect.height / 2) - (wRect.top  + wRect.height / 2);
-    rot = direction === 'right' ? 14 : -14;
-    dur = 380;
+    // karta leci w górę + w stronę przycisku, robiąc pełny obrót (toczenie)
+    const wRect = wrapper.getBoundingClientRect();
+    toX    = direction === 'right' ? 140 : -140;
+    toY    = -(wRect.top + wRect.height + 60);  // leci nad ekran
+    rot    = direction === 'right' ? 360 : -360;
+    dur    = 620;
+    easing = 'cubic-bezier(.2,0,.6,1)';
   } else {
-    toX = direction === 'right' ? wrapper.offsetWidth * 1.15 : -wrapper.offsetWidth * 1.15;
-    toY = 0; rot = 0; dur = 240;
+    // nawigacja swipe/klawiatura — poziomy wylot
+    toX    = direction === 'right' ? wrapper.offsetWidth * 1.15 : -wrapper.offsetWidth * 1.15;
+    toY    = 0; rot = 0; dur = 240;
+    easing = 'cubic-bezier(.4,0,1,1)';
   }
 
   const anim = wrapper.animate([
     { transform: 'translateX(0px) translateY(0px) rotate(0deg) scale(1)', opacity: 1 },
-    { transform: `translateX(${toX}px) translateY(${toY}px) rotate(${rot}deg) scale(0.25)`, opacity: 0 }
-  ], { duration: dur, easing: 'cubic-bezier(.4,0,1,1)', fill: 'none' });
+    { transform: `translateX(${toX}px) translateY(${toY}px) rotate(${rot}deg) scale(0.15)`, opacity: 0 }
+  ], { duration: dur, easing, fill: 'none' });
 
   anim.onfinish = () => onDone();
 }
