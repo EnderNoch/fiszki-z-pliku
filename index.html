@@ -510,8 +510,8 @@ function animateCardOut(direction, type, onDone) {
     const toY   = (bRect.top  + bRect.height / 2) - (wRect.top  + wRect.height / 2);
     dur = 660;
     keyframes = [
-      { offset: 0,    transform: 'translateX(0px) translateY(0px) scale(1)',    opacity: 1 },
-      { offset: 0.28, transform: `translateX(${toX * 0.1}px) translateY(-85px) scale(1.06)`, opacity: 1 },
+      { offset: 0,    easing: 'cubic-bezier(0.2,0,0.4,1)',  transform: 'translateX(0px) translateY(0px) scale(1)',    opacity: 1 },
+      { offset: 0.28, easing: 'cubic-bezier(0.4,0,0.6,1)',  transform: `translateX(${toX * 0.1}px) translateY(-85px) scale(1.06)`, opacity: 1 },
       { offset: 1,    transform: `translateX(${toX}px) translateY(${toY}px) scale(0.22)`, opacity: 0 }
     ];
   } else {
@@ -523,7 +523,7 @@ function animateCardOut(direction, type, onDone) {
     ];
   }
 
-  const anim = wrapper.animate(keyframes, { duration: dur, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'none' });
+  const anim = wrapper.animate(keyframes, { duration: dur, easing: 'linear', fill: 'none' });
 
   anim.onfinish = () => onDone();
 }
