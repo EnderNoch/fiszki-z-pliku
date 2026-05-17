@@ -255,6 +255,24 @@
 
   .rate-row { display: flex; }
 
+  .nav-hint {
+    font-size: .78rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    min-height: 1.2em;
+  }
+  .nav-hint kbd {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: .75rem;
+    font-family: inherit;
+    color: var(--text);
+  }
+
   /* ── Shuffle toggle ── */
   .options-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
   .toggle-label { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); cursor: pointer; }
@@ -372,7 +390,7 @@
         <div class="rating-badge" id="badge-front"></div>
         <div class="card-label">Pytanie</div>
         <div class="card-text" id="card-front"></div>
-        <div class="flip-hint">Dotknij, żeby zobaczyć odpowiedź</div>
+        <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
       </div>
       <div class="card-face back">
         <div class="rating-badge" id="badge-back"></div>
@@ -381,6 +399,9 @@
       </div>
     </div>
   </div>
+
+  <!-- nav hint -->
+  <div class="nav-hint" id="nav-hint"></div>
 
   <!-- rate buttons -->
   <div class="rate-row" id="rate-row">
@@ -674,23 +695,70 @@ function show(id) {
   });
 }
 
-// ── Touch swipe ────────────────────────────────────────
-let touchStartX = 0, touchStartY = 0;
+// ── Device detection & hints ───────────────────────────
+const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+(function setHints() {
+  const navHint  = document.getElementById('nav-hint');
+  const flipHint = document.getElementById('flip-hint');
+  if (isTouch) {
+    navHint.innerHTML  = 'Przesuń kartę w lewo lub prawo, żeby przejść dalej';
+    flipHint.textContent = 'Dotknij, żeby zobaczyć odpowiedź';
+  } else {
+    navHint.innerHTML  = 'Przeciągnij kartę lub użyj <kbd>←</kbd> <kbd>→</kbd> na klawiaturze';
+    flipHint.textContent = 'Kliknij, żeby zobaczyć odpowiedź';
+  }
+})();
+
+// ── Swipe / drag (touch + mouse) ───────────────────────
+let dragStartX = 0, dragStartY = 0, isDragging = false;
 const scene = document.getElementById('card-scene');
 
+// touch
 scene.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
+  dragStartX = e.touches[0].clientX;
+  dragStartY = e.touches[0].clientY;
 }, { passive: true });
 
 scene.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
+  const dx = e.changedTouches[0].clientX - dragStartX;
+  const dy = e.changedTouches[0].clientY - dragStartY;
   if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
   e.preventDefault();
   if (dx < 0) nextCard();
   else        prevCard();
 }, { passive: false });
+
+// mouse drag
+scene.addEventListener('mousedown', e => {
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  isDragging = true;
+});
+
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  // add a tiny visual cursor hint
+  scene.style.cursor = e.clientX - dragStartX > 0 ? 'w-resize' : 'e-resize';
+});
+
+let suppressClick = false;
+
+window.addEventListener('mouseup', e => {
+  if (!isDragging) return;
+  isDragging = false;
+  scene.style.cursor = '';
+  const dx = e.clientX - dragStartX;
+  const dy = e.clientY - dragStartY;
+  if (Math.abs(dx) < Math.abs(dy) * 1.5 || Math.abs(dx) < 60) return;
+  suppressClick = true;
+  if (dx < 0) nextCard();
+  else        prevCard();
+});
+
+scene.addEventListener('click', e => {
+  if (suppressClick) { suppressClick = false; e.stopImmediatePropagation(); }
+}, true);
 
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
