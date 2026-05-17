@@ -510,12 +510,11 @@ function animateCardOut(direction, type, onDone) {
     const wRect = wrapper.getBoundingClientRect();
     const toX   = (bRect.left + bRect.width  / 2) - (wRect.left + wRect.width  / 2);
     const toY   = (bRect.top  + bRect.height / 2) - (wRect.top  + wRect.height / 2);
-    const rot   = direction === 'right' ? 300 : -300;
     dur = 660;
     keyframes = [
-      { offset: 0,    transform: 'translateX(0px) translateY(0px)   rotate(0deg)          scale(1)',    opacity: 1 },
-      { offset: 0.28, transform: `translateX(${toX * 0.1}px) translateY(-85px) rotate(${rot * 0.2}deg) scale(1.06)`, opacity: 1 },
-      { offset: 1,    transform: `translateX(${toX}px) translateY(${toY}px) rotate(${rot}deg) scale(0.22)`, opacity: 0 }
+      { offset: 0,    transform: 'translateX(0px) translateY(0px) scale(1)',    opacity: 1 },
+      { offset: 0.28, transform: `translateX(${toX * 0.1}px) translateY(-85px) scale(1.06)`, opacity: 1 },
+      { offset: 1,    transform: `translateX(${toX}px) translateY(${toY}px) scale(0.22)`, opacity: 0 }
     ];
   } else {
     const toX = direction === 'right' ? wrapper.offsetWidth * 1.15 : -wrapper.offsetWidth * 1.15;
