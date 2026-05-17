@@ -243,6 +243,19 @@
   .rate-btn.active-yes { background: rgba(34,197,94,.35); box-shadow: 0 0 0 2px var(--green); }
 
   .rate-btn { transition: transform .1s, box-shadow .15s, background .15s; }
+  .btn-key {
+    display: block;
+    font-size: .68rem;
+    font-weight: 400;
+    opacity: .55;
+    margin-top: 4px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 5px;
+    padding: 1px 7px;
+    letter-spacing: .04em;
+  }
+  @media (pointer: coarse) { .btn-key { display: none; } }
 
   /* ── Result screen ── */
   #result-screen {
@@ -334,8 +347,8 @@
 
   <!-- rate buttons -->
   <div class="rate-row">
-    <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem</button>
-    <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
+    <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem<span class="btn-key">← klawisz</span></button>
+    <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem<span class="btn-key">→ klawisz</span></button>
   </div>
 
 
@@ -551,8 +564,8 @@ function setBtnLabel(known) {
 function resetBtnLabels() {
   const no  = document.getElementById('btn-no');
   const yes = document.getElementById('btn-yes');
-  no.innerHTML  = '✗&nbsp; Nie umiem';
-  yes.innerHTML = '✓&nbsp; Umiem';
+  no.innerHTML  = '✗&nbsp; Nie umiem<span class="btn-key">← klawisz</span>';
+  yes.innerHTML = '✓&nbsp; Umiem<span class="btn-key">→ klawisz</span>';
   no.classList.remove('feedback');
   yes.classList.remove('feedback');
 }
@@ -738,11 +751,11 @@ scene.addEventListener('click', e => {
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (document.getElementById('study-screen').style.display === 'none') return;
-  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextCard();
-  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevCard();
+  if      (e.key === 'ArrowRight') rateCard(true);
+  else if (e.key === 'ArrowLeft')  rateCard(false);
+  else if (e.key === 'ArrowDown')  nextCard();
+  else if (e.key === 'ArrowUp')    prevCard();
   else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
-  else if (e.key === '1') rateCard(false);
-  else if (e.key === '2') rateCard(true);
 });
 </script>
 </body>
