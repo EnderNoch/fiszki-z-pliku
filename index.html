@@ -164,35 +164,7 @@
     will-change: transform, opacity;
   }
 
-  /* exit animations — card flies into the clicked button (down + side) */
-  @keyframes exit-left {
-    from { transform: translateX(0)    translateY(0)   rotate(0)     scale(1);   opacity: 1; }
-    to   { transform: translateX(-60%) translateY(90%) rotate(-12deg) scale(0.2); opacity: 0; }
-  }
-  @keyframes exit-right {
-    from { transform: translateX(0)   translateY(0)   rotate(0)    scale(1);   opacity: 1; }
-    to   { transform: translateX(60%) translateY(90%) rotate(12deg) scale(0.2); opacity: 0; }
-  }
-  /* plain horizontal exit for swipe/keyboard nav */
-  @keyframes exit-nav-left {
-    from { transform: translateX(0);     opacity: 1; }
-    to   { transform: translateX(-110%); opacity: 0; }
-  }
-  @keyframes exit-nav-right {
-    from { transform: translateX(0);    opacity: 1; }
-    to   { transform: translateX(110%); opacity: 0; }
-  }
-  /* enter animation */
-  @keyframes card-enter {
-    from { transform: scale(0.9); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-  }
-
-  #card-wrapper.exit-left      { animation: exit-left      .36s cubic-bezier(.4,0,1,1)  forwards; }
-  #card-wrapper.exit-right     { animation: exit-right     .36s cubic-bezier(.4,0,1,1)  forwards; }
-  #card-wrapper.exit-nav-left  { animation: exit-nav-left  .26s cubic-bezier(.4,0,1,1)  forwards; }
-  #card-wrapper.exit-nav-right { animation: exit-nav-right .26s cubic-bezier(.4,0,1,1)  forwards; }
-  #card-wrapper.card-enter     { animation: card-enter     .28s cubic-bezier(0,.4,.2,1) forwards; }
+  /* Animacje obsługiwane przez Web Animations API w JS */
 
   /* ── Card inner (flip) ── */
   .card-inner {
@@ -270,9 +242,7 @@
   .rate-btn.active-no  { background: rgba(239,68,68,.35); box-shadow: 0 0 0 2px var(--red); }
   .rate-btn.active-yes { background: rgba(34,197,94,.35); box-shadow: 0 0 0 2px var(--green); }
 
-  /* button text transition */
-  .rate-btn { transition: transform .1s, box-shadow .15s, background .15s, font-size .15s; }
-  .rate-btn.feedback { font-size: .82rem; }
+  .rate-btn { transition: transform .1s, box-shadow .15s, background .15s; }
 
   /* ── Result screen ── */
   #result-screen {
@@ -525,31 +495,46 @@ function flipCard() {
   setFlipped(!flipped, true);
 }
 
-// ── Card animations ────────────────────────────────────
-// type: 'rate' (flies into button) | 'nav' (slides sideways)
+// ── Card animations (Web Animations API — dokładna pozycja) ───
 function animateCardOut(direction, type, onDone) {
   transitioning = true;
   const wrapper = document.getElementById('card-wrapper');
-  const cls = type === 'nav'
-    ? (direction === 'right' ? 'exit-nav-right' : 'exit-nav-left')
-    : (direction === 'right' ? 'exit-right'     : 'exit-left');
-  wrapper.classList.add(cls);
-  wrapper.addEventListener('animationend', function handler() {
-    wrapper.removeEventListener('animationend', handler);
-    wrapper.classList.remove(cls);
-    onDone();
-  }, { once: true });
+  let toX, toY, rot, dur;
+
+  if (type === 'rate') {
+    // oblicz dokładną pozycję środka przycisku względem środka karty
+    const btnId  = direction === 'right' ? 'btn-yes' : 'btn-no';
+    const btn    = document.getElementById(btnId);
+    const bRect  = btn.getBoundingClientRect();
+    const wRect  = wrapper.getBoundingClientRect();
+    toX = (bRect.left + bRect.width  / 2) - (wRect.left + wRect.width  / 2);
+    toY = (bRect.top  + bRect.height / 2) - (wRect.top  + wRect.height / 2);
+    rot = direction === 'right' ? 14 : -14;
+    dur = 380;
+  } else {
+    toX = direction === 'right' ? wrapper.offsetWidth * 1.15 : -wrapper.offsetWidth * 1.15;
+    toY = 0; rot = 0; dur = 240;
+  }
+
+  const anim = wrapper.animate([
+    { transform: 'translateX(0px) translateY(0px) rotate(0deg) scale(1)', opacity: 1 },
+    { transform: `translateX(${toX}px) translateY(${toY}px) rotate(${rot}deg) scale(0.25)`, opacity: 0 }
+  ], { duration: dur, easing: 'cubic-bezier(.4,0,1,1)', fill: 'none' });
+
+  anim.onfinish = () => onDone();
 }
 
 function animateCardIn() {
   const wrapper = document.getElementById('card-wrapper');
-  wrapper.classList.add('card-enter');
-  wrapper.addEventListener('animationend', function handler() {
-    wrapper.removeEventListener('animationend', handler);
-    wrapper.classList.remove('card-enter');
+  const anim = wrapper.animate([
+    { transform: 'scale(0.88)', opacity: 0 },
+    { transform: 'scale(1)',    opacity: 1 }
+  ], { duration: 280, easing: 'cubic-bezier(0,.4,.2,1)', fill: 'none' });
+
+  anim.onfinish = () => {
     transitioning = false;
     resetBtnLabels();
-  }, { once: true });
+  };
 }
 
 // ── Button label feedback ───────────────────────────────
@@ -573,9 +558,9 @@ function rateCard(known) {
   if (transitioning) return;
   ratings[current] = known;
   updateRatingUI();
+  setBtnLabel(known);          // tekst zmienia się natychmiast przy kliknięciu
   const dir = known ? 'right' : 'left';
   animateCardOut(dir, 'rate', () => {
-    setBtnLabel(known);
     if (current < order.length - 1) {
       current++;
       showCard(true);
