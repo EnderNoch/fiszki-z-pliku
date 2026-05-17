@@ -247,25 +247,27 @@
   /* ── Nav arrows ── */
   .nav-arrows {
     display: flex;
-    gap: 16px;
-    justify-content: center;
+    gap: 12px;
+    width: 100%;
   }
   .nav-arrow {
+    flex: 1;
     background: var(--surface2);
     border: 1px solid #444;
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 1.1rem;
-    width: 48px;
-    height: 40px;
+    border-radius: 14px;
+    color: var(--muted);
+    font-size: .95rem;
+    font-weight: 600;
+    padding: 11px 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     touch-action: manipulation;
-    transition: background .15s, transform .1s;
+    transition: background .15s, transform .1s, color .15s;
   }
-  .nav-arrow:active { transform: scale(.92); background: #333; }
+  .nav-arrow:hover { background: #2a2a3a; color: var(--text); }
+  .nav-arrow:active { transform: scale(.95); }
   .btn-key {
     display: block;
     font-size: .68rem;
@@ -376,8 +378,8 @@
 
   <!-- nav arrows -->
   <div class="nav-arrows">
-    <button class="nav-arrow" onclick="prevCard()" title="Poprzednia">&#8592;</button>
-    <button class="nav-arrow" onclick="nextCard()" title="Następna">&#8594;</button>
+    <button class="nav-arrow" onclick="prevCard()">&#8592;&nbsp; Wstecz</button>
+    <button class="nav-arrow" onclick="nextCard()">Dalej &nbsp;&#8594;</button>
   </div>
 
 
