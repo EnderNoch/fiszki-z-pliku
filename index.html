@@ -499,8 +499,6 @@ function flipCard() {
 function animateCardOut(direction, type, onDone) {
   transitioning = true;
   const wrapper = document.getElementById('card-wrapper');
-  let toX, toY, rot, dur, easing;
-
   let keyframes, dur;
 
   if (type === 'rate') {
