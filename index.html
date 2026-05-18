@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Fiszki z NotebookLM</title>
+<title>Fiszki z CSV</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -322,7 +322,7 @@
 </head>
 <body>
 
-<h1>Fiszki z NotebookLM</h1>
+<h1>Fiszki z CSV</h1>
 
 <!-- ══ UPLOAD ══ -->
 <div id="upload-screen">
@@ -330,11 +330,11 @@
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
     </svg>
-    <p><strong>Wgraj plik CSV</strong><br>z fiszek NotebookLM<br><br>lub kliknij, żeby wybrać plik</p>
+    <p><strong>Wgraj plik CSV</strong><br>z fiszkami<br><br>lub kliknij, żeby wybrać plik</p>
   </div>
   <input type="file" id="file-input" accept=".csv,text/csv">
   <p class="hint">
-    W NotebookLM: <strong>Studio &rarr; Fiszki &rarr; Pobierz</strong><br>
+    Plik CSV z dwiema kolumnami: pytanie i odpowiedź.<br>
     Aplikacja działa w całości w przeglądarce &mdash; plik nigdzie nie jest wysyłany.
   </p>
 </div>
@@ -473,7 +473,7 @@ function parseCSV(text) {
   }
 
   if (parsed.length === 0) {
-    alert('Nie znaleziono fiszek w pliku. Upewnij się, że to plik CSV z NotebookLM z dwiema kolumnami.');
+    alert('Nie znaleziono fiszek w pliku. Upewnij się, że plik CSV ma dwie kolumny: pytanie i odpowiedź.');
     return;
   }
   cards = parsed;
