@@ -180,7 +180,6 @@
     flex: 1;
     min-height: 220px;
     position: relative;
-    perspective: 1200px;
   }
 
   /* wrapper: positioned inside size-box so preserve-3d doesn't fight flex */
@@ -552,7 +551,7 @@ function setFlipped(val, animate) {
   if (!animate) {
     flipDeg = val ? 180 : 0;
     inner.style.transition = 'none';
-    inner.style.transform = `rotateY(${flipDeg}deg)`;
+    inner.style.transform = `perspective(1200px) rotateY(${flipDeg}deg)`;
     inner.offsetHeight;
     inner.style.transition = '';
     return;
@@ -560,9 +559,12 @@ function setFlipped(val, animate) {
   const fromDeg = flipDeg;
   const toDeg   = flipDeg + 180;
   flipDeg = toDeg % 360;
-  inner.style.transform = `rotateY(${flipDeg}deg)`;
+  inner.style.transform = `perspective(1200px) rotateY(${flipDeg}deg)`;
   inner.animate(
-    [{ transform: `rotateY(${fromDeg}deg)` }, { transform: `rotateY(${toDeg}deg)` }],
+    [
+      { transform: `perspective(1200px) rotateY(${fromDeg}deg)` },
+      { transform: `perspective(1200px) rotateY(${toDeg}deg)` }
+    ],
     { duration: 320, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'none' }
   );
 }
