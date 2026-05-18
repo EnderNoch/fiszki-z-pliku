@@ -120,6 +120,7 @@
     justify-content: space-between;
     width: 100%;
     gap: 8px;
+    flex-shrink: 0;
   }
 
   .progress-wrap { flex: 1; }
@@ -146,8 +147,9 @@
     gap: 10px;
     width: 100%;
     flex-wrap: wrap;
+    flex-shrink: 0;
   }
-  .hint-row { width: 100%; text-align: center; margin-top: 2px; }
+  .hint-row { width: 100%; text-align: center; margin-top: 2px; flex-shrink: 0; }
   .toggle-label { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); cursor: pointer; }
   .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
@@ -165,8 +167,7 @@
   .card-scene {
     width: 100%;
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    min-height: 0;
     perspective: 1200px;
     cursor: pointer;
     user-select: none;
@@ -176,7 +177,7 @@
   /* wrapper: target for slide-out/slide-in animations */
   #card-wrapper {
     width: 100%;
-    flex: 1;
+    height: 100%;
     transform-style: preserve-3d;
     will-change: transform, opacity;
   }
@@ -188,7 +189,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 240px;
+    min-height: 220px;
     transition: transform .32s cubic-bezier(.4,0,.2,1);
     transform-style: preserve-3d;
   }
@@ -243,7 +244,7 @@
   }
 
   /* ── Rate buttons ── */
-  .rate-row { display: flex; gap: 12px; width: 100%; }
+  .rate-row { display: flex; gap: 12px; width: 100%; flex-shrink: 0; }
   .rate-btn {
     flex: 1; border: none; border-radius: 14px;
     padding: 16px 12px; font-size: 1rem; font-weight: 700;
@@ -266,6 +267,7 @@
     display: flex;
     gap: 12px;
     width: 100%;
+    flex-shrink: 0;
   }
   .nav-arrow {
     flex: 1;
