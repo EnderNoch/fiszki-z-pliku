@@ -168,16 +168,25 @@
     width: 100%;
     flex: 1;
     min-height: 0;
-    perspective: 1200px;
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
     user-select: none;
     touch-action: pan-y;
   }
 
-  /* wrapper: target for slide-out/slide-in animations */
+  /* size box: flex item that stretches; gives card-wrapper a concrete height */
+  #card-size-box {
+    flex: 1;
+    min-height: 220px;
+    position: relative;
+    perspective: 1200px;
+  }
+
+  /* wrapper: positioned inside size-box so preserve-3d doesn't fight flex */
   #card-wrapper {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    inset: 0;
     transform-style: preserve-3d;
     will-change: transform, opacity;
   }
@@ -189,7 +198,6 @@
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 220px;
     transition: transform .32s cubic-bezier(.4,0,.2,1);
     transform-style: preserve-3d;
   }
@@ -366,6 +374,7 @@
   </div>
   <!-- card -->
   <div class="card-scene" id="card-scene" onclick="flipCard()">
+    <div id="card-size-box">
     <div id="card-wrapper">
       <div class="card-inner" id="card-inner">
         <div class="card-face front">
@@ -380,6 +389,7 @@
           <div class="card-text" id="card-back"></div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
