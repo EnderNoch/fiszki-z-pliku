@@ -198,11 +198,9 @@
     position: relative;
     width: 100%;
     height: 100%;
-    transition: transform .32s cubic-bezier(.4,0,.2,1);
     transform-style: preserve-3d;
   }
   .card-inner.no-transition { transition: none !important; }
-  .card-inner.flipped { transform: rotateY(180deg); }
 
   .card-face {
     position: absolute;
@@ -442,6 +440,7 @@ let order     = [];
 let ratings   = {};
 let current   = 0;
 let flipped   = false;
+let flipDeg   = 0;
 let shuffleOn = false;
 let transitioning = false;
 
@@ -551,14 +550,21 @@ function setFlipped(val, animate) {
   flipped = val;
   const inner = document.getElementById('card-inner');
   if (!animate) {
-    inner.classList.add('no-transition');
+    flipDeg = val ? 180 : 0;
+    inner.style.transition = 'none';
+    inner.style.transform = `rotateY(${flipDeg}deg)`;
     inner.offsetHeight;
+    inner.style.transition = '';
+    return;
   }
-  inner.classList.toggle('flipped', val);
-  if (!animate) {
-    inner.offsetHeight;
-    inner.classList.remove('no-transition');
-  }
+  const fromDeg = flipDeg;
+  const toDeg   = flipDeg + 180;
+  flipDeg = toDeg % 360;
+  inner.style.transform = `rotateY(${flipDeg}deg)`;
+  inner.animate(
+    [{ transform: `rotateY(${fromDeg}deg)` }, { transform: `rotateY(${toDeg}deg)` }],
+    { duration: 320, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'none' }
+  );
 }
 
 function flipCard() {
