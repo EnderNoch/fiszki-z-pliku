@@ -112,7 +112,7 @@
   }
 
   /* ── Study screen ── */
-  #study-screen { display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 540px; }
+  #study-screen { display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 540px; flex: 1; }
 
   .top-bar {
     display: flex;
@@ -164,6 +164,9 @@
   /* ── Card scene ── */
   .card-scene {
     width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     perspective: 1200px;
     cursor: pointer;
     user-select: none;
@@ -173,6 +176,7 @@
   /* wrapper: target for slide-out/slide-in animations */
   #card-wrapper {
     width: 100%;
+    flex: 1;
     transform-style: preserve-3d;
     will-change: transform, opacity;
   }
@@ -183,6 +187,7 @@
   .card-inner {
     position: relative;
     width: 100%;
+    height: 100%;
     min-height: 240px;
     transition: transform .32s cubic-bezier(.4,0,.2,1);
     transform-style: preserve-3d;
@@ -204,7 +209,6 @@
     -webkit-backface-visibility: hidden;
     box-shadow: var(--shadow);
     word-break: break-word;
-    min-height: 240px;
   }
   .card-face.front { background: var(--front-bg); border: 1.5px solid var(--front-border); }
   .card-face.back  { background: var(--back-bg);  border: 1.5px solid var(--back-border); transform: rotateY(180deg); }
