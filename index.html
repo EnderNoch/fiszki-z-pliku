@@ -339,10 +339,11 @@
     </svg>
     <p><strong>Wgraj plik CSV</strong><br>z fiszkami<br><br>lub kliknij, żeby wybrać plik</p>
   </div>
-  <input type="file" id="file-input" accept=".csv">
+  <input type="file" id="file-input" accept=".csv,.txt,.tsv">
   <p class="hint">
-    Plik <strong>.csv</strong> z dwiema kolumnami: pytanie i odpowiedź.<br>
-    NotebookLM: <strong>Studio &rarr; Fiszki &rarr; Pobierz</strong><br>
+    Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong><br>
+    Format: dwie kolumny oddzielone przecinkiem lub średnikiem<br>
+    <em>pytanie,odpowiedź</em><br><br>
     Aplikacja działa w całości w przeglądarce &mdash; plik nigdzie nie jest wysyłany.
   </p>
 </div>
@@ -459,8 +460,9 @@ dropZone.addEventListener('drop', e => {
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
 
 function loadFile(file) {
-  if (!file.name.toLowerCase().endsWith('.csv')) {
-    alert('Nieobsługiwany format — prześlij plik .csv');
+  const name = file.name.toLowerCase();
+  if (!name.endsWith('.csv') && !name.endsWith('.txt') && !name.endsWith('.tsv')) {
+    alert('Nieobsługiwany format — prześlij plik .csv, .txt lub .tsv');
     fileInput.value = '';
     return;
   }
