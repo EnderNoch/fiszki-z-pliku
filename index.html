@@ -458,12 +458,8 @@ dropZone.addEventListener('drop', e => {
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
 
 function loadFile(file) {
-  const name = file.name.toLowerCase();
-  const isCSV = file.type === 'text/csv' || file.type === 'text/plain'
-    || file.type === 'application/csv' || file.type === ''
-    || name.endsWith('.csv');
-  if (!isCSV) {
-    alert('Wybierz plik CSV. Plik "' + file.name + '" nie jest obsługiwany.');
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    alert('Nieobsługiwany format — prześlij plik .csv');
     fileInput.value = '';
     return;
   }
