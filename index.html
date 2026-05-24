@@ -362,6 +362,20 @@ let flipped   = false;
 let shuffleOn = false;
 let transitioning = false;
 
+// ── Restore saved deck on page load ───────────────────
+(function () {
+  const saved = localStorage.getItem('savedCards');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        cards = parsed;
+        startDeck();
+      }
+    } catch (_) { localStorage.removeItem('savedCards'); }
+  }
+})();
+
 // ── File handling ──────────────────────────────────────
 const dropZone  = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -412,6 +426,7 @@ function parseCSV(text) {
     return;
   }
   cards = parsed;
+  localStorage.setItem('savedCards', JSON.stringify(parsed));
   startDeck();
 }
 
@@ -709,6 +724,7 @@ function restartDeck() {
 function resetToUpload() {
   cards = []; order = []; ratings = {}; current = 0;
   fileInput.value = '';
+  localStorage.removeItem('savedCards');
   show('upload-screen');
 }
 
