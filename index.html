@@ -14,6 +14,42 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="window._katexReady=true; renderMath(document.getElementById('card-front')); renderMath(document.getElementById('card-back'));"></script>
 <style>
+  /* ── MD3 variable fallbacks (overridden by CDN style.css when loaded) ── */
+  @layer md3-fallback {
+    :root {
+      --md-primary:#D0BCFF; --md-on-primary:#381E72;
+      --md-primary-container:#4F378B; --md-on-primary-container:#EADDFF;
+      --md-secondary-container:#4A4458; --md-on-secondary-container:#E8DEF8;
+      --md-surface-container-low:#1D1B20; --md-surface-container:#211F26;
+      --md-surface-container-high:#2B2930; --md-surface-container-highest:#36343B;
+      --md-on-surface:#E6E1E5; --md-on-surface-variant:#CAC4D0;
+      --md-outline:#938F99; --md-outline-variant:#49454F;
+      --md-error-container:#8C1D18; --md-on-error-container:#F9DEDC;
+    }
+    [data-theme="light"] {
+      --md-primary:#6750A4; --md-on-primary:#FFFFFF;
+      --md-primary-container:#EADDFF; --md-on-primary-container:#21005D;
+      --md-secondary-container:#E8DEF8; --md-on-secondary-container:#1D192B;
+      --md-surface-container-low:#F7F2FA; --md-surface-container:#F3EDF7;
+      --md-surface-container-high:#ECE6F0; --md-surface-container-highest:#E6E0E9;
+      --md-on-surface:#1C1B1F; --md-on-surface-variant:#49454F;
+      --md-outline:#79747E; --md-outline-variant:#CAC4D0;
+      --md-error-container:#F9DEDC; --md-on-error-container:#410E0B;
+    }
+    @media (prefers-color-scheme: light) {
+      [data-theme="auto"] {
+        --md-primary:#6750A4; --md-on-primary:#FFFFFF;
+        --md-primary-container:#EADDFF; --md-on-primary-container:#21005D;
+        --md-secondary-container:#E8DEF8; --md-on-secondary-container:#1D192B;
+        --md-surface-container-low:#F7F2FA; --md-surface-container:#F3EDF7;
+        --md-surface-container-high:#ECE6F0; --md-surface-container-highest:#E6E0E9;
+        --md-on-surface:#1C1B1F; --md-on-surface-variant:#49454F;
+        --md-outline:#79747E; --md-outline-variant:#CAC4D0;
+        --md-error-container:#F9DEDC; --md-on-error-container:#410E0B;
+      }
+    }
+  }
+
   /* ── Flashcard-specific overrides & additions ── */
 
   /* shape & semantic tokens not in shared CSS */
