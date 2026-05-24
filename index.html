@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Fiszki z CSV</title>
+<script>if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))document.documentElement.classList.add('is-mobile');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
@@ -610,13 +611,11 @@
     padding: 1px 7px;
     letter-spacing: .04em;
   }
-  @media (pointer: coarse) { .btn-key { display: none; } }
+  html.is-mobile .btn-key { display: none; }
 
-  .icon-mobile  { display: none; }
-  @media (pointer: coarse) {
-    .icon-desktop { display: none; }
-    .icon-mobile  { display: block; }
-  }
+  .icon-mobile { display: none; }
+  html.is-mobile .icon-desktop { display: none; }
+  html.is-mobile .icon-mobile  { display: block; }
 
   /* ── Result screen ── */
   #result-screen {
@@ -1158,17 +1157,16 @@ function show(id) {
 }
 
 // ── Device hints ───────────────────────────────────────
-// hover:none + pointer:coarse = ekran dotykowy, niezależnie od podpiętej klawiatury
-const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+const isMobile = document.documentElement.classList.contains('is-mobile');
 (function() {
   const navHint  = document.getElementById('nav-hint');
   const flipHint = document.getElementById('flip-hint');
-  if (isTouch) {
-    navHint.textContent     = 'Przesuń kartę w lewo lub prawo, żeby przejść dalej';
-    flipHint.textContent    = 'Dotknij, żeby zobaczyć odpowiedź';
+  if (isMobile) {
+    navHint.textContent  = 'Przesuń kartę w lewo lub prawo, żeby przejść dalej';
+    flipHint.textContent = 'Dotknij, żeby zobaczyć odpowiedź';
   } else {
-    navHint.innerHTML       = 'Przeciągnij kartę, użyj <kbd>◄ Wstecz</kbd> <kbd>Dalej ►</kbd> lub <kbd>◄</kbd> <kbd>►</kbd> na klawiaturze';
-    flipHint.textContent    = 'Kliknij, żeby zobaczyć odpowiedź';
+    navHint.innerHTML    = 'Przeciągnij kartę, użyj <kbd>◄ Wstecz</kbd> <kbd>Dalej ►</kbd> lub <kbd>◄</kbd> <kbd>►</kbd> na klawiaturze';
+    flipHint.textContent = 'Kliknij, żeby zobaczyć odpowiedź';
   }
 })();
 
