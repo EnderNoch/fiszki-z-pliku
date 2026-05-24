@@ -536,6 +536,7 @@ function showCard(enterFrom) {
   updateRatingUI();
   updateProgress();
   if (enterFrom) {
+    transitioning = false; // odblokuj input — enter animacja może grać w tle
     animateCardIn(enterFrom);
   } else {
     transitioning = false;
@@ -580,6 +581,7 @@ function flipCard() {
 function animateCardOut(direction, type, onDone) {
   transitioning = true;
   const wrapper = document.getElementById('card-wrapper');
+  wrapper.getAnimations().forEach(a => a.cancel()); // przerwij enter animację jeśli gra
   let keyframes, dur;
 
   if (type === 'rate') {
@@ -632,7 +634,7 @@ function animateCardIn(enterFrom) {
     easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
   }
   const anim = wrapper.animate(keyframes, { duration, easing, fill: 'none' });
-  anim.onfinish = () => { transitioning = false; resetBtnLabels(); };
+  anim.onfinish = () => { resetBtnLabels(); };
 }
 
 // ── Button label feedback ───────────────────────────────
