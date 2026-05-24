@@ -365,14 +365,17 @@ let transitioning = false;
 // ── Restore saved deck on page load ───────────────────
 (function () {
   const saved = localStorage.getItem('savedCards');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        cards = parsed;
-        startDeck();
-      }
-    } catch (_) { localStorage.removeItem('savedCards'); }
+  if (!saved) return;
+  try {
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed) || parsed.length === 0) return;
+    cards = parsed;
+    current = 0; ratings = {};
+    buildOrder();
+    show('study-screen');
+    showCard(false);
+  } catch (_) {
+    localStorage.removeItem('savedCards');
   }
 })();
 
