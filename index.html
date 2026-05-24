@@ -596,38 +596,42 @@ function animateCardOut(direction, type, onDone) {
       { offset: 1,    transform: `translateX(${toX}px) translateY(${toY}px) scale(0.22)`, opacity: 0 }
     ];
   } else {
-    // nawigacja: slide z lekkim scale i easingiem
-    const toX = direction === 'right' ? wrapper.offsetWidth * 1.1 : -wrapper.offsetWidth * 1.1;
-    dur = 320;
+    // nawigacja: MD3 Emphasized Accelerate — szybki exit z lekką skalą
+    const toX = direction === 'right' ? wrapper.offsetWidth * 0.55 : -wrapper.offsetWidth * 0.55;
+    dur = 200;
     keyframes = [
-      { offset: 0, easing: 'cubic-bezier(0.4,0,1,0.8)', transform: 'translateX(0px) scale(1)',     opacity: 1 },
-      { offset: 1,                                        transform: `translateX(${toX}px) scale(0.88)`, opacity: 0 }
+      { offset: 0, transform: 'translateX(0px) scale(1)',          opacity: 1 },
+      { offset: 1, transform: `translateX(${toX}px) scale(0.86)`, opacity: 0 }
     ];
   }
 
-  const anim = wrapper.animate(keyframes, { duration: dur, easing: 'linear', fill: 'none' });
+  const anim = wrapper.animate(keyframes, { duration: dur, easing: dur === 200 ? 'cubic-bezier(0.3,0,0.8,0.15)' : 'linear', fill: 'none' });
 
   anim.onfinish = () => onDone();
 }
 
 function animateCardIn(enterFrom) {
   const wrapper = document.getElementById('card-wrapper');
-  let keyframes;
+  let keyframes, duration, easing;
   if (enterFrom === 'left' || enterFrom === 'right') {
-    // wjazd z boku (nawigacja)
-    const fromX = enterFrom === 'right' ? wrapper.offsetWidth * 0.28 : -wrapper.offsetWidth * 0.28;
+    // wjazd z boku: MD3 Emphasized Decelerate — sprężysty wjazd
+    const fromX = enterFrom === 'right' ? wrapper.offsetWidth * 0.18 : -wrapper.offsetWidth * 0.18;
     keyframes = [
-      { transform: `translateX(${fromX}px) scale(0.92)`, opacity: 0 },
+      { transform: `translateX(${fromX}px) scale(0.86)`, opacity: 0 },
       { transform: 'translateX(0px) scale(1)',            opacity: 1 }
     ];
+    duration = 420;
+    easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
   } else {
     // wjazd po ocenie (z centrum, scale)
     keyframes = [
-      { transform: 'scale(0.88)', opacity: 0 },
+      { transform: 'scale(0.86)', opacity: 0 },
       { transform: 'scale(1)',    opacity: 1 }
     ];
+    duration = 380;
+    easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
   }
-  const anim = wrapper.animate(keyframes, { duration: 300, easing: 'cubic-bezier(0,.4,.2,1)', fill: 'none' });
+  const anim = wrapper.animate(keyframes, { duration, easing, fill: 'none' });
   anim.onfinish = () => { transitioning = false; resetBtnLabels(); };
 }
 
