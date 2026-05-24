@@ -612,6 +612,12 @@
   }
   @media (pointer: coarse) { .btn-key { display: none; } }
 
+  .icon-mobile  { display: none; }
+  @media (pointer: coarse) {
+    .icon-desktop { display: none; }
+    .icon-mobile  { display: block; }
+  }
+
   /* ── Result screen ── */
   #result-screen {
     display: none;
@@ -658,10 +664,13 @@
   <div class="header-spacer"></div>
   <h1>Fiszki z CSV</h1>
   <div class="theme-toggle" id="theme-toggle">
-    <!-- Auto (monitor) -->
+    <!-- Auto (monitor na desktopie, telefon na mobile) -->
     <button class="theme-btn active" data-mode="auto" title="Auto (systemowy)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg class="icon-desktop" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/>
+      </svg>
+      <svg class="icon-mobile" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
       </svg>
     </button>
     <!-- Light (sun) -->
