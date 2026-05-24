@@ -132,6 +132,10 @@
   /* ── Card scene ── */
   .card-scene { width: 100%; flex: 1; min-height: 0; display: flex; flex-direction: column; cursor: pointer; user-select: none; touch-action: pan-y; }
   #card-size-box { flex: 1; min-height: 220px; position: relative; }
+  #card-ripple-overlay { position: absolute; inset: 0; border-radius: var(--shape-xl); overflow: hidden; pointer-events: none; z-index: 10; }
+  .card-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.16); }
+  [data-theme="light"] .card-ripple { background: rgba(0,0,0,.07); }
+  @media (prefers-color-scheme: light) { [data-theme="auto"] .card-ripple { background: rgba(0,0,0,.07); } }
   #card-wrapper { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform, opacity; }
   .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
   .card-inner.no-transition { transition: none !important; }
@@ -267,6 +271,7 @@
   <!-- card -->
   <div class="card-scene" id="card-scene" onclick="flipCard()">
     <div id="card-size-box">
+    <div id="card-ripple-overlay" aria-hidden="true"></div>
     <div id="card-wrapper">
       <div class="card-inner" id="card-inner">
         <div class="card-face front">
@@ -760,6 +765,53 @@ window.addEventListener('mouseup', e => {
 scene.addEventListener('click', e => {
   if (suppressClick) { suppressClick = false; e.stopImmediatePropagation(); }
 }, true);
+
+// ── Android 16 press spring + ripple ──────────────────
+;(function () {
+  const sizeBox = document.getElementById('card-size-box');
+  const overlay = document.getElementById('card-ripple-overlay');
+  let pressAnim = null;
+
+  function springPress() {
+    if (transitioning) return;
+    if (pressAnim) pressAnim.cancel();
+    pressAnim = sizeBox.animate(
+      [{ transform: 'scale(1)' }, { transform: 'scale(0.955)' }],
+      { duration: 110, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
+    );
+  }
+
+  function springRelease() {
+    if (pressAnim) { pressAnim.cancel(); pressAnim = null; }
+    sizeBox.animate(
+      [{ transform: 'scale(0.955)' }, { transform: 'scale(1)' }],
+      { duration: 480, easing: 'cubic-bezier(0.34,1.56,0.64,1)', fill: 'none' }
+    );
+  }
+
+  function addRipple(clientX, clientY) {
+    if (transitioning) return;
+    const rect = overlay.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const r = Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y));
+    const dot = document.createElement('span');
+    dot.className = 'card-ripple';
+    dot.style.cssText = `width:${r*2}px;height:${r*2}px;left:${x-r}px;top:${y-r}px;`;
+    overlay.appendChild(dot);
+    dot.animate(
+      [{ transform:'scale(0)', opacity:1 }, { transform:'scale(1)', opacity:0 }],
+      { duration: 580, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
+    ).onfinish = () => dot.remove();
+  }
+
+  scene.addEventListener('pointerdown', e => {
+    springPress();
+    addRipple(e.clientX, e.clientY);
+  });
+  window.addEventListener('pointerup',     springRelease);
+  window.addEventListener('pointercancel', springRelease);
+})();
 
 // ── Keyboard ───────────────────────────────────────────
 document.addEventListener('keydown', e => {
