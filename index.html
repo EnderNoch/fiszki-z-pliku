@@ -113,7 +113,7 @@
   .progress-fill-unknown { height: 100%; background: var(--red); transition: width .4s cubic-bezier(.4,0,.2,1); }
   .progress-fill-seen    { height: 100%; background: var(--md-primary); border-radius: 0 var(--shape-full) var(--shape-full) 0; transition: width .4s cubic-bezier(.4,0,.2,1); }
 
-  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: var(--shape-full); font-size: .8rem; font-weight: 500; letter-spacing: .01em; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 12px; height: 40px; border-radius: var(--shape-full); font-size: .8rem; font-weight: 500; letter-spacing: .01em; }
   .chip.known   { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
   .chip.unknown { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
 
@@ -238,7 +238,7 @@
     </label>
     <span class="chip known">✓ <span id="cnt-known">0</span></span>
     <span class="chip unknown">✗ <span id="cnt-unknown">0</span></span>
-    <button class="btn secondary" style="padding:7px 12px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy CSV</button>
+    <button class="btn secondary" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy CSV</button>
     <div class="theme-toggle" id="theme-toggle">
       <button class="theme-btn active" data-mode="auto" title="Auto (systemowy)">
         <svg class="icon-desktop" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
