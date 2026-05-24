@@ -67,9 +67,6 @@
 
   body {
     background: var(--bg);
-    /* subtle radial glow behind content */
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(79,55,139,.45) 0%, transparent 70%);
     color: var(--text);
     font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     min-height: 100dvh;
@@ -108,7 +105,6 @@
     margin-top: 20px;
   }
 
-  /* Liquid Glass drop zone */
   .drop-zone {
     width: 100%;
     border: 1.5px dashed var(--md-outline);
@@ -116,18 +112,15 @@
     padding: 44px 28px;
     text-align: center;
     cursor: pointer;
-    background: rgba(255,255,255,.04);
-    backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    background: var(--md-surface-container-low);
     transition: background .25s, border-color .25s, transform .15s;
-    box-shadow: var(--elev-1), inset 0 1px 0 rgba(255,255,255,.07);
+    box-shadow: var(--elev-1);
   }
   .drop-zone:hover, .drop-zone.drag-over {
-    background: rgba(208,188,255,.08);
+    background: var(--md-surface-container);
     border-color: var(--md-primary);
     border-style: solid;
     transform: translateY(-2px);
-    box-shadow: var(--elev-2), inset 0 1px 0 rgba(255,255,255,.1);
   }
   .drop-zone svg { opacity: .65; margin-bottom: 14px; color: var(--md-primary); }
   .drop-zone p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
@@ -325,7 +318,7 @@
   }
   .card-inner.no-transition { transition: none !important; }
 
-  /* Liquid Glass card faces */
+  /* Card faces — M3 tonal surface elevation */
   .card-face {
     position: absolute;
     inset: 0;
@@ -339,18 +332,17 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     word-break: break-word;
-    backdrop-filter: blur(24px) saturate(1.6);
-    -webkit-backdrop-filter: blur(24px) saturate(1.6);
   }
+  /* elevation level 2 tonal surface: surface-container + 8% primary overlay */
   .card-face.front {
-    background: linear-gradient(145deg, rgba(79,55,139,.55) 0%, rgba(33,31,38,.7) 100%);
-    border: 1px solid rgba(208,188,255,.22);
-    box-shadow: var(--elev-3), inset 0 1px 0 rgba(208,188,255,.15);
+    background: #2B2930;
+    border: 1px solid var(--md-outline-variant);
+    box-shadow: var(--elev-2);
   }
   .card-face.back {
-    background: linear-gradient(145deg, rgba(99,59,72,.55) 0%, rgba(33,31,38,.7) 100%);
-    border: 1px solid rgba(239,184,200,.2);
-    box-shadow: var(--elev-3), inset 0 1px 0 rgba(239,184,200,.12);
+    background: #2B2930;
+    border: 1px solid var(--md-outline-variant);
+    box-shadow: var(--elev-2);
     transform: rotateY(180deg);
   }
 
@@ -374,8 +366,8 @@
     margin-bottom: 14px;
     opacity: .65;
   }
-  .front .card-label { color: var(--md-primary); }
-  .back  .card-label { color: var(--md-tertiary); }
+  .front .card-label { color: var(--md-on-surface-variant); }
+  .back  .card-label { color: var(--md-on-surface-variant); }
 
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.6; color: var(--text); }
   .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 14px; opacity: .75; }
@@ -505,7 +497,7 @@
     margin: 12px auto 0;
     text-align: center;
   }
-  .result-icon { font-size: 3.2rem; filter: drop-shadow(0 0 16px rgba(208,188,255,.4)); }
+  .result-icon { font-size: 3.2rem; }
   .result-title {
     font-family: 'Google Sans Display', 'Google Sans', sans-serif;
     font-size: 1.5rem;
@@ -516,7 +508,7 @@
   .stat-box {
     flex: 1;
     min-width: 100px;
-    background: rgba(255,255,255,.04);
+    background: var(--md-surface-container);
     border: 1px solid var(--md-outline-variant);
     border-radius: var(--shape-xl);
     padding: 18px 12px;
@@ -524,8 +516,6 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     box-shadow: var(--elev-1);
   }
   .stat-num { font-size: 2.2rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
