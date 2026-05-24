@@ -48,6 +48,9 @@
     padding: 16px;
     gap: 14px;
     flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   @media (min-width: 640px) {
     body { padding: 24px 40px; }
@@ -55,16 +58,10 @@
   }
 
   /* ── App header ── */
-  .app-header { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; gap: 8px; }
-  .app-header h1 {
-    font-family: 'Google Sans Display', 'Google Sans', sans-serif;
-    font-size: 1.35rem; font-weight: 700; letter-spacing: .01em;
-    color: var(--md-on-primary-container); flex: 1; text-align: center;
-  }
-  .header-spacer { width: 104px; flex-shrink: 0; }
+  .app-header { display: flex; align-items: center; padding: 2px 0; gap: 8px; }
 
   /* theme-toggle position reset (shared CSS uses position:absolute for timer page) */
-  .theme-toggle { position: static; }
+  .theme-toggle { position: static; margin-left: auto; flex-shrink: 0; }
 
   /* ── Upload screen ── */
   #upload-screen { display: flex; flex-direction: column; gap: 20px; width: 100%; margin-top: 20px; }
@@ -105,7 +102,7 @@
   .hint { font-size: .8rem; color: var(--muted); line-height: 1.65; text-align: center; padding: 0 8px; }
 
   /* ── Study screen ── */
-  #study-screen { display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 540px; flex: 1; margin: 0 auto; }
+  #study-screen { display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%; flex: 1; }
 
   .top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; flex-shrink: 0; }
   .progress-wrap { flex: 1; }
@@ -189,7 +186,6 @@
 <body>
 
 <div class="app-header">
-  <div class="header-spacer"></div>
   <div class="theme-toggle" id="theme-toggle">
     <!-- Auto (monitor na desktopie, telefon na mobile) -->
     <button class="theme-btn active" data-mode="auto" title="Auto (systemowy)">
