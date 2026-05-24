@@ -182,6 +182,24 @@
   .stat-box.unknown-box .stat-num { color: var(--red); }
   .stat-box.total-box   .stat-num { color: var(--md-primary); }
   .result-msg { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── OpenDyslexicMono override dla KaTeX / MathJax / MathML ── */
+  @font-face { font-family: "OpenDyslexicMono"; src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Main";       src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Math";       src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Size1";      src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Size2";      src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Size3";      src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Size4";      src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_SansSerif";  src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Script";     src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Typewriter"; src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Caligraphic";src: local("OpenDyslexicMono-Regular"); }
+  @font-face { font-family: "KaTeX_Fraktur";    src: local("OpenDyslexicMono-Regular"); }
+
+  .katex, .katex * { font-family: "OpenDyslexicMono", monospace !important; }
+  .MathJax, .MathJax *, mjx-container, mjx-container * { font-family: "OpenDyslexicMono", monospace !important; }
+  math, math * { font-family: "OpenDyslexicMono", monospace !important; }
 </style>
 </head>
 <body>
