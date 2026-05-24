@@ -9,6 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/EnderNoch/endernoch.github.io@claude/add-auto-redirect-timer-Sgd7P/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="window._katexReady=true"></script>
 <style>
   /* ── Flashcard-specific overrides & additions ── */
 
@@ -429,6 +433,20 @@ function shuffle(arr) {
   }
 }
 
+// ── Math rendering (KaTeX) ─────────────────────────────
+function renderMath(el) {
+  if (!window._katexReady || typeof renderMathInElement === 'undefined') return;
+  renderMathInElement(el, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$',  right: '$',  display: false },
+      { left: '\\(', right: '\\)', display: false },
+      { left: '\\[', right: '\\]', display: true }
+    ],
+    throwOnError: false
+  });
+}
+
 // ── Card display ───────────────────────────────────────
 function showCard(enterFrom) {
   // enterFrom: false = bez animacji, 'left'/'right' = wjedź z tej strony
@@ -436,6 +454,8 @@ function showCard(enterFrom) {
   setFlipped(false, false);
   document.getElementById('card-front').textContent = card.front;
   document.getElementById('card-back').textContent  = card.back;
+  renderMath(document.getElementById('card-front'));
+  renderMath(document.getElementById('card-back'));
   updateRatingUI();
   updateProgress();
   if (enterFrom) {
