@@ -201,7 +201,7 @@
   .card-inner { position: relative; width: 100%; height: 100%; }
   .card-inner.no-transition { transition: none !important; }
 
-  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; }
+  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; }
   .card-face.front { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 1; transform: scale(1); }
   .card-face.back  { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 0; transform: scale(0.94); }
 
@@ -214,7 +214,7 @@
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.6; color: var(--text); }
   .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 14px; opacity: .75; }
 
-  .nav-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.65; opacity: .8; position: absolute; bottom: 86px; left: 0; right: 0; pointer-events: none; }
+  .nav-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.65; opacity: .8; pointer-events: none; }
   .nav-hint kbd { display: inline-block; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--shape-sm); padding: 1px 7px; font-size: .73rem; font-family: inherit; color: var(--text); }
 
   /* ── Rate buttons ── */
@@ -334,7 +334,6 @@
           <div class="card-label">Pytanie</div>
           <div class="card-text" id="card-front"></div>
           <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
-          <div class="nav-hint" id="nav-hint"></div>
         </div>
         <div class="card-face back">
           <div class="rating-badge" id="badge-back"></div>
@@ -349,6 +348,7 @@
     </div>
     </div>
   </div>
+  <div class="hint-row"><div class="nav-hint" id="nav-hint"></div></div>
 
 </div>
 
