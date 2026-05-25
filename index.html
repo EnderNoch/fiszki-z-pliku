@@ -349,8 +349,8 @@
           <div class="card-label">Odpowiedź</div>
           <div class="card-text" id="card-back"></div>
           <div class="card-rate-row">
-            <button class="rate-btn no"  id="btn-no"  onclick="rateCard(false)">✗&nbsp; Nie umiem</button>
-            <button class="rate-btn yes" id="btn-yes" onclick="rateCard(true)" >✓&nbsp; Umiem</button>
+            <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)">✗&nbsp; Nie umiem</button>
+            <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" >✓&nbsp; Umiem</button>
           </div>
         </div>
       </div>
@@ -618,34 +618,15 @@ function flipCard() {
 function animateCardOut(direction, type, onDone) {
   transitioning = true;
   const wrapper = document.getElementById('card-wrapper');
-  wrapper.getAnimations().forEach(a => a.cancel()); // przerwij enter animację jeśli gra
-  let keyframes, dur;
+  wrapper.getAnimations().forEach(a => a.cancel());
 
-  if (type === 'rate') {
-    // łuk: karta podskakuje w górę, potem spada prosto w przycisk
-    const btnId = direction === 'right' ? 'btn-yes' : 'btn-no';
-    const bRect = document.getElementById(btnId).getBoundingClientRect();
-    const wRect = wrapper.getBoundingClientRect();
-    const toX   = (bRect.left + bRect.width  / 2) - (wRect.left + wRect.width  / 2);
-    const toY   = (bRect.top  + bRect.height / 2) - (wRect.top  + wRect.height / 2);
-    dur = 660;
-    keyframes = [
-      { offset: 0,    easing: 'cubic-bezier(0.2,0,0.4,1)',  transform: 'translateX(0px) translateY(0px) scale(1)',    opacity: 1 },
-      { offset: 0.28, easing: 'cubic-bezier(0.4,0,0.6,1)',  transform: `translateX(${toX * 0.1}px) translateY(-85px) scale(1.06)`, opacity: 1 },
-      { offset: 1,    transform: `translateX(${toX}px) translateY(${toY}px) scale(0.22)`, opacity: 0 }
-    ];
-  } else {
-    // nawigacja: MD3 Emphasized Accelerate — szybki exit z lekką skalą
-    const toX = direction === 'right' ? wrapper.offsetWidth * 0.55 : -wrapper.offsetWidth * 0.55;
-    dur = 200;
-    keyframes = [
-      { offset: 0, transform: 'translateX(0px) scale(1)',          opacity: 1 },
-      { offset: 1, transform: `translateX(${toX}px) scale(0.86)`, opacity: 0 }
-    ];
-  }
+  const toX = direction === 'right' ? wrapper.offsetWidth * 0.55 : -wrapper.offsetWidth * 0.55;
+  const keyframes = [
+    { offset: 0, transform: 'translateX(0px) scale(1)',          opacity: 1 },
+    { offset: 1, transform: `translateX(${toX}px) scale(0.86)`, opacity: 0 }
+  ];
 
-  const anim = wrapper.animate(keyframes, { duration: dur, easing: dur === 200 ? 'cubic-bezier(0.3,0,0.8,0.15)' : 'linear', fill: 'none' });
-
+  const anim = wrapper.animate(keyframes, { duration: 200, easing: 'cubic-bezier(0.3,0,0.8,0.15)', fill: 'none' });
   anim.onfinish = () => onDone();
 }
 
