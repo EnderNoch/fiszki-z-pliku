@@ -454,6 +454,10 @@ const LANG = {
     errNoCards:     'Nie znaleziono fiszek w pliku. Upewnij się, że plik CSV ma dwie kolumny: pytanie i odpowiedź.',
     langBtn:        'PL',
     langTitle:      'Switch to English / Zmień na angielski',
+    ttFullscreen:   'Pełny ekran',
+    ttThemeAuto:    'Automatyczny (systemowy)',
+    ttThemeLight:   'Jasny',
+    ttThemeDark:    'Ciemny',
   },
   en: {
     newFile:        'New file',
@@ -487,6 +491,10 @@ const LANG = {
     errNoCards:     'No flashcards found. Make sure the CSV has two columns: question and answer.',
     langBtn:        'EN',
     langTitle:      'Switch to Polish / Zmień na polski',
+    ttFullscreen:   'Fullscreen',
+    ttThemeAuto:    'Auto (system)',
+    ttThemeLight:   'Light',
+    ttThemeDark:    'Dark',
   }
 };
 
@@ -521,6 +529,10 @@ function applyLang() {
   el('btn-new-csv').textContent           = t('newCsv');
   el('btn-lang').textContent              = t('langBtn');
   el('btn-lang').title                    = t('langTitle');
+  el('btn-fullscreen').title              = t('ttFullscreen');
+  document.querySelector('[data-mode="auto"]') .title = t('ttThemeAuto');
+  document.querySelector('[data-mode="light"]').title = t('ttThemeLight');
+  document.querySelector('[data-mode="dark"]') .title = t('ttThemeDark');
   el('btn-no').querySelector('.btn-label').textContent  = t('no');
   el('btn-yes').querySelector('.btn-label').textContent = t('yes');
   applyHints();
