@@ -83,6 +83,8 @@
 
   /* override body — shared CSS centres for timer page, we need column layout */
   * { -webkit-tap-highlight-color: transparent; }
+  html.is-mobile *:focus { outline: none; }
+  html.is-mobile button, html.is-mobile label { -webkit-touch-callout: none; }
 
   body {
     align-items: stretch;
@@ -106,6 +108,9 @@
   }
   html.is-mobile .rate-row {
     flex-shrink: 0;
+  }
+  html.is-mobile #card-size-box {
+    min-height: 0;
   }
   @media (min-width: 640px) {
     body { padding: 24px 40px; }
