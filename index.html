@@ -273,6 +273,7 @@
 
 <!-- ══ GLOBAL TOOLBAR ══ -->
 <div id="global-toolbar">
+  <div id="toolbar-btns" style="display:contents">
   <button class="btn secondary" id="btn-fullscreen" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="toggleFullscreen()" title="Pełny ekran">
     <svg id="fs-icon-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
@@ -308,6 +309,7 @@
       </svg>
     </button>
   </div>
+  </div><!-- /toolbar-btns -->
 </div>
 
 <!-- ══ UPLOAD ══ -->
@@ -336,7 +338,7 @@
     </div>
   </div>
 
-  <div class="options-row">
+  <div class="options-row" id="options-row">
     <button class="btn secondary" id="btn-new-file" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
     <label class="toggle-label">
       <span class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></span>
@@ -567,6 +569,7 @@ function toggleLang() {
     cards = parsed;
     current = 0; ratings = {};
     buildOrder();
+    moveToolbarBtns('study');
     showCard(false);
   } catch (_) {
     localStorage.removeItem('savedCards');
@@ -648,9 +651,16 @@ function splitCSVRows(text, delim) {
 }
 
 // ── Deck logic ─────────────────────────────────────────
+function moveToolbarBtns(to) {
+  const btns = document.getElementById('toolbar-btns');
+  const target = document.getElementById(to === 'study' ? 'options-row' : 'global-toolbar');
+  if (btns && target) target.appendChild(btns);
+}
+
 function startDeck() {
   current = 0; ratings = {};
   buildOrder();
+  moveToolbarBtns('study');
   showFade('upload-screen', 'study-screen');
   showCard(false);
 }
@@ -934,6 +944,7 @@ function retryUnknown() {
   cards = unknownIndices.map(i => cards[i]);
   current = 0; ratings = {};
   buildOrder();
+  moveToolbarBtns('study');
   show('study-screen');
   showCard(false);
 }
@@ -941,6 +952,7 @@ function retryUnknown() {
 function restartDeck() {
   current = 0; ratings = {};
   buildOrder();
+  moveToolbarBtns('study');
   show('study-screen');
   showCard(false);
 }
@@ -950,6 +962,7 @@ function resetToUpload() {
   fileInput.value = '';
   localStorage.removeItem('savedCards');
   document.documentElement.classList.remove('has-saved-cards');
+  moveToolbarBtns('upload');
   show('upload-screen');
 }
 
