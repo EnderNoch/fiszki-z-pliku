@@ -206,10 +206,6 @@
   .card-face.front { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 1; transform: scale(1); }
   .card-face.back  { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 0; transform: scale(0.94); }
 
-  .rating-badge { position: absolute; top: 14px; right: 16px; font-size: .82rem; font-weight: 700; letter-spacing: .02em; opacity: 0; transition: opacity .2s; pointer-events: none; padding: 2px 10px; border-radius: var(--shape-full); }
-  .rating-badge.visible { opacity: 1; }
-  .rating-badge.known-badge   { color: var(--green); background: var(--green-container); border: 1px solid var(--green-border); }
-  .rating-badge.unknown-badge { color: var(--red);   background: var(--red-container);   border: 1px solid var(--red-border); }
 
   .card-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; opacity: .65; color: var(--md-on-surface-variant); }
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.6; color: var(--text); }
@@ -340,13 +336,11 @@
     <div id="card-wrapper">
       <div class="card-inner" id="card-inner">
         <div class="card-face front">
-          <div class="rating-badge" id="badge-front"></div>
           <div class="card-label">Pytanie</div>
           <div class="card-text" id="card-front"></div>
           <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
         </div>
         <div class="card-face back">
-          <div class="rating-badge" id="badge-back"></div>
           <div class="card-label">Odpowiedź</div>
           <div class="card-text" id="card-back"></div>
         </div>
@@ -686,13 +680,6 @@ function updateRatingUI() {
   const r = ratings[current];
   document.getElementById('btn-yes').classList.toggle('active-yes', r === true);
   document.getElementById('btn-no') .classList.toggle('active-no',  r === false);
-  const badgeClass = r === true ? 'known-badge' : r === false ? 'unknown-badge' : '';
-  const badgeText  = r === true ? '✓' : r === false ? '✗' : '';
-  ['badge-front','badge-back'].forEach(id => {
-    const el = document.getElementById(id);
-    el.textContent = badgeText;
-    el.className = 'rating-badge' + (badgeText ? ' visible ' + badgeClass : '');
-  });
 }
 
 function countRatings() {
