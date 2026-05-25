@@ -203,7 +203,7 @@
 
   .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; }
   .card-face.front { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 1; transform: scale(1); }
-  .card-face.back  { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 0; transform: scale(0.94); justify-content: space-between; padding-bottom: 20px; }
+  .card-face.back  { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 0; transform: scale(0.94); justify-content: center; padding-bottom: 90px; }
 
   .rating-badge { position: absolute; top: 14px; right: 16px; font-size: .82rem; font-weight: 700; letter-spacing: .02em; opacity: 0; transition: opacity .2s; pointer-events: none; padding: 2px 10px; border-radius: var(--shape-full); }
   .rating-badge.visible { opacity: 1; }
@@ -219,7 +219,7 @@
 
   /* ── Rate buttons ── */
   .rate-row { display: flex; gap: 12px; width: 100%; flex-shrink: 0; }
-  .card-rate-row { display: flex; gap: 10px; width: 100%; margin-top: 20px; flex-shrink: 0; }
+  .card-rate-row { display: flex; gap: 10px; position: absolute; bottom: 18px; left: 24px; right: 24px; }
   .rate-btn { flex: 1; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; }
   .rate-btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
   .rate-btn:active { transform: scale(.95); }
