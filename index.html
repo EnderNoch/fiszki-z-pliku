@@ -226,7 +226,7 @@
   /* ── Rate buttons ── */
   .rate-row { display: flex; gap: 12px; width: 100%; flex-shrink: 0; }
   .card-rate-row { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px; z-index: 20; }
-  .rate-btn { flex: 1; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; }
+  .rate-btn { flex: 1; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; white-space: nowrap; }
   .rate-btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
   .rate-btn:active { transform: scale(.95); }
   .rate-btn.no  { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
