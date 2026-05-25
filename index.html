@@ -217,7 +217,7 @@
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.6; color: var(--text); }
   .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 14px; opacity: .75; }
 
-  .nav-hint { font-size: .77rem; color: var(--muted); text-align: center; line-height: 1.65; }
+  .nav-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.65; margin-top: 10px; opacity: .8; }
   .nav-hint kbd { display: inline-block; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--shape-sm); padding: 1px 7px; font-size: .73rem; font-family: inherit; color: var(--text); }
 
   /* ── Rate buttons ── */
@@ -300,8 +300,6 @@
     </div>
   </div>
 
-  <div class="nav-hint" id="nav-hint" style="text-align:center;padding:4px 0 2px"></div>
-
   <div class="options-row">
     <button class="btn secondary" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
     <label class="toggle-label">
@@ -346,6 +344,7 @@
           <div class="card-label">Pytanie</div>
           <div class="card-text" id="card-front"></div>
           <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
+          <div class="nav-hint" id="nav-hint"></div>
         </div>
         <div class="card-face back">
           <div class="rating-badge" id="badge-back"></div>
