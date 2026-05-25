@@ -352,8 +352,8 @@
       </div>
     </div>
     <div class="card-rate-row">
-      <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)">✗&nbsp; Nie umiem &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
-      <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" >✓&nbsp; Umiem &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
+      <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span> &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
+      <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span> &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
     </div>
     <div class="nav-hint" id="nav-hint"></div>
     </div>
@@ -650,15 +650,15 @@ function animateCardIn(enterFrom) {
 // ── Button label feedback ───────────────────────────────
 function setBtnLabel(known) {
   const btn = document.getElementById(known ? 'btn-yes' : 'btn-no');
-  btn.textContent = known ? 'OK' : 'Następnym razem będzie lepiej';
+  btn.querySelector('.btn-label').textContent = known ? 'OK' : 'Następnym razem...';
   btn.classList.add('feedback');
 }
 
 function resetBtnLabels() {
   const no  = document.getElementById('btn-no');
   const yes = document.getElementById('btn-yes');
-  no.innerHTML  = '✗&nbsp; Nie umiem';
-  yes.innerHTML = '✓&nbsp; Umiem';
+  no.querySelector('.btn-label').innerHTML  = '✗&nbsp; Nie umiem';
+  yes.querySelector('.btn-label').innerHTML = '✓&nbsp; Umiem';
   no.classList.remove('feedback');
   yes.classList.remove('feedback');
 }
