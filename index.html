@@ -92,6 +92,13 @@
     min-width: 0;
     box-sizing: border-box;
   }
+  html.is-mobile body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  html.is-mobile #study-screen {
+    overflow: hidden;
+  }
   @media (min-width: 640px) {
     body { padding: 24px 40px; }
     .card-text { font-size: 1.15rem; }
