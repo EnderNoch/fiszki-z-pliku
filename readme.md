@@ -1,4 +1,4 @@
-**[🇵🇱 Polski](README.md) · [🇬🇧 English](README.en.md)**
+**[🇵🇱 Polski](readme.md) · [🇬🇧 English](readme.en.md)**
 
 🔗 <https://endernoch.github.io/fiszki-z-pliku/>
 
