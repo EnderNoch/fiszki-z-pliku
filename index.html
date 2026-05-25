@@ -228,14 +228,6 @@
   .rate-btn.active-no  { background: rgba(242,184,181,.25); box-shadow: 0 0 0 2px var(--red);   transform: scale(1.02); }
   .rate-btn.active-yes { background: rgba(168,213,162,.25); box-shadow: 0 0 0 2px var(--green); transform: scale(1.02); }
 
-  /* ── Nav arrows ── */
-  .nav-arrows { display: flex; gap: 12px; width: 100%; flex-shrink: 0; }
-  html.is-mobile .nav-arrows { display: none; }
-  .nav-arrow { flex: 1; background: transparent; border: 1px solid var(--md-outline-variant); border-radius: var(--shape-full); color: var(--md-on-surface-variant); font-size: .9rem; font-weight: 600; font-family: inherit; padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; touch-action: manipulation; transition: background .2s, transform .15s cubic-bezier(.34,1.56,.64,1), color .2s, border-color .2s; position: relative; overflow: hidden; }
-  .nav-arrow:hover { background: rgba(230,225,229,.08); color: var(--text); border-color: var(--md-outline); }
-  .nav-arrow:active { transform: scale(.95); }
-  .btn-key { display: block; font-size: .65rem; font-weight: 400; opacity: .5; margin-top: 4px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: var(--shape-xs); padding: 1px 7px; letter-spacing: .04em; }
-  html.is-mobile .btn-key { display: none; }
 
   /* ── Result screen ── */
   #result-screen { display: none; flex-direction: column; align-items: center; gap: 18px; width: 100%; max-width: 400px; margin: 12px auto 0; text-align: center; }
@@ -360,11 +352,6 @@
 
   <!-- rate buttons (moved inside card-face back) -->
 
-  <!-- nav arrows -->
-  <div class="nav-arrows">
-    <button class="nav-arrow" onclick="prevCard()">◄&nbsp; Wstecz</button>
-    <button class="nav-arrow" onclick="nextCard()">Dalej &nbsp;►</button>
-  </div>
 
 
 </div>
@@ -828,10 +815,10 @@ const isMobile = document.documentElement.classList.contains('is-mobile');
   const navHint  = document.getElementById('nav-hint');
   const flipHint = document.getElementById('flip-hint');
   if (isMobile) {
-    navHint.textContent  = 'Przesuń kartę w lewo lub prawo, żeby przejść dalej';
+    navHint.textContent  = 'Przesuń w lewo lub prawo, żeby przejść dalej';
     flipHint.textContent = 'Dotknij, żeby zobaczyć odpowiedź';
   } else {
-    navHint.innerHTML    = 'Przeciągnij kartę, użyj <kbd>◄ Wstecz</kbd> <kbd>Dalej ►</kbd> lub <kbd>◄</kbd> <kbd>►</kbd> na klawiaturze';
+    navHint.innerHTML    = 'Przeciągnij kartę lub użyj <kbd>◄</kbd> <kbd>►</kbd> na klawiaturze';
     flipHint.textContent = 'Kliknij, żeby zobaczyć odpowiedź';
   }
 })();
