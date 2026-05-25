@@ -352,7 +352,7 @@
         </div>
       </div>
     </div>
-    <div class="card-rate-row">
+    <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()">
       <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span> &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
       <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span> &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
     </div>
