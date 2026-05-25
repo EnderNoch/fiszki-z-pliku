@@ -268,10 +268,10 @@
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
     </svg>
-    <p><strong>Przeciągnij plik tutaj</strong><br>lub kliknij, żeby wybrać plik</p>
+    <p id="drop-text"><strong>Przeciągnij plik tutaj</strong><br>lub kliknij, żeby wybrać plik</p>
   </div>
   <input type="file" id="file-input" accept=".csv,.txt,.tsv">
-  <div class="hint">Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.</div>
+  <div class="hint" id="upload-hint">Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.</div>
 </div>
 
 <!-- ══ STUDY ══ -->
@@ -289,10 +289,10 @@
   </div>
 
   <div class="options-row">
-    <button class="btn secondary" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
+    <button class="btn secondary" id="btn-new-file" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
     <label class="toggle-label">
       <span class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></span>
-      Losowa kolejność
+      <span id="shuffle-label">Losowa kolejność</span>
     </label>
     <button class="btn secondary" id="btn-fullscreen" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="toggleFullscreen()" title="Pełny ekran">
       <svg id="fs-icon-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -304,6 +304,7 @@
         <line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>
       </svg>
     </button>
+    <button class="btn secondary" id="btn-lang" style="height:40px;min-width:40px;padding:0 8px;flex-shrink:0;font-size:.78rem;font-weight:700;letter-spacing:.04em" onclick="toggleLang()">PL</button>
     <div class="theme-toggle" id="theme-toggle">
       <button class="theme-btn active" data-mode="auto" title="Auto (systemowy)">
         <svg class="icon-desktop" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -336,12 +337,12 @@
     <div id="card-wrapper">
       <div class="card-inner" id="card-inner">
         <div class="card-face front">
-          <div class="card-label">Pytanie</div>
+          <div class="card-label" id="label-front">Pytanie</div>
           <div class="card-text" id="card-front"></div>
           <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
         </div>
         <div class="card-face back">
-          <div class="card-label">Odpowiedź</div>
+          <div class="card-label" id="label-back">Odpowiedź</div>
           <div class="card-text" id="card-back"></div>
         </div>
       </div>
@@ -359,25 +360,25 @@
 <!-- ══ RESULT ══ -->
 <div id="result-screen">
   <div class="result-icon" id="result-icon">🎉</div>
-  <div class="result-title">Koniec talii!</div>
+  <div class="result-title" id="result-title">Koniec talii!</div>
   <div class="result-stats">
     <div class="stat-box known-box">
       <div class="stat-num" id="res-known">0</div>
-      <div class="stat-label">Umiem ✓</div>
+      <div class="stat-label" id="stat-label-known">Umiem ✓</div>
     </div>
     <div class="stat-box unknown-box">
       <div class="stat-num" id="res-unknown">0</div>
-      <div class="stat-label">Nie umiem ✗</div>
+      <div class="stat-label" id="stat-label-unknown">Nie umiem ✗</div>
     </div>
     <div class="stat-box total-box">
       <div class="stat-num" id="res-total">0</div>
-      <div class="stat-label">Wszystkich</div>
+      <div class="stat-label" id="stat-label-total">Wszystkich</div>
     </div>
   </div>
   <div class="result-msg" id="result-msg"></div>
   <button class="btn" id="btn-retry-unknown" onclick="retryUnknown()" style="background:var(--md-error-container);color:var(--md-on-error-container)">Powtórz nieumiane ✗</button>
-  <button class="btn" onclick="restartDeck()">Powtórz wszystkie</button>
-  <button class="btn secondary" onclick="resetToUpload()">Wgraj nowy CSV</button>
+  <button class="btn" id="btn-retry-all" onclick="restartDeck()">Powtórz wszystkie</button>
+  <button class="btn secondary" id="btn-new-csv" onclick="resetToUpload()">Wgraj nowy CSV</button>
 </div>
 
 <script>
@@ -410,6 +411,123 @@ let current   = 0;
 let flipped   = false;
 let shuffleOn = false;
 let transitioning = false;
+
+const el = id => document.getElementById(id);
+
+// ── i18n ──────────────────────────────────────────────
+let lang = (function(){
+  const saved = localStorage.getItem('lang');
+  if (saved) return saved;
+  return navigator.language.startsWith('pl') ? 'pl' : 'en';
+})();
+
+const LANG = {
+  pl: {
+    newFile:        'Nowy plik',
+    shuffle:        'Losowa kolejność',
+    dropTitle:      'Przeciągnij plik tutaj',
+    dropSub:        'lub kliknij, żeby wybrać plik',
+    uploadHint:     'Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.',
+    labelQ:         'Pytanie',
+    labelA:         'Odpowiedź',
+    flipMouse:      'Kliknij, żeby zobaczyć odpowiedź',
+    flipTouch:      'Dotknij, żeby zobaczyć odpowiedź',
+    navMouse:       'Przeciągnij kartę lub użyj <kbd>◄</kbd> <kbd>►</kbd> na klawiaturze',
+    navTouch:       'Przesuń w lewo lub prawo, żeby przejść dalej',
+    no:             '✗  Nie umiem',
+    yes:            '✓  Umiem',
+    feedbackNo:     'Będzie lepiej!',
+    feedbackYes:    'OK',
+    cardOf:         (c, t) => `Karta ${c} z ${t}`,
+    resultTitle:    'Koniec talii!',
+    statKnown:      'Umiem ✓',
+    statUnknown:    'Nie umiem ✗',
+    statTotal:      'Wszystkich',
+    msgUnrated:     n => `${n} kart bez oceny.`,
+    msgPerfect:     'Brawo! Znasz wszystkie fiszki! 🏆',
+    msgBad:         'Nie przejmuj się — powtórz jeszcze raz!',
+    msgNormal:      'Powtórz nieumiane, żeby je opanować.',
+    retryUnknown:   'Powtórz nieumiane ✗',
+    retryAll:       'Powtórz wszystkie',
+    newCsv:         'Wgraj nowy CSV',
+    errFormat:      'Nieobsługiwany format — prześlij plik .csv, .txt lub .tsv',
+    errNoCards:     'Nie znaleziono fiszek w pliku. Upewnij się, że plik CSV ma dwie kolumny: pytanie i odpowiedź.',
+    langBtn:        'PL',
+  },
+  en: {
+    newFile:        'New file',
+    shuffle:        'Shuffle',
+    dropTitle:      'Drag file here',
+    dropSub:        'or click to choose a file',
+    uploadHint:     'Supports <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> files &mdash; two columns separated by comma or semicolon &mdash; math formulas are automatically detected and rendered (including NotebookLM exports) &mdash; the file is never sent anywhere or stored outside the browser cache.',
+    labelQ:         'Question',
+    labelA:         'Answer',
+    flipMouse:      'Click to see the answer',
+    flipTouch:      'Tap to see the answer',
+    navMouse:       'Drag the card or use <kbd>◄</kbd> <kbd>►</kbd> on keyboard',
+    navTouch:       'Swipe left or right to navigate',
+    no:             '✗  Don\'t know',
+    yes:            '✓  Got it',
+    feedbackNo:     'Keep trying!',
+    feedbackYes:    'Nice!',
+    cardOf:         (c, t) => `Card ${c} of ${t}`,
+    resultTitle:    'Deck complete!',
+    statKnown:      'Got it ✓',
+    statUnknown:    "Don't know ✗",
+    statTotal:      'Total',
+    msgUnrated:     n => `${n} cards unrated.`,
+    msgPerfect:     'Perfect! You know all the cards! 🏆',
+    msgBad:         "Don't worry — try again!",
+    msgNormal:      'Review the missed cards to master them.',
+    retryUnknown:   'Retry missed ✗',
+    retryAll:       'Retry all',
+    newCsv:         'Upload new CSV',
+    errFormat:      'Unsupported format — please upload a .csv, .txt or .tsv file',
+    errNoCards:     'No flashcards found. Make sure the CSV has two columns: question and answer.',
+    langBtn:        'EN',
+  }
+};
+
+function t(key, ...args) {
+  const v = LANG[lang][key];
+  return typeof v === 'function' ? v(...args) : v;
+}
+
+function applyHints() {
+  if (isMobile) {
+    el('nav-hint').textContent  = t('navTouch');
+    el('flip-hint').textContent = t('flipTouch');
+  } else {
+    el('nav-hint').innerHTML    = t('navMouse');
+    el('flip-hint').textContent = t('flipMouse');
+  }
+}
+
+function applyLang() {
+  el('btn-new-file').textContent          = t('newFile');
+  el('shuffle-label').textContent         = t('shuffle');
+  el('drop-text').innerHTML               = `<strong>${t('dropTitle')}</strong><br>${t('dropSub')}`;
+  el('upload-hint').innerHTML             = t('uploadHint');
+  el('label-front').textContent           = t('labelQ');
+  el('label-back').textContent            = t('labelA');
+  el('result-title').textContent          = t('resultTitle');
+  el('stat-label-known').textContent      = t('statKnown');
+  el('stat-label-unknown').textContent    = t('statUnknown');
+  el('stat-label-total').textContent      = t('statTotal');
+  el('btn-retry-unknown').textContent     = t('retryUnknown');
+  el('btn-retry-all').textContent         = t('retryAll');
+  el('btn-new-csv').textContent           = t('newCsv');
+  el('btn-lang').textContent              = t('langBtn');
+  el('btn-no').querySelector('.btn-label').textContent  = t('no');
+  el('btn-yes').querySelector('.btn-label').textContent = t('yes');
+  applyHints();
+}
+
+function toggleLang() {
+  lang = lang === 'pl' ? 'en' : 'pl';
+  localStorage.setItem('lang', lang);
+  applyLang();
+}
 
 // ── Restore saved deck on page load ───────────────────
 (function () {
@@ -444,7 +562,7 @@ fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fi
 function loadFile(file) {
   const name = file.name.toLowerCase();
   if (!name.endsWith('.csv') && !name.endsWith('.txt') && !name.endsWith('.tsv')) {
-    alert('Nieobsługiwany format — prześlij plik .csv, .txt lub .tsv');
+    alert(t('errFormat'));
     fileInput.value = '';
     return;
   }
@@ -473,7 +591,7 @@ function parseCSV(text) {
   }
 
   if (parsed.length === 0) {
-    alert('Nie znaleziono fiszek w pliku. Upewnij się, że plik CSV ma dwie kolumny: pytanie i odpowiedź.');
+    alert(t('errNoCards'));
     return;
   }
   cards = parsed;
@@ -681,16 +799,16 @@ function animateCardIn(enterFrom) {
 
 // ── Button label feedback ───────────────────────────────
 function setBtnLabel(known) {
-  const btn = document.getElementById(known ? 'btn-yes' : 'btn-no');
-  btn.querySelector('.btn-label').textContent = known ? 'OK' : 'Będzie lepiej!';
+  const btn = el(known ? 'btn-yes' : 'btn-no');
+  btn.querySelector('.btn-label').textContent = known ? t('feedbackYes') : t('feedbackNo');
   btn.classList.add('feedback');
 }
 
 function resetBtnLabels() {
-  const no  = document.getElementById('btn-no');
-  const yes = document.getElementById('btn-yes');
-  no.querySelector('.btn-label').innerHTML  = '✗&nbsp; Nie umiem';
-  yes.querySelector('.btn-label').innerHTML = '✓&nbsp; Umiem';
+  const no  = el('btn-no');
+  const yes = el('btn-yes');
+  no.querySelector('.btn-label').textContent  = t('no');
+  yes.querySelector('.btn-label').textContent = t('yes');
   no.classList.remove('feedback');
   yes.classList.remove('feedback');
 }
@@ -737,7 +855,7 @@ function updateProgress() {
   document.getElementById('prog-known')  .style.width = pctK + '%';
   document.getElementById('prog-unknown').style.width = pctU + '%';
   document.getElementById('prog-seen')   .style.width = pctS + '%';
-  document.getElementById('prog-label').textContent = `Karta ${current + 1} z ${total}`;
+  el('prog-label').textContent = t('cardOf', current + 1, total);
   document.getElementById('cnt-known')  .textContent = known;
   document.getElementById('cnt-unknown').textContent = unknown;
 }
@@ -769,10 +887,10 @@ function showResult() {
   document.getElementById('res-unknown').textContent = unknown;
   document.getElementById('res-total')  .textContent = total;
   let msg = '';
-  if (unrated > 0)        msg = `${unrated} kart bez oceny.`;
-  else if (unknown === 0) msg = 'Brawo! Znasz wszystkie fiszki! 🏆';
-  else if (known === 0)   msg = 'Nie przejmuj się — powtórz jeszcze raz!';
-  else                    msg = 'Powtórz nieumiane, żeby je opanować.';
+  if (unrated > 0)        msg = t('msgUnrated', unrated);
+  else if (unknown === 0) msg = t('msgPerfect');
+  else if (known === 0)   msg = t('msgBad');
+  else                    msg = t('msgNormal');
   document.getElementById('result-msg').textContent  = msg;
   document.getElementById('result-icon').textContent = (unknown === 0 && unrated === 0) ? '🏆' : known > unknown ? '👍' : '📚';
   document.getElementById('btn-retry-unknown').style.display = unknown > 0 ? '' : 'none';
@@ -837,17 +955,7 @@ function showFade(fromId, toId) {
 
 // ── Device hints ───────────────────────────────────────
 const isMobile = document.documentElement.classList.contains('is-mobile');
-(function() {
-  const navHint  = document.getElementById('nav-hint');
-  const flipHint = document.getElementById('flip-hint');
-  if (isMobile) {
-    navHint.textContent  = 'Przesuń w lewo lub prawo, żeby przejść dalej';
-    flipHint.textContent = 'Dotknij, żeby zobaczyć odpowiedź';
-  } else {
-    navHint.innerHTML    = 'Przeciągnij kartę lub użyj <kbd>◄</kbd> <kbd>►</kbd> na klawiaturze';
-    flipHint.textContent = 'Kliknij, żeby zobaczyć odpowiedź';
-  }
-})();
+applyLang();
 
 // ── Swipe / drag (touch + mouse) ───────────────────────
 let dragStartX = 0, dragStartY = 0, isDragging = false, suppressClick = false;
