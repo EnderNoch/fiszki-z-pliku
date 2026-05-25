@@ -292,7 +292,7 @@
     <button class="btn secondary" id="btn-new-file" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
     <label class="toggle-label">
       <span class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></span>
-      <span id="shuffle-label">Losowa kolejność</span>
+      <span id="shuffle-label">Losuj</span>
     </label>
     <button class="btn secondary" id="btn-fullscreen" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="toggleFullscreen()" title="Pełny ekran">
       <svg id="fs-icon-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -424,7 +424,7 @@ let lang = (function(){
 const LANG = {
   pl: {
     newFile:        'Nowy plik',
-    shuffle:        'Losowa kolejność',
+    shuffle:        'Losuj',
     dropTitle:      'Przeciągnij plik tutaj',
     dropSub:        'lub kliknij, żeby wybrać plik',
     uploadHint:     'Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.',
