@@ -532,6 +532,18 @@ function shuffle(arr) {
   }
 }
 
+// ── Math auto-wrap (brak $ w CSV) ─────────────────────
+function autoWrapMath(text) {
+  if (/\$/.test(text)) return text;           // już ma delimitery
+  if (!/\\[a-zA-Z]/.test(text)) return text;  // brak \command → nie LaTeX
+  // znajdź ostatnie ':' żeby oddzielić etykietę od wzoru
+  const ci = text.lastIndexOf(':');
+  if (ci !== -1 && ci < text.length - 2) {
+    return text.slice(0, ci + 1) + ' $' + text.slice(ci + 1).trim() + '$';
+  }
+  return '$' + text.trim() + '$';
+}
+
 // ── Math rendering (KaTeX) ─────────────────────────────
 function renderMath(el) {
   if (!window._katexReady || typeof renderMathInElement === 'undefined') return;
@@ -552,8 +564,8 @@ function showCard(enterFrom) {
   // enterFrom: false = bez animacji, 'left'/'right' = wjedź z tej strony
   const card = cards[order[current]];
   setFlipped(false, false);
-  document.getElementById('card-front').textContent = card.front;
-  document.getElementById('card-back').textContent  = card.back;
+  document.getElementById('card-front').textContent = autoWrapMath(card.front);
+  document.getElementById('card-back').textContent  = autoWrapMath(card.back);
   renderMath(document.getElementById('card-front'));
   renderMath(document.getElementById('card-back'));
   updateRatingUI();
