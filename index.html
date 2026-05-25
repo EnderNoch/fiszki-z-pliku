@@ -710,12 +710,8 @@ function updateProgress() {
 
 // ── Navigation (swipe/keyboard, no rating) ─────────────
 function nextCard() {
-  if (transitioning) return;
-  if (current < order.length - 1) {
-    animateCardOut('left', 'nav', () => { current++; showCard('right'); });
-  } else {
-    showResult();
-  }
+  if (transitioning || current >= order.length - 1) return;
+  animateCardOut('left', 'nav', () => { current++; showCard('right'); });
 }
 
 function prevCard() {
