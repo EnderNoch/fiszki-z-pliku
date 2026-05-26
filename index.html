@@ -210,7 +210,7 @@
   .card-inner { position: relative; width: 100%; height: 100%; }
   .card-inner.no-transition { transition: none !important; }
 
-  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
+  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
   .card-face > * { pointer-events: auto; }
   .card-face.front { opacity: 1; transform: translateY(0) scale(1); }
   .card-face.back  { opacity: 0; transform: translateY(12px) scale(0.96); }
@@ -222,12 +222,12 @@
   .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.6; color: var(--text); }
   .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 14px; opacity: .75; }
 
-  .nav-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.65; opacity: .8; position: absolute; bottom: 82px; left: 0; right: 0; pointer-events: none; }
+  .nav-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.65; opacity: .8; pointer-events: none; flex-shrink: 0; padding: 4px 0 2px; }
   .nav-hint kbd { display: inline-block; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--shape-sm); padding: 1px 7px; font-size: .73rem; font-family: inherit; color: var(--text); }
 
   /* ── Rate buttons ── */
   .rate-row { display: flex; gap: 12px; width: 100%; flex-shrink: 0; }
-  .card-rate-row { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px; z-index: 20; }
+  .card-rate-row { display: flex; gap: 10px; flex-shrink: 0; }
   .rate-btn { flex: 1; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; white-space: nowrap; }
   .rate-btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
   .rate-btn:active { transform: scale(.95); }
@@ -363,13 +363,12 @@
         </div>
       </div>
     </div>
-    <div class="card-btn-backdrop"></div>
-    <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()">
-      <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span> &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
-      <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span> &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
     </div>
-    <div class="nav-hint" id="nav-hint"></div>
-    </div>
+  <div class="nav-hint" id="nav-hint"></div>
+  <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+    <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span> &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
+    <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span> &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
+  </div>
   </div>
 
 </div>
@@ -1051,14 +1050,13 @@ scene.addEventListener('click', e => {
 // ── Android 16 press spring + ripple ──────────────────
 ;(function () {
   const sizeBox = document.getElementById('card-size-box');
-  const cardWrapper = document.getElementById('card-wrapper');
   const overlay = document.getElementById('card-ripple-overlay');
   let pressAnim = null;
 
   function springPress() {
     if (transitioning) return;
     if (pressAnim) pressAnim.cancel();
-    pressAnim = cardWrapper.animate(
+    pressAnim = sizeBox.animate(
       [{ transform: 'scale(1)' }, { transform: 'scale(0.955)' }],
       { duration: 110, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
     );
@@ -1068,7 +1066,7 @@ scene.addEventListener('click', e => {
     if (!pressAnim) return;
     pressAnim.cancel();
     pressAnim = null;
-    cardWrapper.animate(
+    sizeBox.animate(
       [{ transform: 'scale(0.955)' }, { transform: 'scale(1)' }],
       { duration: 480, easing: 'cubic-bezier(0.34,1.56,0.64,1)', fill: 'none' }
     );
