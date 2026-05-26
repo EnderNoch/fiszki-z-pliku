@@ -710,10 +710,14 @@ function autoWrapMath(text) {
     else if (c === '}') depth--;
     else if (c === ':' && depth === 0 && i < text.length - 2) { splitAt = i; break; }
   }
+  const hasFrac = /\\[dt]?frac/.test(text);
+
   if (splitAt !== -1) {
     const label   = text.slice(0, splitAt + 1);
     const formula = text.slice(splitAt + 1).trim();
-    if (/\\[a-zA-Z]|[\^_]/.test(formula)) return label + ' $' + formula + '$';
+    if (/\\[a-zA-Z]|[\^_]/.test(formula)) {
+      return hasFrac ? label + '\n$$' + formula + '$$' : label + ' $' + formula + '$';
+    }
   }
 
   // Mieszany tekst z kilkoma wzorami inline (słowa + LaTeX)
@@ -721,12 +725,12 @@ function autoWrapMath(text) {
   if (wordCount >= 2) {
     return text.replace(
       /((?:\\[a-zA-Z]+(?:\{[^}]*\}|\[[^\]]*\])*|[A-Za-z0-9]\^[{A-Za-z0-9\-+][^,;\s]*|[A-Za-z0-9]_[{0-9A-Za-z][^,;\s]*)+)/g,
-      '$$$1$$'
+      (m) => /\\[dt]?frac/.test(m) ? '\n$$' + m + '$$' : '$' + m + '$'
     );
   }
 
   // Cały tekst to wzór
-  return '$' + text.trim() + '$';
+  return hasFrac ? '$$' + text.trim() + '$$' : '$' + text.trim() + '$';
 }
 
 // ── Math rendering (MathJax 3) ─────────────────────────
