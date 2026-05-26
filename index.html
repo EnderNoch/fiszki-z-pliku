@@ -691,6 +691,8 @@ function shuffle(arr) {
 function autoWrapMath(text) {
   // Już ma delimitery ($, \(, \[) — MathJax obsłuży sam
   if (/\$|\\\(|\\\[/.test(text)) return text;
+  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{__} żeby nie były subscript-operatorami
+  text = text.replace(/_{2,}/g, m => '\\text{' + '_'.repeat(m.length) + '}');
 
   // Sygnały matematyczne
   const hasCmd    = /\\[a-zA-Z]/.test(text);
