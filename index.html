@@ -724,13 +724,13 @@ function autoWrapMath(text) {
       .replace(/\\\(([^]*?)\\\)/g,  (_, inner) => '\\(' + fixBlanks(inner) + '\\)')
       .replace(/\\\[([^]*?)\\\]/g,  (_, inner) => '\\[' + fixBlanks(inner) + '\\]');
   }
-  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{__}
-  text = fixBlanks(text);
-
-  // Sygnały matematyczne
+  // Sygnały matematyczne — sprawdź PRZED fixBlanks, żeby ___ nie były mylnie uznane za LaTeX
   const hasCmd    = /\\[a-zA-Z]/.test(text);
   const hasSupSub = /[A-Za-z0-9]\^[{A-Za-z0-9\-+]|[A-Za-z0-9]_[{0-9A-Za-z]/.test(text);
   if (!hasCmd && !hasSupSub) return text;
+
+  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{__}
+  text = fixBlanks(text);
 
   // Środowiska blokowe (\begin{…}…\end{…}) → display math
   if (/\\begin\s*\{/.test(text)) return '$$' + text.trim() + '$$';
