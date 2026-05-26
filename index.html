@@ -230,7 +230,9 @@
   .card-rate-row { display: flex; gap: 10px; flex-shrink: 0; }
   .rate-btn { flex: 1; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; white-space: nowrap; }
   .rate-btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
-  .rate-btn-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(0,0,0,.12); }
+  .rate-btn-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.30); }
+  [data-theme="light"] .rate-btn-ripple { background: rgba(0,0,0,.10); }
+  @media (prefers-color-scheme: light) { [data-theme="auto"] .rate-btn-ripple { background: rgba(0,0,0,.10); } }
   .rate-btn:active { transform: scale(.95); }
   .rate-btn.no  { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
   .rate-btn.yes { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
