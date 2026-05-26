@@ -11,10 +11,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/EnderNoch/endernoch.github.io@claude/add-auto-redirect-timer-Sgd7P/style.css" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-  onload="window._katexReady=true; renderMath(document.getElementById('card-front')); renderMath(document.getElementById('card-back'));"></script>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath:  [['$','$'],['\\(','\\)']],
+    displayMath: [['$$','$$'],['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    macros: {
+      RR:'\\mathbb{R}', NN:'\\mathbb{N}', ZZ:'\\mathbb{Z}',
+      degree:'^\\circ', celsius:'^\\circ\\mathrm{C}'
+    }
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+  startup: {
+    ready() {
+      MathJax.startup.defaultReady();
+      window._mathReady = true;
+      renderMath(document.getElementById('card-front'));
+      renderMath(document.getElementById('card-back'));
+    }
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <style>
   /* ── MD3 variable fallbacks (overridden by CDN style.css when loaded) ── */
   @layer md3-fallback {
@@ -255,23 +275,8 @@
   .stat-box.total-box   .stat-num { color: var(--md-primary); }
   .result-msg { font-size: .88rem; color: var(--muted); line-height: 1.6; }
 
-  /* ── OpenDyslexicMono override dla KaTeX / MathJax / MathML ── */
-  @font-face { font-family: "OpenDyslexicMono"; src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Main";       src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Math";       src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Size1";      src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Size2";      src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Size3";      src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Size4";      src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_SansSerif";  src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Script";     src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Typewriter"; src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Caligraphic";src: local("OpenDyslexicMono-Regular"); }
-  @font-face { font-family: "KaTeX_Fraktur";    src: local("OpenDyslexicMono-Regular"); }
-
-  .katex, .katex * { font-family: "OpenDyslexicMono", monospace !important; }
-  .MathJax, .MathJax *, mjx-container, mjx-container * { font-family: "OpenDyslexicMono", monospace !important; }
-  math, math * { font-family: "OpenDyslexicMono", monospace !important; }
+  .MathJax, .MathJax *, mjx-container, mjx-container * { font-family: inherit !important; }
+  math, math * { font-family: inherit !important; }
 </style>
 </head>
 <body>
@@ -683,13 +688,8 @@ function shuffle(arr) {
 }
 
 // ── Math auto-wrap (brak $ w CSV) ─────────────────────
-function sanitizeMathBlanks(s) {
-  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{\_\_…} żeby KaTeX nie traktował jako subscript
-  return s.replace(/_{2,}/g, m => '\\text{' + '\\_'.repeat(m.length) + '}');
-}
-
 function autoWrapMath(text) {
-  // Już ma delimitery ($, \(, \[) — KaTeX obsłuży sam
+  // Już ma delimitery ($, \(, \[) — MathJax obsłuży sam
   if (/\$|\\\(|\\\[/.test(text)) return text;
 
   // Sygnały matematyczne
@@ -698,7 +698,7 @@ function autoWrapMath(text) {
   if (!hasCmd && !hasSupSub) return text;
 
   // Środowiska blokowe (\begin{…}…\end{…}) → display math
-  if (/\\begin\s*\{/.test(text)) return '$$' + sanitizeMathBlanks(text.trim()) + '$$';
+  if (/\\begin\s*\{/.test(text)) return '$$' + text.trim() + '$$';
 
   // Szukaj pierwszego ':' poza nawiasami klamrowymi (etykieta: wzór)
   let depth = 0, splitAt = -1;
@@ -710,44 +710,28 @@ function autoWrapMath(text) {
   }
   if (splitAt !== -1) {
     const label   = text.slice(0, splitAt + 1);
-    const formula = sanitizeMathBlanks(text.slice(splitAt + 1).trim());
+    const formula = text.slice(splitAt + 1).trim();
     if (/\\[a-zA-Z]|[\^_]/.test(formula)) return label + ' $' + formula + '$';
   }
 
   // Mieszany tekst z kilkoma wzorami inline (słowa + LaTeX)
   const wordCount = (text.match(/\b[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{3,}\b/gu) || []).length;
   if (wordCount >= 2) {
-    return sanitizeMathBlanks(text).replace(
+    return text.replace(
       /((?:\\[a-zA-Z]+(?:\{[^}]*\}|\[[^\]]*\])*|[A-Za-z0-9]\^[{A-Za-z0-9\-+][^,;\s]*|[A-Za-z0-9]_[{0-9A-Za-z][^,;\s]*)+)/g,
       '$$$1$$'
     );
   }
 
   // Cały tekst to wzór
-  return '$' + sanitizeMathBlanks(text.trim()) + '$';
+  return '$' + text.trim() + '$';
 }
 
-// ── Math rendering (KaTeX) ─────────────────────────────
+// ── Math rendering (MathJax 3) ─────────────────────────
 function renderMath(el) {
-  if (!window._katexReady || typeof renderMathInElement === 'undefined') return;
-  renderMathInElement(el, {
-    delimiters: [
-      { left: '$$',   right: '$$',   display: true  },
-      { left: '$',    right: '$',    display: false },
-      { left: '\\(',  right: '\\)',  display: false },
-      { left: '\\[',  right: '\\]',  display: true  }
-    ],
-    macros: {
-      '\\RR': '\\mathbb{R}',
-      '\\NN': '\\mathbb{N}',
-      '\\ZZ': '\\mathbb{Z}',
-      '\\vec': '\\overrightarrow',
-      '\\degree': '^\\circ',
-      '\\celsius': '^\\circ\\mathrm{C}'
-    },
-    throwOnError: false,
-    errorColor:   'currentColor'
-  });
+  if (!window._mathReady || !window.MathJax || !MathJax.typesetPromise) return;
+  MathJax.typesetClear([el]);
+  MathJax.typesetPromise([el]).catch(() => {});
 }
 
 // ── Card display ───────────────────────────────────────
