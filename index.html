@@ -201,19 +201,19 @@
 
   /* ── Card scene ── */
   .card-scene { width: 100%; flex: 1; min-height: 0; display: flex; flex-direction: column; cursor: pointer; user-select: none; touch-action: pan-y; }
-  #card-size-box { flex: 1; min-height: 220px; position: relative; }
+  #card-size-box { flex: 1; min-height: 220px; position: relative; background: var(--card-bg); border-radius: var(--shape-xl); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); }
   #card-ripple-overlay { position: absolute; inset: 0; border-radius: var(--shape-xl); overflow: hidden; pointer-events: none; z-index: 10; }
   .card-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.16); }
   [data-theme="light"] .card-ripple { background: rgba(0,0,0,.07); }
   @media (prefers-color-scheme: light) { [data-theme="auto"] .card-ripple { background: rgba(0,0,0,.07); } }
-  #card-wrapper { position: absolute; inset: 0; will-change: transform, opacity; }
+  #card-wrapper { position: absolute; inset: 0; will-change: transform, opacity; border-radius: var(--shape-xl); overflow: hidden; }
   .card-inner { position: relative; width: 100%; height: 100%; }
   .card-inner.no-transition { transition: none !important; }
 
-  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
+  .card-face { position: absolute; inset: 0 0 100px 0; padding: 28px 24px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
   .card-face > * { pointer-events: auto; }
-  .card-face.front { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 1; transform: scale(1); }
-  .card-face.back  { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 0; transform: scale(0.94); }
+  .card-face.front { opacity: 1; transform: translateY(0) scale(1); }
+  .card-face.back  { opacity: 0; transform: translateY(12px) scale(0.96); }
 
 
   .card-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; opacity: .65; color: var(--md-on-surface-variant); }
