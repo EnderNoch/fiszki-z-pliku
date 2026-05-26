@@ -210,10 +210,12 @@
   .card-inner { position: relative; width: 100%; height: 100%; }
   .card-inner.no-transition { transition: none !important; }
 
-  .card-face { position: absolute; inset: 0 0 100px 0; padding: 28px 24px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
+  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
   .card-face > * { pointer-events: auto; }
   .card-face.front { opacity: 1; transform: translateY(0) scale(1); }
   .card-face.back  { opacity: 0; transform: translateY(12px) scale(0.96); }
+  /* stable backdrop so the face animation doesn't bleed into the button area */
+  .card-btn-backdrop { position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: var(--card-bg); border-radius: 0 0 var(--shape-xl) var(--shape-xl); z-index: 15; pointer-events: none; }
 
 
   .card-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; opacity: .65; color: var(--md-on-surface-variant); }
@@ -361,6 +363,7 @@
         </div>
       </div>
     </div>
+    <div class="card-btn-backdrop"></div>
     <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()">
       <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span> &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
       <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span> &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
