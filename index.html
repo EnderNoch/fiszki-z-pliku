@@ -817,9 +817,11 @@ function animateCardOut(direction, type, onDone) {
 
 function animateCardIn(enterFrom) {
   const wrapper = document.getElementById('card-wrapper');
+  wrapper.getAnimations().forEach(a => a.cancel());
+  wrapper.style.transform = '';
+  wrapper.style.opacity   = '';
   let keyframes, duration, easing;
   if (enterFrom === 'left' || enterFrom === 'right') {
-    // wjazd z boku: MD3 Emphasized Decelerate — sprężysty wjazd
     const fromX = enterFrom === 'right' ? wrapper.offsetWidth * 0.18 : -wrapper.offsetWidth * 0.18;
     keyframes = [
       { transform: `translateX(${fromX}px) scale(0.86)`, opacity: 0 },
@@ -828,7 +830,6 @@ function animateCardIn(enterFrom) {
     duration = 420;
     easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
   } else {
-    // wjazd po ocenie (z centrum, scale)
     keyframes = [
       { transform: 'scale(0.86)', opacity: 0 },
       { transform: 'scale(1)',    opacity: 1 }
@@ -836,8 +837,13 @@ function animateCardIn(enterFrom) {
     duration = 380;
     easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
   }
-  const anim = wrapper.animate(keyframes, { duration, easing, fill: 'none' });
-  anim.onfinish = () => { resetBtnLabels(); };
+  const anim = wrapper.animate(keyframes, { duration, easing, fill: 'forwards' });
+  anim.onfinish = () => {
+    anim.cancel();
+    wrapper.style.transform = '';
+    wrapper.style.opacity   = '';
+    resetBtnLabels();
+  };
 }
 
 // ── Button label feedback ───────────────────────────────
