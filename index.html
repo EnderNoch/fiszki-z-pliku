@@ -2,7 +2,7 @@
 <html lang="pl" data-theme="auto">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#1c1b1f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f7f2fa" media="(prefers-color-scheme: light)">
 <title>Fiszki z pliku</title>
@@ -103,6 +103,7 @@
   html.is-mobile body {
     height: 100%;
     overflow: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
   }
   html.is-mobile #study-screen {
     height: 100%;
