@@ -600,7 +600,7 @@ function toggleLang() {
         }
       } catch (_) {}
     }
-    if (!restored) { current = 0; ratings = {}; buildOrder(); }
+    if (!restored) { current = 0; ratings = {}; buildOrder(); saveSession(); }
     moveToolbarBtns('study');
     showCard(false);
   } catch (_) {
