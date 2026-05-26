@@ -736,23 +736,25 @@ function autoWrapMath(text) {
 // ── Math rendering (MathJax 3) ─────────────────────────
 function renderMath(el) {
   if (!window._mathReady || !window.MathJax || !MathJax.typesetPromise) return;
-  MathJax.typesetClear([el]);
   MathJax.typesetPromise([el]).catch(() => {});
 }
 
 // ── Card display ───────────────────────────────────────
 function showCard(enterFrom) {
-  // enterFrom: false = bez animacji, 'left'/'right' = wjedź z tej strony
   const card = cards[order[current]];
+  const front = document.getElementById('card-front');
+  const back  = document.getElementById('card-back');
+  // typesetClear MUSI być przed zmianą textContent (MathJax issue #2191)
+  if (window._mathReady && window.MathJax) MathJax.typesetClear([front, back]);
   setFlipped(false, false);
-  document.getElementById('card-front').textContent = autoWrapMath(card.front);
-  document.getElementById('card-back').textContent  = autoWrapMath(card.back);
-  renderMath(document.getElementById('card-front'));
-  renderMath(document.getElementById('card-back'));
+  front.textContent = autoWrapMath(card.front);
+  back.textContent  = autoWrapMath(card.back);
+  renderMath(front);
+  renderMath(back);
   updateRatingUI();
   updateProgress();
   if (enterFrom) {
-    transitioning = false; // odblokuj input — enter animacja może grać w tle
+    transitioning = false;
     animateCardIn(enterFrom);
   } else {
     transitioning = false;
