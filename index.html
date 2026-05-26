@@ -437,6 +437,13 @@ let flipped   = false;
 let shuffleOn = false;
 let transitioning = false;
 
+function saveSession() {
+  try { localStorage.setItem('sessionState', JSON.stringify({ current, ratings, order, shuffleOn })); } catch (_) {}
+}
+function clearSession() {
+  try { localStorage.removeItem('sessionState'); } catch (_) {}
+}
+
 const el = id => document.getElementById(id);
 
 // ── i18n ──────────────────────────────────────────────
@@ -577,8 +584,23 @@ function toggleLang() {
     const parsed = JSON.parse(saved);
     if (!Array.isArray(parsed) || parsed.length === 0) return;
     cards = parsed;
-    current = 0; ratings = {};
-    buildOrder();
+    let restored = false;
+    const ss = localStorage.getItem('sessionState');
+    if (ss) {
+      try {
+        const s = JSON.parse(ss);
+        if (s && Array.isArray(s.order) && s.order.length === cards.length &&
+            s.order.every(i => i >= 0 && i < cards.length)) {
+          order     = s.order;
+          ratings   = (s.ratings && typeof s.ratings === 'object') ? s.ratings : {};
+          shuffleOn = !!s.shuffleOn;
+          current   = (typeof s.current === 'number') ? Math.min(s.current, order.length - 1) : 0;
+          document.getElementById('shuffle-toggle').checked = shuffleOn;
+          restored = true;
+        }
+      } catch (_) {}
+    }
+    if (!restored) { current = 0; ratings = {}; buildOrder(); saveSession(); }
     moveToolbarBtns('study');
     showCard(false);
   } catch (_) {
@@ -670,6 +692,7 @@ function moveToolbarBtns(to) {
 function startDeck() {
   current = 0; ratings = {};
   buildOrder();
+  saveSession();
   moveToolbarBtns('study');
   showFade('upload-screen', 'study-screen');
   showCard(false);
@@ -876,6 +899,7 @@ function resetBtnLabels() {
 function rateCard(known) {
   if (transitioning) return;
   ratings[current] = known;
+  saveSession();
   updateRatingUI();
   setBtnLabel(known);          // tekst zmienia się natychmiast przy kliknięciu
   const dir = 'left';
@@ -922,12 +946,12 @@ function updateProgress() {
 // ── Navigation (swipe/keyboard, no rating) ─────────────
 function nextCard() {
   if (transitioning || current >= order.length - 1) return;
-  animateCardOut('left', 'nav', () => { current++; showCard('right'); });
+  animateCardOut('left', 'nav', () => { current++; saveSession(); showCard('right'); });
 }
 
 function prevCard() {
   if (transitioning || current === 0) return;
-  animateCardOut('right', 'nav', () => { current--; showCard('left'); });
+  animateCardOut('right', 'nav', () => { current--; saveSession(); showCard('left'); });
 }
 
 function toggleShuffle() {
@@ -941,6 +965,7 @@ function toggleShuffle() {
   shuffleOn = document.getElementById('shuffle-toggle').checked;
   ratings = {}; current = 0;
   buildOrder();
+  saveSession();
   showCard(false);
 }
 
@@ -970,8 +995,10 @@ function retryUnknown() {
   }
   if (unknownIndices.length === 0) return;
   cards = unknownIndices.map(i => cards[i]);
+  localStorage.setItem('savedCards', JSON.stringify(cards));
   current = 0; ratings = {};
   buildOrder();
+  saveSession();
   moveToolbarBtns('study');
   show('study-screen');
   showCard(false);
@@ -980,6 +1007,7 @@ function retryUnknown() {
 function restartDeck() {
   current = 0; ratings = {};
   buildOrder();
+  saveSession();
   moveToolbarBtns('study');
   show('study-screen');
   showCard(false);
@@ -989,6 +1017,7 @@ function resetToUpload() {
   cards = []; order = []; ratings = {}; current = 0;
   fileInput.value = '';
   localStorage.removeItem('savedCards');
+  clearSession();
   document.documentElement.classList.remove('has-saved-cards');
   moveToolbarBtns('upload');
   show('upload-screen');
