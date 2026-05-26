@@ -862,7 +862,7 @@ function rateCard(known) {
   ratings[current] = known;
   updateRatingUI();
   setBtnLabel(known);          // tekst zmienia się natychmiast przy kliknięciu
-  const dir = known ? 'left' : 'right';
+  const dir = 'right';
   animateCardOut(dir, 'rate', () => {
     if (current < order.length - 1) {
       current++;
