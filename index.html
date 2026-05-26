@@ -688,11 +688,21 @@ function shuffle(arr) {
 }
 
 // ── Math auto-wrap (brak $ w CSV) ─────────────────────
+function fixBlanks(s) {
+  return s.replace(/_{2,}/g, m => '\\text{' + '_'.repeat(m.length) + '}');
+}
+
 function autoWrapMath(text) {
-  // Już ma delimitery ($, \(, \[) — MathJax obsłuży sam
-  if (/\$|\\\(|\\\[/.test(text)) return text;
-  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{__} żeby nie były subscript-operatorami
-  text = text.replace(/_{2,}/g, m => '\\text{' + '_'.repeat(m.length) + '}');
+  // Już ma delimitery — sanityzuj blanki wewnątrz nich i oddaj MathJax
+  if (/\$|\\\(|\\\[/.test(text)) {
+    return text
+      .replace(/\$\$([^]*?)\$\$/g, (_, inner) => '$$' + fixBlanks(inner) + '$$')
+      .replace(/\$([^$\n]+)\$/g,    (_, inner) => '$'  + fixBlanks(inner) + '$')
+      .replace(/\\\(([^]*?)\\\)/g,  (_, inner) => '\\(' + fixBlanks(inner) + '\\)')
+      .replace(/\\\[([^]*?)\\\]/g,  (_, inner) => '\\[' + fixBlanks(inner) + '\\]');
+  }
+  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{__}
+  text = fixBlanks(text);
 
   // Sygnały matematyczne
   const hasCmd    = /\\[a-zA-Z]/.test(text);
