@@ -683,17 +683,22 @@ function shuffle(arr) {
 }
 
 // ── Math auto-wrap (brak $ w CSV) ─────────────────────
+function sanitizeMathBlanks(s) {
+  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{\_\_…} żeby KaTeX nie traktował jako subscript
+  return s.replace(/_{2,}/g, m => '\\text{' + '\\_'.repeat(m.length) + '}');
+}
+
 function autoWrapMath(text) {
   // Już ma delimitery ($, \(, \[) — KaTeX obsłuży sam
   if (/\$|\\\(|\\\[/.test(text)) return text;
 
   // Sygnały matematyczne
-  const hasCmd    = /\\[a-zA-Z]/.test(text);                              // \frac, \alpha …
-  const hasSupSub = /[A-Za-z0-9]\^[{A-Za-z0-9\-+]|[A-Za-z0-9]_[{0-9A-Za-z]/.test(text); // x^2, H_2O
+  const hasCmd    = /\\[a-zA-Z]/.test(text);
+  const hasSupSub = /[A-Za-z0-9]\^[{A-Za-z0-9\-+]|[A-Za-z0-9]_[{0-9A-Za-z]/.test(text);
   if (!hasCmd && !hasSupSub) return text;
 
   // Środowiska blokowe (\begin{…}…\end{…}) → display math
-  if (/\\begin\s*\{/.test(text)) return '$$' + text.trim() + '$$';
+  if (/\\begin\s*\{/.test(text)) return '$$' + sanitizeMathBlanks(text.trim()) + '$$';
 
   // Szukaj pierwszego ':' poza nawiasami klamrowymi (etykieta: wzór)
   let depth = 0, splitAt = -1;
@@ -705,22 +710,21 @@ function autoWrapMath(text) {
   }
   if (splitAt !== -1) {
     const label   = text.slice(0, splitAt + 1);
-    const formula = text.slice(splitAt + 1).trim();
+    const formula = sanitizeMathBlanks(text.slice(splitAt + 1).trim());
     if (/\\[a-zA-Z]|[\^_]/.test(formula)) return label + ' $' + formula + '$';
   }
 
   // Mieszany tekst z kilkoma wzorami inline (słowa + LaTeX)
   const wordCount = (text.match(/\b[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{3,}\b/gu) || []).length;
   if (wordCount >= 2) {
-    // Zawiń każdy ciąg LaTeX-owy osobno
-    return text.replace(
+    return sanitizeMathBlanks(text).replace(
       /((?:\\[a-zA-Z]+(?:\{[^}]*\}|\[[^\]]*\])*|[A-Za-z0-9]\^[{A-Za-z0-9\-+][^,;\s]*|[A-Za-z0-9]_[{0-9A-Za-z][^,;\s]*)+)/g,
       '$$$1$$'
     );
   }
 
   // Cały tekst to wzór
-  return '$' + text.trim() + '$';
+  return '$' + sanitizeMathBlanks(text.trim()) + '$';
 }
 
 // ── Math rendering (KaTeX) ─────────────────────────────
