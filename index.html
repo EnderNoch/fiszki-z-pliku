@@ -189,7 +189,9 @@
   .hint-row { width: 100%; text-align: center; margin-top: 2px; flex-shrink: 0; }
 
   /* M3 Switch */
-  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: pointer; }
+  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: pointer; user-select: none; }
+  .toggle-label.pop { animation: toggle-pop .35s cubic-bezier(.34,1.56,.64,1) forwards; }
+  @keyframes toggle-pop { 0%{transform:scale(1)} 40%{transform:scale(.88)} 100%{transform:scale(1)} }
   .toggle { position: relative; width: 52px; height: 32px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
   .slider { position: absolute; inset: 0; background: var(--md-surface-container-highest); border: 2px solid var(--md-outline); border-radius: var(--shape-full); transition: background .25s, border-color .25s; cursor: pointer; }
@@ -907,6 +909,10 @@ function prevCard() {
 }
 
 function toggleShuffle() {
+  const lbl = document.querySelector('.toggle-label');
+  lbl.classList.remove('pop');
+  void lbl.offsetWidth;
+  lbl.classList.add('pop');
   shuffleOn = document.getElementById('shuffle-toggle').checked;
   ratings = {}; current = 0;
   buildOrder();
