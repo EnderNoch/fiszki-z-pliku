@@ -230,6 +230,7 @@
   .card-rate-row { display: flex; gap: 10px; flex-shrink: 0; }
   .rate-btn { flex: 1; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; white-space: nowrap; }
   .rate-btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
+  .rate-btn-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(0,0,0,.12); }
   .rate-btn:active { transform: scale(.95); }
   .rate-btn.no  { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
   .rate-btn.yes { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
@@ -1100,6 +1101,28 @@ scene.addEventListener('click', e => {
   });
   window.addEventListener('pointerup',     springRelease);
   window.addEventListener('pointercancel', springRelease);
+})();
+
+// ── Rate button ripple ─────────────────────────────────
+;(function () {
+  function addBtnRipple(btn, clientX, clientY) {
+    const rect = btn.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const r = Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y));
+    const dot = document.createElement('span');
+    dot.className = 'rate-btn-ripple';
+    dot.style.cssText = `width:${r*2}px;height:${r*2}px;left:${x-r}px;top:${y-r}px;`;
+    btn.appendChild(dot);
+    dot.animate(
+      [{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1)', opacity: 0 }],
+      { duration: 480, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
+    ).onfinish = () => dot.remove();
+  }
+  ['btn-no', 'btn-yes'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.addEventListener('pointerdown', e => addBtnRipple(btn, e.clientX, e.clientY));
+  });
 })();
 
 // ── Keyboard ───────────────────────────────────────────
