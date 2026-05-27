@@ -628,6 +628,27 @@ function toggleLang() {
   applyLang();
 }
 
+
+// ── Load deck from URL hash (#data=base64url) ────────
+(function () {
+  const m = location.hash.match(/[#&]data=([^&]+)/);
+  if (!m) return;
+  try {
+    let b64 = decodeURIComponent(m[1]).replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4 ? '='.repeat(4 - b64.length % 4) : '';
+    const bytes = Uint8Array.from(atob(b64 + pad), c => c.charCodeAt(0));
+    const text = new TextDecoder('utf-8').decode(bytes);
+    // wyczyść poprzednią talię, żeby IIFE poniżej jej nie reaktywował
+    localStorage.removeItem('savedCards');
+    localStorage.removeItem('sessionState');
+    document.documentElement.classList.remove('has-saved-cards');
+    history.replaceState(null, '', location.pathname + location.search);
+    window.__pendingCSV = text;
+  } catch (e) {
+    console.error('Bad #data payload', e);
+  }
+})();
+
 // ── Restore saved deck on page load ───────────────────
 (function () {
   const saved = localStorage.getItem('savedCards');
@@ -1254,6 +1275,12 @@ document.addEventListener('fullscreenchange', () => {
   document.getElementById('fs-icon-expand'  ).style.display = on ? 'none' : '';
   document.getElementById('fs-icon-compress').style.display = on ? '' : 'none';
 });
+
+// ── Apply pending CSV from #data= hash ────────────────
+if (window.__pendingCSV) {
+  parseCSV(window.__pendingCSV);
+  delete window.__pendingCSV;
+}
 </script>
 </body>
 </html>
