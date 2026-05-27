@@ -976,21 +976,16 @@ function updateProgress() {
   el('cnt-unknown').textContent = unknown;
   if (!total) return;
   const cs = getComputedStyle(document.documentElement);
-  const cKnown = cs.getPropertyValue('--green').trim();
-  const cUnknown = cs.getPropertyValue('--red').trim();
-  const cSeen = cs.getPropertyValue('--md-primary').trim();
+  const cS = cs.getPropertyValue('--md-primary').trim();
+  const cK = cs.getPropertyValue('--green').trim();
+  const cU = cs.getPropertyValue('--red').trim();
   const visited = current + 1;
   const fill = document.getElementById('prog-fill');
-  fill.style.width = (visited / total * 100).toFixed(3) + '%';
-  const cardPct = 100 / visited;
-  const stops = [];
-  for (let i = 0; i < visited; i++) {
-    const s = (i * cardPct).toFixed(3), e = ((i + 1) * cardPct).toFixed(3);
-    const r = ratings[order[i]];
-    const col = r === true ? cKnown : r === false ? cUnknown : cSeen;
-    stops.push(`${col} ${s}% ${e}%`);
-  }
-  fill.style.backgroundImage = `linear-gradient(to right,${stops.join(',')})`;
+  fill.style.width = (visited / total * 100).toFixed(1) + '%';
+  const pS = ((visited - known - unknown) / visited * 100).toFixed(1);
+  const pK = ((visited - unknown) / visited * 100).toFixed(1);
+  fill.style.backgroundImage =
+    `linear-gradient(to right,${cS} 0% ${pS}%,${cK} ${pS}% ${pK}%,${cU} ${pK}% 100%)`;
 }
 
 // ── Navigation (swipe/keyboard, no rating) ─────────────
