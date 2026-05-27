@@ -217,7 +217,7 @@ window.MathJax = {
   .toggle input:checked + .slider::before { transform: translateX(20px) translateY(-50%); width: 20px; height: 20px; left: 4px; background: var(--md-primary); }
 
   /* ── Card scene ── */
-  .card-scene { width: 100%; flex: 1; min-height: 0; display: flex; flex-direction: column; cursor: pointer; user-select: none; touch-action: pan-y; }
+  .card-scene { width: 100%; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; cursor: pointer; user-select: none; touch-action: pan-y; }
   #card-size-box { flex: 1; min-height: 220px; position: relative; border-radius: var(--shape-xl); overflow: hidden; }
   #card-ripple-overlay { position: absolute; inset: 0; border-radius: var(--shape-xl); overflow: hidden; pointer-events: none; z-index: 10; }
   .card-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.16); }
@@ -253,8 +253,8 @@ window.MathJax = {
   .rate-btn:active { transform: scale(.95); }
   .rate-btn.no  { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
   .rate-btn.yes { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
-  .rate-btn.active-no  { background: rgba(242,184,181,.25); box-shadow: 0 0 0 2px var(--red); }
-  .rate-btn.active-yes { background: rgba(168,213,162,.25); box-shadow: 0 0 0 2px var(--green); }
+  .rate-btn.active-no  { background: rgba(242,184,181,.25); box-shadow: inset 0 0 0 2px var(--red); }
+  .rate-btn.active-yes { background: rgba(168,213,162,.25); box-shadow: inset 0 0 0 2px var(--green); }
   .rate-count { font-size: .75rem; font-weight: 800; min-width: 1.4em; height: 1.4em; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,.18); position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
 
 
@@ -378,11 +378,11 @@ window.MathJax = {
       </div>
     </div>
     </div>
-  </div>
   <div class="nav-hint" id="nav-hint"></div>
-  <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+  <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()">
     <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span><span class="rate-count" id="cnt-unknown">0</span></button>
     <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span><span class="rate-count" id="cnt-known">0</span></button>
+  </div>
   </div>
 
 </div>
