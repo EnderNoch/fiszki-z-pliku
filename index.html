@@ -106,6 +106,9 @@ window.MathJax = {
   html.is-mobile *:focus { outline: none; }
   html.is-mobile button, html.is-mobile label { -webkit-touch-callout: none; }
 
+  /* Prevent flash of white before CDN CSS loads */
+  html, body { background: var(--md-surface-container-low); color: var(--md-on-surface); }
+
   body {
     align-items: stretch;
     justify-content: flex-start;
