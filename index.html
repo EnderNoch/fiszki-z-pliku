@@ -210,7 +210,7 @@ window.MathJax = {
   .hint-row { width: 100%; text-align: center; margin-top: 2px; flex-shrink: 0; }
 
   /* M3 Switch */
-  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: pointer; user-select: none; position: relative; overflow: hidden; border-radius: var(--shape-full); padding: 4px 6px 4px 4px; margin: -4px -6px -4px -4px; }
+  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: default; user-select: none; position: relative; overflow: hidden; border-radius: var(--shape-full); padding: 4px 6px 4px 4px; margin: -4px -6px -4px -4px; }
   .toggle-ripple { position: absolute; border-radius: 50%; background: var(--md-primary); opacity: 0; transform: scale(0); pointer-events: none; animation: ripple-out .5s cubic-bezier(0,0,.2,1) forwards; }
   @keyframes ripple-out { 0%{transform:scale(0);opacity:.28} 100%{transform:scale(2.5);opacity:0} }
   .toggle { position: relative; width: 52px; height: 32px; flex-shrink: 0; }
@@ -350,10 +350,10 @@ window.MathJax = {
 
   <div class="options-row" id="options-row">
     <button class="btn secondary" id="btn-new-file" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
-    <label class="toggle-label">
-      <span class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></span>
+    <div class="toggle-label">
+      <label class="toggle" for="shuffle-toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></label>
       <span id="shuffle-label">Losuj</span>
-    </label>
+    </div>
   </div>
   <!-- card -->
   <div class="card-scene" id="card-scene" onclick="flipCard()">
