@@ -197,10 +197,7 @@ window.MathJax = {
   .top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; flex-shrink: 0; }
   .progress-wrap { flex: 1; }
   .progress-label { font-size: .73rem; font-weight: 500; color: var(--muted); margin-bottom: 6px; letter-spacing: .02em; }
-  .progress-bar { height: 4px; background: var(--md-surface-container-high); border-radius: var(--shape-full); overflow: hidden; display: flex; }
-  .progress-fill-seen    { height: 100%; background: var(--md-primary); transition: width .4s cubic-bezier(.4,0,.2,1); }
-  .progress-fill-known   { height: 100%; background: var(--green); transition: width .4s cubic-bezier(.4,0,.2,1); }
-  .progress-fill-unknown { height: 100%; background: var(--red); transition: width .4s cubic-bezier(.4,0,.2,1); }
+  .progress-bar { height: 4px; background: var(--md-surface-container-high); border-radius: var(--shape-full); overflow: hidden; }
 
   .chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 12px; height: 40px; border-radius: var(--shape-full); font-size: .8rem; font-weight: 500; letter-spacing: .01em; }
   .chip.known   { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
@@ -347,9 +344,6 @@ window.MathJax = {
     <div class="progress-wrap">
       <div class="progress-label" id="prog-label">Karta 1 z 1</div>
       <div class="progress-bar">
-        <div class="progress-fill-seen"    id="prog-seen"    style="width:0%"></div>
-        <div class="progress-fill-known"   id="prog-known"   style="width:0%"></div>
-        <div class="progress-fill-unknown" id="prog-unknown" style="width:0%"></div>
       </div>
     </div>
   </div>
@@ -976,16 +970,22 @@ function countRatings() {
 
 function updateProgress() {
   const total = order.length;
-  const { known, unknown } = countRatings();
-  const pctK = (known   / total) * 100;
-  const pctU = (unknown / total) * 100;
-  const pctS = Math.max(0, ((current + 1) / total) * 100 - pctK - pctU);
-  document.getElementById('prog-known')  .style.width = pctK + '%';
-  document.getElementById('prog-unknown').style.width = pctU + '%';
-  document.getElementById('prog-seen')   .style.width = pctS + '%';
   el('prog-label').textContent = t('cardOf', current + 1, total);
-  document.getElementById('cnt-known')  .textContent = known;
-  document.getElementById('cnt-unknown').textContent = unknown;
+  const { known, unknown } = countRatings();
+  el('cnt-known').textContent = known;
+  el('cnt-unknown').textContent = unknown;
+  if (!total) return;
+  const pct = 100 / total;
+  const stops = [];
+  for (let i = 0; i <= current; i++) {
+    const s = (i * pct).toFixed(3), e = ((i + 1) * pct).toFixed(3);
+    const r = ratings[order[i]];
+    const col = r === true ? 'var(--green)' : r === false ? 'var(--red)' : 'var(--md-primary)';
+    stops.push(`${col} ${s}% ${e}%`);
+  }
+  stops.push(`transparent ${((current + 1) * pct).toFixed(3)}%`);
+  document.querySelector('.progress-bar').style.backgroundImage =
+    `linear-gradient(to right,${stops.join(',')})`;
 }
 
 // ── Navigation (swipe/keyboard, no rating) ─────────────
