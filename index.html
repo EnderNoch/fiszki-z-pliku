@@ -197,7 +197,8 @@ window.MathJax = {
   .top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; flex-shrink: 0; }
   .progress-wrap { flex: 1; }
   .progress-label { font-size: .73rem; font-weight: 500; color: var(--muted); margin-bottom: 6px; letter-spacing: .02em; }
-  .progress-bar { height: 4px; background: var(--md-surface-container-high); border-radius: var(--shape-full); overflow: hidden; }
+  .progress-bar { height: 4px; background: var(--md-surface-container-high); border-radius: var(--shape-full); }
+  #prog-fill { height: 100%; border-radius: var(--shape-full); min-width: 4px; }
 
   .chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 12px; height: 40px; border-radius: var(--shape-full); font-size: .8rem; font-weight: 500; letter-spacing: .01em; }
   .chip.known   { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
@@ -343,8 +344,7 @@ window.MathJax = {
   <div class="top-bar">
     <div class="progress-wrap">
       <div class="progress-label" id="prog-label">Karta 1 z 1</div>
-      <div class="progress-bar">
-      </div>
+      <div class="progress-bar"><div id="prog-fill"></div></div>
     </div>
   </div>
 
@@ -975,17 +975,18 @@ function updateProgress() {
   el('cnt-known').textContent = known;
   el('cnt-unknown').textContent = unknown;
   if (!total) return;
-  const pct = 100 / total;
+  const visited = current + 1;
+  const fill = document.getElementById('prog-fill');
+  fill.style.width = (visited / total * 100).toFixed(3) + '%';
+  const cardPct = 100 / visited;
   const stops = [];
-  for (let i = 0; i <= current; i++) {
-    const s = (i * pct).toFixed(3), e = ((i + 1) * pct).toFixed(3);
+  for (let i = 0; i < visited; i++) {
+    const s = (i * cardPct).toFixed(3), e = ((i + 1) * cardPct).toFixed(3);
     const r = ratings[order[i]];
     const col = r === true ? 'var(--green)' : r === false ? 'var(--red)' : 'var(--md-primary)';
     stops.push(`${col} ${s}% ${e}%`);
   }
-  stops.push(`transparent ${((current + 1) * pct).toFixed(3)}%`);
-  document.querySelector('.progress-bar').style.backgroundImage =
-    `linear-gradient(to right,${stops.join(',')})`;
+  fill.style.backgroundImage = `linear-gradient(to right,${stops.join(',')})`;
 }
 
 // ── Navigation (swipe/keyboard, no rating) ─────────────
