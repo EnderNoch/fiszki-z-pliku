@@ -644,7 +644,8 @@ function toggleLang() {
         }
       } catch (_) {}
     }
-    if (!restored) { current = 0; ratings = {}; buildOrder(); saveSession(); }
+    if (!restored) { current = 0; ratings = {}; shuffleOn = false; buildOrder(); saveSession(); }
+    el('btn-shuffle').classList.toggle('shuffle-on', shuffleOn);
     moveToolbarBtns('study');
     showCard(false);
   } catch (_) {
@@ -1110,6 +1111,7 @@ function showFade(fromId, toId) {
 // ── Device hints ───────────────────────────────────────
 const isMobile = document.documentElement.classList.contains('is-mobile');
 applyLang();
+el('btn-shuffle').classList.toggle('shuffle-on', shuffleOn);
 
 // ── Swipe / drag (touch + mouse) ───────────────────────
 let dragStartX = 0, dragStartY = 0, isDragging = false, suppressClick = false;
