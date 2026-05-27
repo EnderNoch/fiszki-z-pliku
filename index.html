@@ -168,6 +168,7 @@ window.MathJax = {
   .drop-zone svg { opacity: .65; margin-bottom: 14px; color: var(--md-primary); }
   .drop-zone p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
   .drop-zone strong { color: var(--text); font-weight: 500; }
+  @media (pointer: coarse) { .drag-hint { display: none; } }
   #file-input { display: none; }
 
   /* ── Buttons ── */
@@ -332,9 +333,9 @@ window.MathJax = {
   <div class="hint" id="upload-hint">Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.</div>
   <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
     </svg>
-    <p id="drop-text"><strong>Wybierz plik</strong><br>lub przeciągnij tutaj</p>
+    <p id="drop-text"><strong>Wybierz plik</strong><br><span class="drag-hint">lub przeciągnij tutaj</span></p>
   </div>
   <input type="file" id="file-input" accept=".csv,.txt,.tsv">
 </div>
@@ -480,8 +481,8 @@ const LANG = {
     dlgCancel:      'Anuluj',
     dlgConfirm:     'Resetuj',
     shuffle:        'Losuj',
-    dropTitle:      'Przeciągnij plik tutaj',
-    dropSub:        'lub kliknij, żeby wybrać plik',
+    dropTitle:      'Wybierz plik',
+    dropSub:        'lub przeciągnij tutaj',
     uploadHint:     'Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.',
     labelQ:         'Pytanie',
     labelA:         'Odpowiedź',
@@ -522,8 +523,8 @@ const LANG = {
     dlgCancel:      'Cancel',
     dlgConfirm:     'Reset',
     shuffle:        'Shuffle',
-    dropTitle:      'Drag file here',
-    dropSub:        'or click to choose a file',
+    dropTitle:      'Choose file',
+    dropSub:        'or drag here',
     uploadHint:     'Supports <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> files &mdash; two columns separated by comma or semicolon &mdash; math formulas are automatically detected and rendered (including NotebookLM exports) &mdash; the file is never sent anywhere or stored outside the browser cache.',
     labelQ:         'Question',
     labelA:         'Answer',
@@ -581,7 +582,7 @@ function applyLang() {
   el('dlg-cancel').textContent            = t('dlgCancel');
   el('dlg-confirm').textContent           = t('dlgConfirm');
   el('shuffle-label').textContent         = t('shuffle');
-  el('drop-text').innerHTML               = `<strong>${t('dropTitle')}</strong><br>${t('dropSub')}`;
+  el('drop-text').innerHTML               = `<strong>${t('dropTitle')}</strong><br><span class="drag-hint">${t('dropSub')}</span>`;
   el('upload-hint').innerHTML             = t('uploadHint');
   el('label-front').textContent           = t('labelQ');
   el('label-back').textContent            = t('labelA');
