@@ -12,7 +12,7 @@ Minimalistyczna aplikacja webowa do nauki z fiszek. Wgrywasz `.csv` / `.txt` / `
 - Tryb losowy, pełny ekran oraz motyw jasny/ciemny/auto
 - Obsługa gestów swipe oraz klawiatury (`◄ ►`, `1`/`2`, spacja)
 - Talia zapisywana lokalnie w przeglądarce – plik nigdzie nie jest wysyłany
-- Wygenerowane przez Claude Code (Anthropic), obecnie sprawdzane pod kątem optymalizacji kodu
+- Wygenerowane przez Claude Code (Anthropic), obecnie sprawdzane pod kątem usuwania AI slopu
 
 ---
 
