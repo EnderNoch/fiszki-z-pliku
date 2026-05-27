@@ -210,9 +210,7 @@ window.MathJax = {
   .hint-row { width: 100%; text-align: center; margin-top: 2px; flex-shrink: 0; }
 
   /* M3 Switch */
-  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: pointer; user-select: none; position: relative; overflow: hidden; border-radius: var(--shape-full); padding: 4px 6px 4px 4px; margin: -4px -6px -4px -4px; }
-  .toggle-ripple { position: absolute; border-radius: 50%; background: var(--md-primary); opacity: 0; transform: scale(0); pointer-events: none; animation: ripple-out .5s cubic-bezier(0,0,.2,1) forwards; }
-  @keyframes ripple-out { 0%{transform:scale(0);opacity:.28} 100%{transform:scale(2.5);opacity:0} }
+  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: default; user-select: none; }
   .toggle { position: relative; width: 52px; height: 32px; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
   .slider { position: absolute; inset: 0; background: var(--md-surface-container-highest); border: 2px solid var(--md-outline); border-radius: var(--shape-full); transition: background .25s, border-color .25s; cursor: pointer; }
@@ -350,10 +348,10 @@ window.MathJax = {
 
   <div class="options-row" id="options-row">
     <button class="btn secondary" id="btn-new-file" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
-    <label class="toggle-label">
-      <span class="toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></span>
+    <div class="toggle-label">
+      <label class="toggle" for="shuffle-toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></label>
       <span id="shuffle-label">Losuj</span>
-    </label>
+    </div>
   </div>
   <!-- card -->
   <div class="card-scene" id="card-scene" onclick="flipCard()">
@@ -955,13 +953,6 @@ function prevCard() {
 }
 
 function toggleShuffle() {
-  const lbl = document.querySelector('.toggle-label');
-  const r = document.createElement('span');
-  r.className = 'toggle-ripple';
-  const size = Math.max(lbl.offsetWidth, lbl.offsetHeight) * 1.4;
-  r.style.cssText = `width:${size}px;height:${size}px;left:${lbl.offsetWidth/2 - size/2}px;top:${lbl.offsetHeight/2 - size/2}px`;
-  lbl.appendChild(r);
-  r.addEventListener('animationend', () => r.remove());
   shuffleOn = document.getElementById('shuffle-toggle').checked;
   ratings = {}; current = 0;
   buildOrder();
