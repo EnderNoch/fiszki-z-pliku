@@ -257,10 +257,18 @@ window.MathJax = {
   .rate-btn.yes { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
   .rate-btn.active-no  { background: rgba(242,184,181,.25); box-shadow: 0 0 0 2px var(--red); }
   .rate-btn.active-yes { background: rgba(168,213,162,.25); box-shadow: 0 0 0 2px var(--green); }
-  .rate-count { font-size: .75rem; font-weight: 800; min-width: 1.4em; height: 1.4em; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,.18); }
+  .rate-count { font-size: .75rem; font-weight: 800; min-width: 1.4em; height: 1.4em; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,.18); position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
 
 
   /* ── Result screen ── */
+  /* ── Reset-progress dialog ── */
+  #reset-dialog { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+  #reset-dialog-card { background: var(--md-surface-container); border-radius: var(--shape-xl); padding: 24px; max-width: 320px; width: 100%; box-shadow: var(--elev-2); animation: dlg-in .18s cubic-bezier(0,0,.2,1); }
+  @keyframes dlg-in { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .dlg-title { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .dlg-body  { font-size: .88rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .dlg-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
   #result-screen { display: none; flex-direction: column; align-items: center; gap: 18px; width: 100%; max-width: 400px; margin: 12px auto 0; text-align: center; }
   .result-icon { font-size: 3.2rem; }
   .result-title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--md-on-primary-container); }
@@ -348,6 +356,7 @@ window.MathJax = {
 
   <div class="options-row" id="options-row">
     <button class="btn secondary" id="btn-new-file" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="resetToUpload()">Nowy plik</button>
+    <button class="btn secondary" id="btn-reset-progress" style="height:40px;padding:0 14px;font-size:.78rem;flex-shrink:0" onclick="showResetDialog()">Resetuj postęp</button>
     <div class="toggle-label">
       <label class="toggle" for="shuffle-toggle"><input type="checkbox" id="shuffle-toggle" onchange="toggleShuffle()"><span class="slider"></span></label>
       <span id="shuffle-label">Losuj</span>
@@ -374,10 +383,22 @@ window.MathJax = {
   </div>
   <div class="nav-hint" id="nav-hint"></div>
   <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()">
-    <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span> &nbsp;<span class="rate-count" id="cnt-unknown">0</span></button>
-    <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span> &nbsp;<span class="rate-count" id="cnt-known">0</span></button>
+    <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span><span class="rate-count" id="cnt-unknown">0</span></button>
+    <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span><span class="rate-count" id="cnt-known">0</span></button>
   </div>
 
+</div>
+
+<!-- ══ RESET DIALOG ══ -->
+<div id="reset-dialog" style="display:none" onclick="if(event.target===this)closeResetDialog()">
+  <div id="reset-dialog-card">
+    <div class="dlg-title" id="dlg-reset-title">Resetować postęp?</div>
+    <div class="dlg-body"  id="dlg-reset-body">Wszystkie oceny zostaną usunięte. Karty pozostaną.</div>
+    <div class="dlg-actions">
+      <button class="btn secondary" id="dlg-cancel"  onclick="closeResetDialog()">Anuluj</button>
+      <button class="btn"           id="dlg-confirm" style="background:var(--md-error-container);color:var(--md-on-error-container)" onclick="confirmReset()">Resetuj</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ RESULT ══ -->
@@ -454,6 +475,11 @@ let lang = (function(){
 const LANG = {
   pl: {
     newFile:        'Nowy plik',
+    resetProgress:  'Resetuj postęp',
+    dlgResetTitle:  'Resetować postęp?',
+    dlgResetBody:   'Wszystkie oceny zostaną usunięte. Karty pozostaną.',
+    dlgCancel:      'Anuluj',
+    dlgConfirm:     'Resetuj',
     shuffle:        'Losuj',
     dropTitle:      'Przeciągnij plik tutaj',
     dropSub:        'lub kliknij, żeby wybrać plik',
@@ -491,6 +517,11 @@ const LANG = {
   },
   en: {
     newFile:        'New file',
+    resetProgress:  'Reset progress',
+    dlgResetTitle:  'Reset progress?',
+    dlgResetBody:   'All ratings will be cleared. Cards stay.',
+    dlgCancel:      'Cancel',
+    dlgConfirm:     'Reset',
     shuffle:        'Shuffle',
     dropTitle:      'Drag file here',
     dropSub:        'or click to choose a file',
@@ -545,6 +576,11 @@ function applyHints() {
 
 function applyLang() {
   el('btn-new-file').textContent          = t('newFile');
+  el('btn-reset-progress').textContent    = t('resetProgress');
+  el('dlg-reset-title').textContent       = t('dlgResetTitle');
+  el('dlg-reset-body').textContent        = t('dlgResetBody');
+  el('dlg-cancel').textContent            = t('dlgCancel');
+  el('dlg-confirm').textContent           = t('dlgConfirm');
   el('shuffle-label').textContent         = t('shuffle');
   el('drop-text').innerHTML               = `<strong>${t('dropTitle')}</strong><br>${t('dropSub')}`;
   el('upload-hint').innerHTML             = t('uploadHint');
@@ -893,6 +929,17 @@ function resetBtnLabels() {
   yes.classList.remove('feedback');
 }
 
+// ── Reset-progress dialog ──────────────────────────────
+function showResetDialog() { el('reset-dialog').style.display = 'flex'; }
+function closeResetDialog() { el('reset-dialog').style.display = 'none'; }
+function confirmReset() {
+  closeResetDialog();
+  ratings = {}; current = 0;
+  buildOrder();
+  saveSession();
+  showCard(false);
+}
+
 // ── Rating ─────────────────────────────────────────────
 function rateCard(known) {
   if (transitioning) return;
@@ -1160,6 +1207,7 @@ document.addEventListener('keydown', e => {
   if      (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { e.preventDefault(); nextCard(); }
   else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { e.preventDefault(); prevCard(); }
   else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  else if (e.key === 'Escape') closeResetDialog();
   else if (e.key === '1') rateCard(false);
   else if (e.key === '2') rateCard(true);
 });
