@@ -455,7 +455,10 @@ window.MathJax = {
 
   document.getElementById('theme-toggle').addEventListener('click', e => {
     const btn = e.target.closest('.theme-btn');
-    if (btn) applyTheme(btn.dataset.mode);
+    if (btn) {
+      applyTheme(btn.dataset.mode);
+      if (typeof updateProgress === 'function') updateProgress();
+    }
   });
 
   applyTheme(saved);
