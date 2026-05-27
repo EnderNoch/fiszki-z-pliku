@@ -198,9 +198,9 @@ window.MathJax = {
   .progress-wrap { flex: 1; }
   .progress-label { font-size: .73rem; font-weight: 500; color: var(--muted); margin-bottom: 6px; letter-spacing: .02em; }
   .progress-bar { height: 4px; background: var(--md-surface-container-high); border-radius: var(--shape-full); overflow: hidden; display: flex; }
-  .progress-fill-known   { height: 100%; background: var(--green); border-radius: var(--shape-full) 0 0 var(--shape-full); transition: width .4s cubic-bezier(.4,0,.2,1); }
+  .progress-fill-seen    { height: 100%; background: var(--md-primary); transition: width .4s cubic-bezier(.4,0,.2,1); }
+  .progress-fill-known   { height: 100%; background: var(--green); transition: width .4s cubic-bezier(.4,0,.2,1); }
   .progress-fill-unknown { height: 100%; background: var(--red); transition: width .4s cubic-bezier(.4,0,.2,1); }
-  .progress-fill-seen    { height: 100%; background: var(--md-primary); border-radius: 0 var(--shape-full) var(--shape-full) 0; transition: width .4s cubic-bezier(.4,0,.2,1); }
 
   .chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 12px; height: 40px; border-radius: var(--shape-full); font-size: .8rem; font-weight: 500; letter-spacing: .01em; }
   .chip.known   { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
@@ -347,9 +347,9 @@ window.MathJax = {
     <div class="progress-wrap">
       <div class="progress-label" id="prog-label">Karta 1 z 1</div>
       <div class="progress-bar">
+        <div class="progress-fill-seen"    id="prog-seen"    style="width:0%"></div>
         <div class="progress-fill-known"   id="prog-known"   style="width:0%"></div>
         <div class="progress-fill-unknown" id="prog-unknown" style="width:0%"></div>
-        <div class="progress-fill-seen"    id="prog-seen"    style="width:0%"></div>
       </div>
     </div>
   </div>
