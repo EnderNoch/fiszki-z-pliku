@@ -975,6 +975,10 @@ function updateProgress() {
   el('cnt-known').textContent = known;
   el('cnt-unknown').textContent = unknown;
   if (!total) return;
+  const cs = getComputedStyle(document.documentElement);
+  const cKnown = cs.getPropertyValue('--green').trim();
+  const cUnknown = cs.getPropertyValue('--red').trim();
+  const cSeen = cs.getPropertyValue('--md-primary').trim();
   const visited = current + 1;
   const fill = document.getElementById('prog-fill');
   fill.style.width = (visited / total * 100).toFixed(3) + '%';
@@ -983,7 +987,7 @@ function updateProgress() {
   for (let i = 0; i < visited; i++) {
     const s = (i * cardPct).toFixed(3), e = ((i + 1) * cardPct).toFixed(3);
     const r = ratings[order[i]];
-    const col = r === true ? 'var(--green)' : r === false ? 'var(--red)' : 'var(--md-primary)';
+    const col = r === true ? cKnown : r === false ? cUnknown : cSeen;
     stops.push(`${col} ${s}% ${e}%`);
   }
   fill.style.backgroundImage = `linear-gradient(to right,${stops.join(',')})`;
