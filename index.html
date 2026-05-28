@@ -264,8 +264,8 @@ window.MathJax = {
   .rate-btn:active { transform: scale(.95); }
   .rate-btn.no  { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
   .rate-btn.yes { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
-  .rate-btn.active-no  { background: rgba(242,184,181,.25); outline: 2px solid var(--red);   outline-offset: -4px; }
-  .rate-btn.active-yes { background: rgba(168,213,162,.25); outline: 2px solid var(--green); outline-offset: -4px; }
+  .rate-btn.active-no  { outline: 2px solid var(--red);   outline-offset: -4px; }
+  .rate-btn.active-yes { outline: 2px solid var(--green); outline-offset: -4px; }
   .rate-count { font-size: .75rem; font-weight: 800; min-width: 1.4em; height: 1.4em; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,.18); position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
 
 
@@ -1008,10 +1008,10 @@ function updateProgress() {
   const visited = current + 1;
   const fill = document.getElementById('prog-fill');
   fill.style.width = (visited / total * 100).toFixed(1) + '%';
-  const pS = ((visited - known - unknown) / visited * 100).toFixed(1);
-  const pK = ((visited - unknown) / visited * 100).toFixed(1);
+  const pK = (known / visited * 100).toFixed(1);
+  const pR = ((known + unknown) / visited * 100).toFixed(1);
   fill.style.backgroundImage =
-    `linear-gradient(to right,${cS} 0% ${pS}%,${cK} ${pS}% ${pK}%,${cU} ${pK}% 100%)`;
+    `linear-gradient(to right,${cK} 0% ${pK}%,${cU} ${pK}% ${pR}%,${cS} ${pR}% 100%)`;
 }
 
 // ── Navigation (swipe/keyboard, no rating) ─────────────
