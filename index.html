@@ -7,3 +7,1281 @@
 <meta name="theme-color" content="#f7f2fa" media="(prefers-color-scheme: light)">
 <title>Fiszki z pliku</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+<script>if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))document.documentElement.classList.add('is-mobile');try{if(localStorage.getItem('savedCards'))document.documentElement.classList.add('has-saved-cards');}catch(_){}try{var _t=localStorage.getItem('theme');if(_t)document.documentElement.dataset.theme=_t;}catch(_){}try{var _th=localStorage.getItem('theme')||'auto';var _dk=_th==='dark'||(_th==='auto'&&!window.matchMedia('(prefers-color-scheme:light)').matches);document.documentElement.style.background=_dk?'#1D1B20':'#F7F2FA';}catch(_){}document.documentElement.classList.add('no-transition');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/EnderNoch/endernoch.github.io@claude/add-auto-redirect-timer-Sgd7P/style.css" media="print" onload="this.media='all';requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.remove('no-transition')})})">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath:  [['$','$'],['\\(','\\)']],
+    displayMath: [['$$','$$'],['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    macros: {
+      RR:'\\mathbb{R}', NN:'\\mathbb{N}', ZZ:'\\mathbb{Z}',
+      degree:'^\\circ', celsius:'^\\circ\\mathrm{C}'
+    }
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+  startup: {
+    ready() {
+      MathJax.startup.defaultReady();
+      window._mathReady = true;
+      renderMath(document.getElementById('card-front'));
+      renderMath(document.getElementById('card-back'));
+    }
+  }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+  /* ── MD3 variable fallbacks (overridden by CDN style.css when loaded) ── */
+  @layer md3-fallback {
+    :root {
+      --md-primary:#D0BCFF; --md-on-primary:#381E72;
+      --md-primary-container:#4F378B; --md-on-primary-container:#EADDFF;
+      --md-secondary-container:#4A4458; --md-on-secondary-container:#E8DEF8;
+      --md-surface-container-low:#1D1B20; --md-surface-container:#211F26;
+      --md-surface-container-high:#2B2930; --md-surface-container-highest:#36343B;
+      --md-on-surface:#E6E1E5; --md-on-surface-variant:#CAC4D0;
+      --md-outline:#938F99; --md-outline-variant:#49454F;
+      --md-error-container:#8C1D18; --md-on-error-container:#F9DEDC;
+    }
+    [data-theme="light"] {
+      --md-primary:#6750A4; --md-on-primary:#FFFFFF;
+      --md-primary-container:#EADDFF; --md-on-primary-container:#21005D;
+      --md-secondary-container:#E8DEF8; --md-on-secondary-container:#1D192B;
+      --md-surface-container-low:#F7F2FA; --md-surface-container:#F3EDF7;
+      --md-surface-container-high:#ECE6F0; --md-surface-container-highest:#E6E0E9;
+      --md-on-surface:#1C1B1F; --md-on-surface-variant:#49454F;
+      --md-outline:#79747E; --md-outline-variant:#CAC4D0;
+      --md-error-container:#F9DEDC; --md-on-error-container:#410E0B;
+    }
+    @media (prefers-color-scheme: light) {
+      [data-theme="auto"] {
+        --md-primary:#6750A4; --md-on-primary:#FFFFFF;
+        --md-primary-container:#EADDFF; --md-on-primary-container:#21005D;
+        --md-secondary-container:#E8DEF8; --md-on-secondary-container:#1D192B;
+        --md-surface-container-low:#F7F2FA; --md-surface-container:#F3EDF7;
+        --md-surface-container-high:#ECE6F0; --md-surface-container-highest:#E6E0E9;
+        --md-on-surface:#1C1B1F; --md-on-surface-variant:#49454F;
+        --md-outline:#79747E; --md-outline-variant:#CAC4D0;
+        --md-error-container:#F9DEDC; --md-on-error-container:#410E0B;
+      }
+    }
+  }
+
+  /* ── Flashcard-specific overrides & additions ── */
+
+  /* shape & semantic tokens not in shared CSS */
+  :root {
+    --shape-xs: 4px; --shape-sm: 8px; --shape-md: 12px;
+    --shape-lg: 16px; --shape-xl: 28px; --shape-full: 9999px;
+    --elev-1: 0 1px 2px rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.15);
+    --elev-2: 0 2px 6px rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.2);
+    --card-bg: var(--md-surface-container-high);
+    --text:    var(--md-on-surface);
+    --muted:   var(--md-on-surface-variant);
+    --green: #A8D5A2; --green-container: rgba(168,213,162,.12); --green-border: rgba(168,213,162,.35);
+    --red:   #F2B8B5; --red-container:   rgba(242,184,181,.12); --red-border:   rgba(242,184,181,.35);
+  }
+  [data-theme="light"] {
+    --elev-1: 0 1px 2px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+    --elev-2: 0 2px 6px rgba(0,0,0,.1),  0 4px 12px rgba(0,0,0,.07);
+    --green: #386A20; --green-container: rgba(56,106,32,.1); --green-border: rgba(56,106,32,.28);
+    --red:   #B3261E; --red-container:   rgba(179,38,30,.08); --red-border:   rgba(179,38,30,.22);
+  }
+  @media (prefers-color-scheme: light) {
+    [data-theme="auto"] {
+      --elev-1: 0 1px 2px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+      --elev-2: 0 2px 6px rgba(0,0,0,.1),  0 4px 12px rgba(0,0,0,.07);
+      --green: #386A20; --green-container: rgba(56,106,32,.1); --green-border: rgba(56,106,32,.28);
+      --red:   #B3261E; --red-container:   rgba(179,38,30,.08); --red-border:   rgba(179,38,30,.22);
+    }
+  }
+
+  /* override body — shared CSS centres for timer page, we need column layout */
+  * { -webkit-tap-highlight-color: transparent; }
+  html.is-mobile *:focus { outline: none; }
+  html.is-mobile button, html.is-mobile label { -webkit-touch-callout: none; }
+
+  /* Prevent flash of white before CDN CSS loads */
+  html, body { background: var(--md-surface-container-low); color: var(--md-on-surface); }
+  html.no-transition, html.no-transition * { transition-duration: 0s !important; animation-duration: 0s !important; }
+
+  body {
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 16px;
+    gap: 14px;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    min-height: 100dvh;
+  }
+  html.is-mobile { height: 100dvh; }
+  html.is-mobile body {
+    height: 100%;
+    overflow: hidden;
+    padding: 8px 12px;
+  }
+  html.is-mobile #study-screen {
+    height: 100%;
+    overflow: hidden;
+    min-height: 0;
+    gap: 4px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  html.is-mobile .card-scene {
+    overflow: hidden;
+  }
+  html.is-mobile #card-size-box {
+    min-height: 0;
+  }
+  @media (min-width: 640px) {
+    body { padding: 24px 40px; }
+    .card-text { font-size: 1.15rem; }
+  }
+
+  /* theme-toggle — fully inlined so CDN is not required */
+  .theme-toggle { position: static; flex-shrink: 0; display: inline-flex; align-items: center; background: var(--md-surface-container-high); border-radius: var(--shape-full); padding: 3px; gap: 2px; border: 1px solid var(--md-outline-variant); }
+  .theme-btn { background: transparent; border: none; border-radius: var(--shape-full); width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--md-on-surface-variant); transition: background .2s, color .2s; padding: 0; }
+  .theme-btn:hover { background: var(--md-surface-container-highest); color: var(--md-on-surface); }
+  .theme-btn.active { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+  .icon-mobile { display: none; }
+  html.is-mobile .icon-desktop { display: none; }
+  html.is-mobile .icon-mobile  { display: inline; }
+
+  /* ── Global toolbar ── */
+  /* ── Upload screen ── */
+  #upload-screen { display: flex; flex-direction: column; gap: 20px; width: 100%; flex: 1; justify-content: center; max-width: 560px; margin: 0 auto; }
+
+  .drop-zone {
+    width: 100%; border: 1.5px dashed var(--md-outline); border-radius: var(--shape-xl);
+    padding: 44px 28px; text-align: center; cursor: pointer;
+    background: var(--md-surface-container-low);
+    transition: background .25s, border-color .25s, transform .15s;
+    box-shadow: var(--elev-1);
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    background: var(--md-surface-container); border-color: var(--md-primary);
+    border-style: solid; transform: translateY(-2px);
+  }
+  .drop-zone svg { opacity: .65; margin-bottom: 14px; color: var(--md-primary); }
+  .drop-zone p { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+  .drop-zone strong { color: var(--text); font-weight: 500; }
+  @media (pointer: coarse) { .drag-hint { display: none; } }
+  #file-input { display: none; }
+
+  /* ── Buttons ── */
+  .btn {
+    background: var(--md-primary); color: var(--md-on-primary);
+    border: none; border-radius: var(--shape-full); padding: 13px 28px;
+    font-size: .95rem; font-weight: 700; font-family: inherit; letter-spacing: .01em;
+    cursor: pointer; touch-action: manipulation; box-shadow: var(--elev-1);
+    transition: box-shadow .2s, transform .15s, background .2s;
+    position: relative; overflow: hidden;
+  }
+  .btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
+  .btn:hover::after  { background: rgba(255,255,255,.08); }
+  .btn:active { transform: scale(.97); box-shadow: none; }
+  .btn:active::after { background: rgba(255,255,255,.14); }
+  .btn:disabled { opacity: .38; pointer-events: none; box-shadow: none; }
+  .btn.secondary { background: var(--md-secondary-container); color: var(--md-on-secondary-container); box-shadow: none; border: none; }
+  .btn.secondary:hover::after { background: rgba(204,194,220,.1); }
+
+  .hint { font-size: .8rem; color: var(--muted); line-height: 1.65; text-align: center; padding: 0 8px; }
+
+  /* ── Study screen ── */
+  #study-screen { display: none; flex-direction: column; align-items: center; gap: 8px; width: 100%; flex: 1; }
+  html.has-saved-cards #upload-screen { display: none; }
+  html.has-saved-cards #study-screen  { display: flex; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; flex-shrink: 0; }
+  .progress-wrap { flex: 1; }
+  .progress-label { font-size: .73rem; font-weight: 500; color: var(--muted); margin-bottom: 6px; letter-spacing: .02em; }
+  .progress-bar { height: 4px; background: var(--md-surface-container-high); border-radius: var(--shape-full); }
+  #prog-fill { height: 100%; border-radius: var(--shape-full); min-width: 4px; }
+
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 0 12px; height: 40px; border-radius: var(--shape-full); font-size: .8rem; font-weight: 500; letter-spacing: .01em; }
+  .chip.known   { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
+  .chip.unknown { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
+
+  .options-row { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; flex-shrink: 0; }
+  html.is-mobile .options-row { gap: 6px; flex-wrap: nowrap; }
+  html.is-mobile #toolbar-btns { gap: 6px !important; }
+  html.is-mobile .theme-btn { width: 30px; height: 30px; }
+  #btn-shuffle.shuffle-on { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+  .hint-row { width: 100%; text-align: center; margin-top: 2px; flex-shrink: 0; }
+
+  /* M3 Switch */
+  .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: var(--text); cursor: default; user-select: none; }
+  .toggle { position: relative; width: 52px; height: 32px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .slider { position: absolute; inset: 0; background: var(--md-surface-container-highest); border: 2px solid var(--md-outline); border-radius: var(--shape-full); transition: background .25s, border-color .25s; cursor: pointer; }
+  .slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 6px; top: 50%; transform: translateY(-50%); background: var(--md-outline); border-radius: 50%; transition: transform .25s cubic-bezier(.34,1.56,.64,1), width .2s, height .2s, background .25s; }
+  .toggle input:checked + .slider { background: var(--md-primary-container); border-color: var(--md-primary-container); }
+  .toggle input:checked + .slider::before { transform: translateX(20px) translateY(-50%); width: 20px; height: 20px; left: 4px; background: var(--md-primary); }
+
+  /* ── Card scene ── */
+  .card-scene { width: 100%; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; cursor: pointer; user-select: none; touch-action: pan-y; }
+  #card-size-box { flex: 1; min-height: 220px; position: relative; border-radius: var(--shape-xl); overflow: hidden; }
+  #card-ripple-overlay { position: absolute; inset: 0; border-radius: var(--shape-xl); overflow: hidden; pointer-events: none; z-index: 10; }
+  .card-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.16); }
+  [data-theme="light"] .card-ripple { background: rgba(0,0,0,.07); }
+  @media (prefers-color-scheme: light) { [data-theme="auto"] .card-ripple { background: rgba(0,0,0,.07); } }
+  #card-wrapper { position: absolute; inset: 0; will-change: transform, opacity; border-radius: var(--shape-xl); overflow: hidden; }
+  .card-inner { position: relative; width: 100%; height: 100%; }
+  .card-inner.no-transition { transition: none !important; }
+
+  .card-face { position: absolute; inset: 0; border-radius: var(--shape-xl); padding: 28px 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; word-break: break-word; overflow: hidden; pointer-events: none; }
+  .card-face > * { pointer-events: auto; }
+  .card-face.front { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 1; transform: translateY(0) scale(1); }
+  .card-face.back  { background: var(--card-bg); border: 1px solid var(--md-outline-variant); box-shadow: var(--elev-2); opacity: 0; transform: translateY(12px) scale(0.96); }
+  /* stable backdrop so the face animation doesn't bleed into the button area */
+  .card-btn-backdrop { position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: var(--card-bg); border-radius: 0 0 var(--shape-xl) var(--shape-xl); z-index: 15; pointer-events: none; }
+
+
+  .card-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; opacity: .65; color: var(--md-on-surface-variant); }
+  .card-text { font-size: clamp(.95rem, 3vw, 1.15rem); line-height: 1.6; color: var(--text); }
+  .flip-hint { font-size: .72rem; color: var(--muted); margin-top: 14px; opacity: .75; }
+
+  .nav-hint { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.65; opacity: .8; pointer-events: none; flex-shrink: 0; padding: 4px 0 2px; }
+  .nav-hint kbd { display: inline-block; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--shape-sm); padding: 1px 7px; font-size: .73rem; font-family: inherit; color: var(--text); }
+
+  /* ── Rate buttons ── */
+  .rate-row { display: flex; gap: 12px; width: 100%; flex-shrink: 0; }
+  .card-rate-row { display: flex; gap: 10px; flex-shrink: 0; width: 100%; }
+  .rate-btn { flex: 1 1 0; min-width: 0; border: none; border-radius: var(--shape-full); padding: 17px 12px; font-size: .95rem; font-weight: 700; font-family: inherit; cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .2s; position: relative; overflow: hidden; letter-spacing: .01em; white-space: nowrap; }
+  .rate-btn::after { content: ''; position: absolute; inset: 0; background: transparent; transition: background .2s; border-radius: inherit; }
+  .rate-btn-ripple { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255,255,255,.30); }
+  [data-theme="light"] .rate-btn-ripple { background: rgba(0,0,0,.10); }
+  @media (prefers-color-scheme: light) { [data-theme="auto"] .rate-btn-ripple { background: rgba(0,0,0,.10); } }
+  .rate-btn:active { transform: scale(.95); }
+  .rate-btn.no  { background: var(--red-container);   color: var(--red);   border: 1px solid var(--red-border); }
+  .rate-btn.yes { background: var(--green-container); color: var(--green); border: 1px solid var(--green-border); }
+  .rate-btn.active-no  { background: rgba(242,184,181,.25); outline: 2px solid var(--red);   outline-offset: -4px; }
+  .rate-btn.active-yes { background: rgba(168,213,162,.25); outline: 2px solid var(--green); outline-offset: -4px; }
+  .rate-count { font-size: .75rem; font-weight: 800; min-width: 1.4em; height: 1.4em; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,.18); position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+
+
+  /* ── Result screen ── */
+  /* ── Reset-progress dialog ── */
+  #reset-dialog { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+  #reset-dialog-card { background: var(--md-surface-container); border-radius: var(--shape-xl); padding: 24px; max-width: 320px; width: 100%; box-shadow: var(--elev-2); animation: dlg-in .18s cubic-bezier(0,0,.2,1); }
+  @keyframes dlg-in { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .dlg-title { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .dlg-body  { font-size: .88rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .dlg-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  #result-screen { display: none; flex-direction: column; align-items: center; gap: 18px; width: 100%; max-width: 400px; margin: 12px auto 0; text-align: center; }
+  .result-icon { font-size: 3.2rem; }
+  .result-title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--md-on-primary-container); }
+  .result-stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; width: 100%; }
+  .stat-box { flex: 1; min-width: 100px; background: var(--md-surface-container); border: 1px solid var(--md-outline-variant); border-radius: var(--shape-xl); padding: 18px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: var(--elev-1); }
+  .stat-num { font-size: 2.2rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+  .stat-label { font-size: .72rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+  .stat-box.known-box   .stat-num { color: var(--green); }
+  .stat-box.unknown-box .stat-num { color: var(--red); }
+  .stat-box.total-box   .stat-num { color: var(--md-primary); }
+  .result-msg { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+  .MathJax, .MathJax *, mjx-container, mjx-container * { font-family: inherit !important; }
+  math, math * { font-family: inherit !important; }
+</style>
+</head>
+<body>
+
+
+<!-- ══ GLOBAL TOOLBAR ══ -->
+<div id="global-toolbar" style="display:none"></div>
+
+<!-- ══ UPLOAD ══ -->
+<div id="upload-screen">
+  <div id="toolbar-btns" style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+  <button class="btn secondary" id="btn-fullscreen" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="toggleFullscreen()" title="Pełny ekran">
+    <svg id="fs-icon-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+      <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+    </svg>
+    <svg id="fs-icon-compress" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+      <line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>
+    </svg>
+  </button>
+  <button class="btn secondary" id="btn-lang" style="height:40px;min-width:40px;padding:0 8px;flex-shrink:0;font-size:.78rem;font-weight:700;letter-spacing:.04em" onclick="toggleLang()">PL</button>
+  <div class="theme-toggle" id="theme-toggle">
+    <button class="theme-btn active" data-mode="auto" title="Auto (systemowy)">
+      <svg class="icon-desktop" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/>
+      </svg>
+      <svg class="icon-mobile" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+    </button>
+    <button class="theme-btn" data-mode="light" title="Jasny">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <line x1="12" y1="2" x2="12" y2="5"/> <line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/> <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
+        <line x1="2" y1="12" x2="5" y2="12"/> <line x1="19" y1="12" x2="22" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/> <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+    <button class="theme-btn" data-mode="dark" title="Ciemny">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+  </div><!-- /toolbar-btns -->
+  <div class="hint" id="upload-hint">Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.</div>
+  <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </svg>
+    <p id="drop-text"><strong>Wybierz plik</strong><br><span class="drag-hint">lub przeciągnij tutaj</span></p>
+  </div>
+  <input type="file" id="file-input" accept=".csv,.txt,.tsv">
+</div>
+
+<!-- ══ STUDY ══ -->
+<div id="study-screen">
+
+  <div class="top-bar" id="top-bar">
+    <div class="progress-wrap">
+      <div class="progress-label" id="prog-label">Karta 1 z 1</div>
+      <div class="progress-bar"><div id="prog-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="options-row" id="options-row">
+    <button class="btn secondary" id="btn-new-file" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="resetToUpload()" title="Nowy plik">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+      </svg>
+    </button>
+    <button class="btn secondary" id="btn-reset-progress" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="showResetDialog()" title="Resetuj postęp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/>
+      </svg>
+    </button>
+    <input type="checkbox" id="shuffle-toggle" style="display:none">
+    <button class="btn secondary" id="btn-shuffle" style="height:40px;width:40px;padding:0;flex-shrink:0" onclick="toggleShuffle()" title="Losuj">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>
+      </svg>
+    </button>
+  </div>
+  <!-- card -->
+  <div class="card-scene" id="card-scene" onclick="flipCard()">
+    <div id="card-size-box">
+    <div id="card-ripple-overlay" aria-hidden="true"></div>
+    <div id="card-wrapper">
+      <div class="card-inner" id="card-inner">
+        <div class="card-face front">
+          <div class="card-label" id="label-front">Pytanie</div>
+          <div class="card-text" id="card-front"></div>
+          <div class="flip-hint" id="flip-hint">Kliknij, żeby zobaczyć odpowiedź</div>
+        </div>
+        <div class="card-face back">
+          <div class="card-label" id="label-back">Odpowiedź</div>
+          <div class="card-text" id="card-back"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  <div class="nav-hint" id="nav-hint"></div>
+  <div class="card-rate-row" onclick="event.stopPropagation()" onpointerdown="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()">
+    <button class="rate-btn no"  id="btn-no"  onclick="event.stopPropagation();rateCard(false)"><span class="btn-label">✗&nbsp; Nie umiem</span><span class="rate-count" id="cnt-unknown">0</span></button>
+    <button class="rate-btn yes" id="btn-yes" onclick="event.stopPropagation();rateCard(true)" ><span class="btn-label">✓&nbsp; Umiem</span><span class="rate-count" id="cnt-known">0</span></button>
+  </div>
+  </div>
+
+</div>
+
+<!-- ══ RESET DIALOG ══ -->
+<div id="reset-dialog" style="display:none" onclick="if(event.target===this)closeResetDialog()">
+  <div id="reset-dialog-card">
+    <div class="dlg-title" id="dlg-reset-title">Resetować postęp?</div>
+    <div class="dlg-body"  id="dlg-reset-body">Wszystkie oceny zostaną usunięte. Karty pozostaną.</div>
+    <div class="dlg-actions">
+      <button class="btn secondary" id="dlg-cancel"  onclick="closeResetDialog()">Anuluj</button>
+      <button class="btn"           id="dlg-confirm" style="background:var(--md-error-container);color:var(--md-on-error-container)" onclick="confirmReset()">Resetuj</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div id="result-screen">
+  <div class="result-icon" id="result-icon">🎉</div>
+  <div class="result-title" id="result-title">Koniec talii!</div>
+  <div class="result-stats">
+    <div class="stat-box known-box">
+      <div class="stat-num" id="res-known">0</div>
+      <div class="stat-label" id="stat-label-known">Umiem ✓</div>
+    </div>
+    <div class="stat-box unknown-box">
+      <div class="stat-num" id="res-unknown">0</div>
+      <div class="stat-label" id="stat-label-unknown">Nie umiem ✗</div>
+    </div>
+    <div class="stat-box total-box">
+      <div class="stat-num" id="res-total">0</div>
+      <div class="stat-label" id="stat-label-total">Wszystkich</div>
+    </div>
+  </div>
+  <div class="result-msg" id="result-msg"></div>
+  <button class="btn" id="btn-retry-unknown" onclick="retryUnknown()" style="background:var(--md-error-container);color:var(--md-on-error-container)">Powtórz nieumiane ✗</button>
+  <button class="btn" id="btn-retry-all" onclick="restartDeck()">Powtórz wszystkie</button>
+  <button class="btn secondary" id="btn-new-csv" onclick="resetToUpload()">Wgraj nowy CSV</button>
+</div>
+
+<script>
+// ── Theme toggle ───────────────────────────────────────
+(function () {
+  const saved = localStorage.getItem('theme') || 'auto';
+  document.documentElement.dataset.theme = saved;
+
+  function applyTheme(mode) {
+    document.documentElement.dataset.theme = mode;
+    localStorage.setItem('theme', mode);
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+  }
+
+  document.getElementById('theme-toggle').addEventListener('click', e => {
+    const btn = e.target.closest('.theme-btn');
+    if (btn) {
+      applyTheme(btn.dataset.mode);
+      if (typeof updateProgress === 'function') updateProgress();
+    }
+  });
+
+  applyTheme(saved);
+})();
+
+// ── State ──────────────────────────────────────────────
+let cards     = [];
+let order     = [];
+let ratings   = {};
+let current   = 0;
+let flipped   = false;
+let shuffleOn = false;
+let transitioning = false;
+
+function saveSession() {
+  try { localStorage.setItem('sessionState', JSON.stringify({ current, ratings, order, shuffleOn })); } catch (_) {}
+}
+function clearSession() {
+  try { localStorage.removeItem('sessionState'); } catch (_) {}
+}
+
+const el = id => document.getElementById(id);
+
+// ── i18n ──────────────────────────────────────────────
+let lang = (function(){
+  const saved = localStorage.getItem('lang');
+  if (saved) return saved;
+  return navigator.language.startsWith('pl') ? 'pl' : 'en';
+})();
+
+const LANG = {
+  pl: {
+    newFile:        'Nowy plik',
+    resetProgress:  'Resetuj postęp',
+    dlgResetTitle:  'Resetować postęp?',
+    dlgResetBody:   'Wszystkie oceny zostaną usunięte. Karty pozostaną.',
+    dlgCancel:      'Anuluj',
+    dlgConfirm:     'Resetuj',
+    shuffle:        'Losuj',
+    dropTitle:      'Wybierz plik',
+    dropSub:        'lub przeciągnij tutaj',
+    uploadHint:     'Obsługuje pliki <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> &mdash; dwie kolumny oddzielone przecinkiem lub średnikiem &mdash; wzory matematyczne są automatycznie wykrywane i renderowane (w tym eksporty z NotebookLM) &mdash; plik nie jest nigdzie wysyłany ani przechowywany poza pamięcią podręczną przeglądarki.',
+    labelQ:         'Pytanie',
+    labelA:         'Odpowiedź',
+    flipMouse:      'Kliknij, żeby zobaczyć odpowiedź',
+    flipTouch:      'Dotknij, żeby zobaczyć odpowiedź',
+    navMouse:       'Przeciągnij lub <kbd>◄</kbd> <kbd>►</kbd> &nbsp;·&nbsp; <kbd>spacja</kbd> odwróć &nbsp;·&nbsp; <kbd>1</kbd> / <kbd>2</kbd> oceń',
+    navTouch:       'Przesuń w lewo lub prawo, żeby przejść dalej',
+    no:             '✗  Nie umiem',
+    yes:            '✓  Umiem',
+    feedbackNo:     'Będzie lepiej!',
+    feedbackYes:    'OK',
+    cardOf:         (c, t) => `Karta ${c} z ${t}`,
+    resultTitle:    'Koniec talii!',
+    statKnown:      'Umiem ✓',
+    statUnknown:    'Nie umiem ✗',
+    statTotal:      'Wszystkich',
+    msgUnrated:     n => `${n} kart bez oceny.`,
+    msgPerfect:     'Brawo! Znasz wszystkie fiszki! 🏆',
+    msgBad:         'Nie przejmuj się — powtórz jeszcze raz!',
+    msgNormal:      'Powtórz nieumiane, żeby je opanować.',
+    retryUnknown:   'Powtórz nieumiane ✗',
+    retryAll:       'Powtórz wszystkie',
+    newCsv:         'Wgraj nowy CSV',
+    errFormat:      'Nieobsługiwany format — prześlij plik .csv, .txt lub .tsv',
+    errNoCards:     'Nie znaleziono fiszek w pliku. Upewnij się, że plik CSV ma dwie kolumny: pytanie i odpowiedź.',
+    langBtn:        'PL',
+    langTitle:      'Switch to English / Zmień na angielski',
+    ttFullscreen:   'Pełny ekran',
+    ttThemeAuto:    'Motyw: automatyczny (systemowy)',
+    ttThemeLight:   'Motyw: jasny',
+    ttThemeDark:    'Motyw: ciemny',
+  },
+  en: {
+    newFile:        'New file',
+    resetProgress:  'Reset progress',
+    dlgResetTitle:  'Reset progress?',
+    dlgResetBody:   'All ratings will be cleared. Cards stay.',
+    dlgCancel:      'Cancel',
+    dlgConfirm:     'Reset',
+    shuffle:        'Shuffle',
+    dropTitle:      'Choose file',
+    dropSub:        'or drag here',
+    uploadHint:     'Supports <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong> files &mdash; two columns separated by comma or semicolon &mdash; math formulas are automatically detected and rendered (including NotebookLM exports) &mdash; the file is never sent anywhere or stored outside the browser cache.',
+    labelQ:         'Question',
+    labelA:         'Answer',
+    flipMouse:      'Click to see the answer',
+    flipTouch:      'Tap to see the answer',
+    navMouse:       'Drag or <kbd>◄</kbd> <kbd>►</kbd> &nbsp;·&nbsp; <kbd>space</kbd> flip &nbsp;·&nbsp; <kbd>1</kbd> / <kbd>2</kbd> rate',
+    navTouch:       'Swipe left or right to navigate',
+    no:             '✗  Don\'t know',
+    yes:            '✓  Got it',
+    feedbackNo:     'Keep trying!',
+    feedbackYes:    'Nice!',
+    cardOf:         (c, t) => `Card ${c} of ${t}`,
+    resultTitle:    'Deck complete!',
+    statKnown:      'Got it ✓',
+    statUnknown:    "Don't know ✗",
+    statTotal:      'Total',
+    msgUnrated:     n => `${n} cards unrated.`,
+    msgPerfect:     'Perfect! You know all the cards! 🏆',
+    msgBad:         "Don't worry — try again!",
+    msgNormal:      'Review the missed cards to master them.',
+    retryUnknown:   'Retry missed ✗',
+    retryAll:       'Retry all',
+    newCsv:         'Upload new CSV',
+    errFormat:      'Unsupported format — please upload a .csv, .txt or .tsv file',
+    errNoCards:     'No flashcards found. Make sure the CSV has two columns: question and answer.',
+    langBtn:        'EN',
+    langTitle:      'Switch to Polish / Zmień na polski',
+    ttFullscreen:   'Fullscreen',
+    ttThemeAuto:    'Theme: auto (system)',
+    ttThemeLight:   'Theme: light',
+    ttThemeDark:    'Theme: dark',
+  }
+};
+
+function t(key, ...args) {
+  const v = LANG[lang][key];
+  return typeof v === 'function' ? v(...args) : v;
+}
+
+function applyHints() {
+  if (isMobile) {
+    el('nav-hint').textContent  = t('navTouch');
+    el('flip-hint').textContent = t('flipTouch');
+  } else {
+    el('nav-hint').innerHTML    = t('navMouse');
+    el('flip-hint').textContent = t('flipMouse');
+  }
+}
+
+function applyLang() {
+  el('btn-new-file').title                = t('newFile');
+  el('btn-reset-progress').title           = t('resetProgress');
+  el('dlg-reset-title').textContent       = t('dlgResetTitle');
+  el('dlg-reset-body').textContent        = t('dlgResetBody');
+  el('dlg-cancel').textContent            = t('dlgCancel');
+  el('dlg-confirm').textContent           = t('dlgConfirm');
+  el('btn-shuffle').title                 = t('shuffle');
+  el('drop-text').innerHTML               = `<strong>${t('dropTitle')}</strong><br><span class="drag-hint">${t('dropSub')}</span>`;
+  el('upload-hint').innerHTML             = t('uploadHint');
+  el('label-front').textContent           = t('labelQ');
+  el('label-back').textContent            = t('labelA');
+  el('result-title').textContent          = t('resultTitle');
+  el('stat-label-known').textContent      = t('statKnown');
+  el('stat-label-unknown').textContent    = t('statUnknown');
+  el('stat-label-total').textContent      = t('statTotal');
+  el('btn-retry-unknown').textContent     = t('retryUnknown');
+  el('btn-retry-all').textContent         = t('retryAll');
+  el('btn-new-csv').textContent           = t('newCsv');
+  el('btn-lang').textContent              = t('langBtn');
+  el('btn-lang').title                    = t('langTitle');
+  el('btn-fullscreen').title              = t('ttFullscreen');
+  document.querySelector('[data-mode="auto"]') .title = t('ttThemeAuto');
+  document.querySelector('[data-mode="light"]').title = t('ttThemeLight');
+  document.querySelector('[data-mode="dark"]') .title = t('ttThemeDark');
+  el('btn-no').querySelector('.btn-label').textContent  = t('no');
+  el('btn-yes').querySelector('.btn-label').textContent = t('yes');
+  applyHints();
+}
+
+function toggleLang() {
+  lang = lang === 'pl' ? 'en' : 'pl';
+  localStorage.setItem('lang', lang);
+  applyLang();
+}
+
+
+// ── Load deck from URL hash (#data=base64url) ────────
+(function () {
+  const m = location.hash.match(/[#&]data=([^&]+)/);
+  if (!m) return;
+  try {
+    let b64 = decodeURIComponent(m[1]).replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4 ? '='.repeat(4 - b64.length % 4) : '';
+    const bytes = Uint8Array.from(atob(b64 + pad), c => c.charCodeAt(0));
+    const text = new TextDecoder('utf-8').decode(bytes);
+    // wyczyść poprzednią talię, żeby IIFE poniżej jej nie reaktywował
+    localStorage.removeItem('savedCards');
+    localStorage.removeItem('sessionState');
+    document.documentElement.classList.remove('has-saved-cards');
+    history.replaceState(null, '', location.pathname + location.search);
+    window.__pendingCSV = text;
+  } catch (e) {
+    console.error('Bad #data payload', e);
+  }
+})();
+
+// ── Restore saved deck on page load ───────────────────
+(function () {
+  const saved = localStorage.getItem('savedCards');
+  if (!saved) return;
+  try {
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed) || parsed.length === 0) return;
+    cards = parsed;
+    let restored = false;
+    const ss = localStorage.getItem('sessionState');
+    if (ss) {
+      try {
+        const s = JSON.parse(ss);
+        if (s && Array.isArray(s.order) && s.order.length === cards.length &&
+            s.order.every(i => i >= 0 && i < cards.length)) {
+          order     = s.order;
+          ratings   = (s.ratings && typeof s.ratings === 'object') ? s.ratings : {};
+          shuffleOn = !!s.shuffleOn;
+          current   = (typeof s.current === 'number') ? Math.min(s.current, order.length - 1) : 0;
+          document.getElementById('shuffle-toggle').checked = shuffleOn;
+          document.getElementById('btn-shuffle').classList.toggle('shuffle-on', shuffleOn);
+          restored = true;
+        }
+      } catch (_) {}
+    }
+    if (!restored) { current = 0; ratings = {}; shuffleOn = false; buildOrder(); saveSession(); }
+    el('btn-shuffle').classList.toggle('shuffle-on', shuffleOn);
+    moveToolbarBtns('study');
+    showCard(false);
+  } catch (_) {
+    localStorage.removeItem('savedCards');
+  }
+})();
+
+// ── File handling ──────────────────────────────────────
+const dropZone  = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+
+function loadFile(file) {
+  const name = file.name.toLowerCase();
+  if (!name.endsWith('.csv') && !name.endsWith('.txt') && !name.endsWith('.tsv')) {
+    alert(t('errFormat'));
+    fileInput.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => parseCSV(e.target.result);
+  reader.readAsText(file, 'UTF-8');
+}
+
+// ── CSV parser ─────────────────────────────────────────
+function parseCSV(text) {
+  const firstLine = text.split('\n')[0] || '';
+  const delim = (firstLine.split(';').length > firstLine.split(',').length) ? ';' : ',';
+  const rows   = splitCSVRows(text, delim);
+  const parsed = [];
+
+  for (const row of rows) {
+    if (row.length < 2) continue;
+    const front = row[0].trim(), back = row[1].trim();
+    if (!front && !back) continue;
+    if (parsed.length === 0) {
+      const fl = front.toLowerCase(), bl = back.toLowerCase();
+      if ((fl === 'front' || fl === 'pytanie' || fl === 'question' || fl === 'term') &&
+          (bl === 'back'  || bl === 'odpowiedź' || bl === 'odpowiedz' || bl === 'answer' || bl === 'definition')) continue;
+    }
+    parsed.push({ front, back });
+  }
+
+  if (parsed.length === 0) {
+    alert(t('errNoCards'));
+    return;
+  }
+  cards = parsed;
+  localStorage.setItem('savedCards', JSON.stringify(parsed));
+  document.documentElement.classList.add('has-saved-cards');
+  startDeck();
+}
+
+function splitCSVRows(text, delim) {
+  const rows = [];
+  let row = [], cell = '', inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuote) {
+      if (ch === '"') { if (text[i+1] === '"') { cell += '"'; i++; } else inQuote = false; }
+      else cell += ch;
+    } else {
+      if      (ch === '"')   inQuote = true;
+      else if (ch === delim) { row.push(cell); cell = ''; }
+      else if (ch === '\n')  { row.push(cell); cell = ''; rows.push(row); row = []; }
+      else if (ch !== '\r')  cell += ch;
+    }
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+
+// ── Deck logic ─────────────────────────────────────────
+function moveToolbarBtns(to) {
+  const btns = document.getElementById('toolbar-btns');
+  const target = document.getElementById(to === 'study' ? 'options-row' : 'upload-screen');
+  if (btns && target) target.insertBefore(btns, target.firstChild);
+}
+
+function startDeck() {
+  current = 0; ratings = {};
+  buildOrder();
+  saveSession();
+  moveToolbarBtns('study');
+  showFade('upload-screen', 'study-screen');
+  showCard(false);
+}
+
+function buildOrder() {
+  order = cards.map((_, i) => i);
+  if (shuffleOn) shuffle(order);
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// ── Math auto-wrap (brak $ w CSV) ─────────────────────
+function fixBlanks(s) {
+  return s.replace(/_{2,}/g, m => '\\text{' + '_'.repeat(m.length) + '}');
+}
+
+function autoWrapMath(text) {
+  // Już ma delimitery — sanityzuj blanki wewnątrz nich i oddaj MathJax
+  if (/\$|\\\(|\\\[/.test(text)) {
+    return text
+      .replace(/\$\$([^]*?)\$\$/g, (_, inner) => '$$' + fixBlanks(inner) + '$$')
+      .replace(/\$([^$\n]+)\$/g,    (_, inner) => '$'  + fixBlanks(inner) + '$')
+      .replace(/\\\(([^]*?)\\\)/g,  (_, inner) => '\\(' + fixBlanks(inner) + '\\)')
+      .replace(/\\\[([^]*?)\\\]/g,  (_, inner) => '\\[' + fixBlanks(inner) + '\\]');
+  }
+  // Sygnały matematyczne — sprawdź PRZED fixBlanks, żeby ___ nie były mylnie uznane za LaTeX
+  const hasCmd    = /\\[a-zA-Z]/.test(text);
+  const hasSupSub = /[A-Za-z0-9]\^[{A-Za-z0-9\-+]|[A-Za-z0-9]_[{0-9A-Za-z]/.test(text);
+  if (!hasCmd && !hasSupSub) return text;
+
+  // Ciągi 2+ podkreślników (fill-in-the-blank) → \text{__}
+  text = fixBlanks(text);
+
+  // Środowiska blokowe (\begin{…}…\end{…}) → display math
+  if (/\\begin\s*\{/.test(text)) return '$$' + text.trim() + '$$';
+
+  // Szukaj pierwszego ':' poza nawiasami klamrowymi (etykieta: wzór)
+  let depth = 0, splitAt = -1;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if      (c === '{') depth++;
+    else if (c === '}') depth--;
+    else if (c === ':' && depth === 0 && i < text.length - 2) { splitAt = i; break; }
+  }
+  const hasFrac = /\\[dt]?frac/.test(text);
+
+  if (splitAt !== -1) {
+    const label   = text.slice(0, splitAt + 1);
+    const formula = text.slice(splitAt + 1).trim();
+    if (/\\[a-zA-Z]|[\^_]/.test(formula)) {
+      return hasFrac ? label + '\n$$' + formula + '$$' : label + ' $' + formula + '$';
+    }
+  }
+
+  // Mieszany tekst z kilkoma wzorami inline (słowa + LaTeX)
+  const wordCount = (text.match(/\b[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{3,}\b/gu) || []).length;
+  if (wordCount >= 2) {
+    return text.replace(
+      /((?:\\[a-zA-Z]+(?:\{[^}]*\}|\[[^\]]*\])*|[A-Za-z0-9]\^[{A-Za-z0-9\-+][^,;\s]*|[A-Za-z0-9]_[{0-9A-Za-z][^,;\s]*)+)/g,
+      (m) => /\\[dt]?frac/.test(m) ? '\n$$' + m + '$$' : '$' + m + '$'
+    );
+  }
+
+  // Cały tekst to wzór
+  return hasFrac ? '$$' + text.trim() + '$$' : '$' + text.trim() + '$';
+}
+
+// ── Math rendering (MathJax 3) ─────────────────────────
+function renderMath(el) {
+  if (!window._mathReady || !window.MathJax || !MathJax.typesetPromise) return;
+  MathJax.typesetPromise([el]).catch(() => {});
+}
+
+// ── Card display ───────────────────────────────────────
+function showCard(enterFrom) {
+  const card = cards[order[current]];
+  const front = document.getElementById('card-front');
+  const back  = document.getElementById('card-back');
+  // typesetClear MUSI być przed zmianą textContent (MathJax issue #2191)
+  if (window._mathReady && window.MathJax) MathJax.typesetClear([front, back]);
+  setFlipped(false, false);
+  front.textContent = autoWrapMath(card.front);
+  back.textContent  = autoWrapMath(card.back);
+  renderMath(front);
+  renderMath(back);
+  updateRatingUI();
+  updateProgress();
+  if (enterFrom) {
+    transitioning = false;
+    animateCardIn(enterFrom);
+  } else {
+    transitioning = false;
+  }
+}
+
+function setFlipped(val, animate) {
+  flipped = val;
+  const inner  = document.getElementById('card-inner');
+  const front  = inner.querySelector('.front');
+  const back   = inner.querySelector('.back');
+  const showEl = val ? back  : front;
+  const hideEl = val ? front : back;
+
+  // cancel any in-progress animations before starting new ones
+  front.getAnimations().forEach(a => a.cancel());
+  back.getAnimations().forEach(a => a.cancel());
+
+  if (!animate) {
+    hideEl.style.opacity   = '0';
+    hideEl.style.transform = 'translateY(12px) scale(0.96)';
+    showEl.style.opacity   = '1';
+    showEl.style.transform = 'translateY(0) scale(1)';
+    return;
+  }
+
+  const dir = val ? 1 : -1;
+  hideEl.animate(
+    [{ opacity: 1, transform: 'translateY(0) scale(1)' },
+     { opacity: 0, transform: `translateY(${-14 * dir}px) scale(0.96)` }],
+    { duration: 160, easing: 'cubic-bezier(0.4,0,1,1)', fill: 'forwards' }
+  );
+  showEl.animate(
+    [{ opacity: 0, transform: `translateY(${18 * dir}px) scale(0.96)` },
+     { opacity: 1, transform: 'translateY(0) scale(1)' }],
+    { duration: 260, delay: 60, easing: 'cubic-bezier(0,0,0.2,1)', fill: 'forwards' }
+  );
+}
+
+function flipCard() {
+  if (transitioning) return;
+  setFlipped(!flipped, true);
+}
+
+// ── Card animations (Web Animations API) ───────────────
+function animateCardOut(direction, type, onDone) {
+  transitioning = true;
+  const wrapper = document.getElementById('card-wrapper');
+  wrapper.getAnimations().forEach(a => a.cancel());
+
+  const toX = direction === 'right' ? wrapper.offsetWidth * 0.55 : -wrapper.offsetWidth * 0.55;
+  const keyframes = [
+    { offset: 0, transform: 'translateX(0px) scale(1)',          opacity: 1 },
+    { offset: 1, transform: `translateX(${toX}px) scale(0.86)`, opacity: 0 }
+  ];
+
+  const anim = wrapper.animate(keyframes, { duration: 200, easing: 'cubic-bezier(0.3,0,0.8,0.15)', fill: 'none' });
+  anim.onfinish = () => onDone();
+}
+
+function animateCardIn(enterFrom) {
+  const wrapper = document.getElementById('card-wrapper');
+  wrapper.getAnimations().forEach(a => a.cancel());
+  wrapper.style.transform = '';
+  wrapper.style.opacity   = '';
+  let keyframes, duration, easing;
+  if (enterFrom === 'left' || enterFrom === 'right') {
+    const fromX = enterFrom === 'right' ? wrapper.offsetWidth * 0.18 : -wrapper.offsetWidth * 0.18;
+    keyframes = [
+      { transform: `translateX(${fromX}px) scale(0.86)`, opacity: 0 },
+      { transform: 'translateX(0px) scale(1)',            opacity: 1 }
+    ];
+    duration = 420;
+    easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
+  } else {
+    keyframes = [
+      { transform: 'scale(0.86)', opacity: 0 },
+      { transform: 'scale(1)',    opacity: 1 }
+    ];
+    duration = 380;
+    easing   = 'cubic-bezier(0.05,0.7,0.1,1)';
+  }
+  const anim = wrapper.animate(keyframes, { duration, easing, fill: 'forwards' });
+  anim.onfinish = () => {
+    anim.cancel();
+    wrapper.style.transform = '';
+    wrapper.style.opacity   = '';
+    resetBtnLabels();
+  };
+}
+
+// ── Button label feedback ───────────────────────────────
+function setBtnLabel(known) {
+  const btn = el(known ? 'btn-yes' : 'btn-no');
+  btn.querySelector('.btn-label').textContent = known ? t('feedbackYes') : t('feedbackNo');
+  btn.classList.add('feedback');
+}
+
+function resetBtnLabels() {
+  const no  = el('btn-no');
+  const yes = el('btn-yes');
+  no.querySelector('.btn-label').textContent  = t('no');
+  yes.querySelector('.btn-label').textContent = t('yes');
+  no.classList.remove('feedback');
+  yes.classList.remove('feedback');
+}
+
+// ── Reset-progress dialog ──────────────────────────────
+function showResetDialog() { el('reset-dialog').style.display = 'flex'; }
+function closeResetDialog() { el('reset-dialog').style.display = 'none'; }
+function confirmReset() {
+  closeResetDialog();
+  ratings = {}; current = 0;
+  buildOrder();
+  saveSession();
+  showCard(false);
+}
+
+// ── Rating ─────────────────────────────────────────────
+function rateCard(known) {
+  if (transitioning) return;
+  ratings[current] = known;
+  saveSession();
+  updateRatingUI();
+  setBtnLabel(known);          // tekst zmienia się natychmiast przy kliknięciu
+  const dir = 'left';
+  animateCardOut(dir, 'rate', () => {
+    if (current < order.length - 1) {
+      current++;
+      showCard('center');   // po ocenie: wjazd z centrum
+    } else {
+      transitioning = false;
+      showResult();
+    }
+  });
+}
+
+function updateRatingUI() {
+  const r = ratings[current];
+  document.getElementById('btn-yes').classList.toggle('active-yes', r === true);
+  document.getElementById('btn-no') .classList.toggle('active-no',  r === false);
+}
+
+function countRatings() {
+  let known = 0, unknown = 0;
+  for (let i = 0; i < order.length; i++) {
+    if (ratings[i] === true)  known++;
+    if (ratings[i] === false) unknown++;
+  }
+  return { known, unknown };
+}
+
+function updateProgress() {
+  const total = order.length;
+  el('prog-label').textContent = t('cardOf', current + 1, total);
+  const { known, unknown } = countRatings();
+  el('cnt-known').textContent = known;
+  el('cnt-unknown').textContent = unknown;
+  if (!total) return;
+  const cs = getComputedStyle(document.documentElement);
+  const cS = cs.getPropertyValue('--md-primary').trim();
+  const cK = cs.getPropertyValue('--green').trim();
+  const cU = cs.getPropertyValue('--red').trim();
+  const visited = current + 1;
+  const fill = document.getElementById('prog-fill');
+  fill.style.width = (visited / total * 100).toFixed(1) + '%';
+  const pS = ((visited - known - unknown) / visited * 100).toFixed(1);
+  const pK = ((visited - unknown) / visited * 100).toFixed(1);
+  fill.style.backgroundImage =
+    `linear-gradient(to right,${cS} 0% ${pS}%,${cK} ${pS}% ${pK}%,${cU} ${pK}% 100%)`;
+}
+
+// ── Navigation (swipe/keyboard, no rating) ─────────────
+function nextCard() {
+  if (transitioning || current >= order.length - 1) return;
+  animateCardOut('left', 'nav', () => { current++; saveSession(); showCard('right'); });
+}
+
+function prevCard() {
+  if (transitioning || current === 0) return;
+  animateCardOut('right', 'nav', () => { current--; saveSession(); showCard('left'); });
+}
+
+function toggleShuffle() {
+  shuffleOn = !shuffleOn;
+  document.getElementById('shuffle-toggle').checked = shuffleOn;
+  document.getElementById('btn-shuffle').classList.toggle('shuffle-on', shuffleOn);
+  ratings = {}; current = 0;
+  buildOrder();
+  saveSession();
+  showCard(false);
+}
+
+// ── Result ─────────────────────────────────────────────
+function showResult() {
+  const { known, unknown } = countRatings();
+  const total  = order.length;
+  const unrated = total - known - unknown;
+  document.getElementById('res-known')  .textContent = known;
+  document.getElementById('res-unknown').textContent = unknown;
+  document.getElementById('res-total')  .textContent = total;
+  let msg = '';
+  if (unrated > 0)        msg = t('msgUnrated', unrated);
+  else if (unknown === 0) msg = t('msgPerfect');
+  else if (known === 0)   msg = t('msgBad');
+  else                    msg = t('msgNormal');
+  document.getElementById('result-msg').textContent  = msg;
+  document.getElementById('result-icon').textContent = (unknown === 0 && unrated === 0) ? '🏆' : known > unknown ? '👍' : '📚';
+  document.getElementById('btn-retry-unknown').style.display = unknown > 0 ? '' : 'none';
+  show('result-screen');
+}
+
+function retryUnknown() {
+  const unknownIndices = [];
+  for (let i = 0; i < order.length; i++) {
+    if (ratings[i] === false) unknownIndices.push(order[i]);
+  }
+  if (unknownIndices.length === 0) return;
+  cards = unknownIndices.map(i => cards[i]);
+  localStorage.setItem('savedCards', JSON.stringify(cards));
+  current = 0; ratings = {};
+  buildOrder();
+  saveSession();
+  moveToolbarBtns('study');
+  show('study-screen');
+  showCard(false);
+}
+
+function restartDeck() {
+  current = 0; ratings = {};
+  buildOrder();
+  saveSession();
+  moveToolbarBtns('study');
+  show('study-screen');
+  showCard(false);
+}
+
+function resetToUpload() {
+  cards = []; order = []; ratings = {}; current = 0;
+  fileInput.value = '';
+  localStorage.removeItem('savedCards');
+  clearSession();
+  document.documentElement.classList.remove('has-saved-cards');
+  moveToolbarBtns('upload');
+  show('upload-screen');
+}
+
+function show(id) {
+  ['upload-screen','study-screen','result-screen'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'flex' : 'none';
+  });
+}
+
+function showFade(fromId, toId) {
+  const fromEl = document.getElementById(fromId);
+  const toEl   = document.getElementById(toId);
+  fromEl.animate(
+    [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.94)' }],
+    { duration: 160, easing: 'cubic-bezier(0.4,0,1,1)', fill: 'forwards' }
+  ).onfinish = () => {
+    fromEl.style.display = 'none';
+    fromEl.getAnimations().forEach(a => a.cancel());
+    toEl.style.display = 'flex';
+    toEl.style.opacity = '0';
+    toEl.style.transform = 'scale(0.94)';
+    toEl.animate(
+      [{ opacity: 0, transform: 'scale(0.94)' }, { opacity: 1, transform: 'scale(1)' }],
+      { duration: 240, easing: 'cubic-bezier(0,0,0.2,1)', fill: 'forwards' }
+    ).onfinish = () => {
+      toEl.style.opacity = '';
+      toEl.style.transform = '';
+    };
+  };
+}
+
+// ── Device hints ───────────────────────────────────────
+const isMobile = document.documentElement.classList.contains('is-mobile');
+applyLang();
+el('btn-shuffle').classList.toggle('shuffle-on', shuffleOn);
+
+// ── Swipe / drag (touch + mouse) ───────────────────────
+let dragStartX = 0, dragStartY = 0, isDragging = false, suppressClick = false;
+const scene = document.getElementById('card-scene');
+
+scene.addEventListener('touchstart', e => {
+  dragStartX = e.touches[0].clientX;
+  dragStartY = e.touches[0].clientY;
+}, { passive: true });
+
+scene.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - dragStartX;
+  const dy = e.changedTouches[0].clientY - dragStartY;
+  if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
+  e.preventDefault();
+  if (dx < 0) nextCard(); else prevCard();
+}, { passive: false });
+
+scene.addEventListener('mousedown', e => {
+  dragStartX = e.clientX; dragStartY = e.clientY; isDragging = true;
+});
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  scene.style.cursor = (e.clientX - dragStartX) > 0 ? 'w-resize' : 'e-resize';
+});
+window.addEventListener('mouseup', e => {
+  if (!isDragging) return;
+  isDragging = false; scene.style.cursor = '';
+  const dx = e.clientX - dragStartX;
+  const dy = e.clientY - dragStartY;
+  if (Math.abs(dx) < Math.abs(dy) * 1.5 || Math.abs(dx) < 60) return;
+  suppressClick = true;
+  if (dx < 0) nextCard(); else prevCard();
+});
+scene.addEventListener('click', e => {
+  if (suppressClick) { suppressClick = false; e.stopImmediatePropagation(); }
+}, true);
+
+// ── Android 16 press spring + ripple ──────────────────
+;(function () {
+  const sizeBox = document.getElementById('card-size-box');
+  const overlay = document.getElementById('card-ripple-overlay');
+  let pressAnim = null;
+
+  function springPress() {
+    if (transitioning) return;
+    if (pressAnim) pressAnim.cancel();
+    pressAnim = sizeBox.animate(
+      [{ transform: 'scale(1)' }, { transform: 'scale(0.955)' }],
+      { duration: 110, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
+    );
+  }
+
+  function springRelease() {
+    if (!pressAnim) return;
+    pressAnim.cancel();
+    pressAnim = null;
+    sizeBox.animate(
+      [{ transform: 'scale(0.955)' }, { transform: 'scale(1)' }],
+      { duration: 480, easing: 'cubic-bezier(0.34,1.56,0.64,1)', fill: 'none' }
+    );
+  }
+
+  function addRipple(clientX, clientY) {
+    if (transitioning) return;
+    const rect = overlay.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const r = Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y));
+    const dot = document.createElement('span');
+    dot.className = 'card-ripple';
+    dot.style.cssText = `width:${r*2}px;height:${r*2}px;left:${x-r}px;top:${y-r}px;`;
+    overlay.appendChild(dot);
+    dot.animate(
+      [{ transform:'scale(0)', opacity:1 }, { transform:'scale(1)', opacity:0 }],
+      { duration: 580, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
+    ).onfinish = () => dot.remove();
+  }
+
+  scene.addEventListener('pointerdown', e => {
+    springPress();
+    addRipple(e.clientX, e.clientY);
+  });
+  window.addEventListener('pointerup',     springRelease);
+  window.addEventListener('pointercancel', springRelease);
+})();
+
+// ── Rate button ripple ─────────────────────────────────
+;(function () {
+  function addBtnRipple(btn, clientX, clientY) {
+    const rect = btn.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const r = Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y));
+    const dot = document.createElement('span');
+    dot.className = 'rate-btn-ripple';
+    dot.style.cssText = `width:${r*2}px;height:${r*2}px;left:${x-r}px;top:${y-r}px;`;
+    btn.appendChild(dot);
+    dot.animate(
+      [{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1)', opacity: 0 }],
+      { duration: 480, easing: 'cubic-bezier(0.2,0,0,1)', fill: 'forwards' }
+    ).onfinish = () => dot.remove();
+  }
+  ['btn-no', 'btn-yes'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.addEventListener('pointerdown', e => addBtnRipple(btn, e.clientX, e.clientY));
+  });
+})();
+
+// ── Keyboard ───────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (document.getElementById('study-screen').style.display === 'none') return;
+  if      (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { e.preventDefault(); nextCard(); }
+  else if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { e.preventDefault(); prevCard(); }
+  else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  else if (e.key === 'Escape') closeResetDialog();
+  else if (e.key === '1') rateCard(false);
+  else if (e.key === '2') rateCard(true);
+});
+
+// ── Fullscreen ─────────────────────────────────────────
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  const on = !!document.fullscreenElement;
+  document.getElementById('fs-icon-expand'  ).style.display = on ? 'none' : '';
+  document.getElementById('fs-icon-compress').style.display = on ? '' : 'none';
+});
+
+// ── Apply pending CSV from #data= hash ────────────────
+if (window.__pendingCSV) {
+  parseCSV(window.__pendingCSV);
+  delete window.__pendingCSV;
+}
+</script>
+</body>
+</html>
