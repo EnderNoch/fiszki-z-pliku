@@ -3,9 +3,9 @@ package com.example.fiszkiandroid
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.webkit.FileChooserParams
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import android.webkit.WebChromeClient.FileChooserParams
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
