@@ -6,6 +6,7 @@
 
 ## 🇵🇱 Polski
 
+WIELKA NOWOŚĆ! TRWA TWORZENIE APLIKACJI NA ANDROIDA
 Minimalistyczna aplikacja webowa do nauki z fiszek. Wgrywasz `.csv` / `.txt` / `.tsv` (dwie kolumny), oceniasz *Umiem ✓* / *Nie umiem ✗*, a na końcu powtarzasz błędne odpowiedzi.
 
 - Automatyczne renderowanie wzorów matematycznych (MathJax, wsparcie dla eksportów z NotebookLM)
@@ -18,6 +19,7 @@ Minimalistyczna aplikacja webowa do nauki z fiszek. Wgrywasz `.csv` / `.txt` / `
 
 ## 🇬🇧 English
 
+VERY BIG THING! AN ANDROID APP IS BEEING MADE
 Minimalist flashcard webapp. Upload `.csv` / `.txt` / `.tsv` (two columns), rate *Got it ✓* / *Don't know ✗*, then retry the missed ones.
 
 - Auto math rendering (MathJax, NotebookLM exports supported)
